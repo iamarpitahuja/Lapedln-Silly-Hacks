@@ -1,0 +1,11 @@
+.iconContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.iconContainer svg {
+  width: 100%;
+  height: 100%;
+}

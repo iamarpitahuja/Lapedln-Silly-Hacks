@@ -4,9 +4,12 @@
   left: 0;
   right: 0;
   z-index: 100;
-  background: #ffffff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   height: 52px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 
 .inner {
@@ -23,7 +26,7 @@
 .left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .logo {
@@ -49,29 +52,40 @@
 
 .searchIcon {
   position: absolute;
-  left: 10px;
-  color: rgba(0, 0, 0, 0.6);
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: rgba(0, 0, 0, 0.5);
   pointer-events: none;
+  transition: color 0.2s;
 }
 
 .search {
-  background: #eef3f8;
-  border: none;
-  border-radius: 4px;
-  padding: 7px 12px 7px 34px;
+  background: rgba(10, 102, 194, 0.05);
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  padding: 8px 12px 8px 38px;
   font-size: 14px;
   color: rgba(0, 0, 0, 0.9);
-  width: 230px;
+  width: 280px;
   outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search:focus {
   background: #fff;
-  box-shadow: 0 0 0 2px #0A66C2;
+  border-color: #0A66C2;
+  width: 400px;
+  box-shadow: 0 4px 12px rgba(10, 102, 194, 0.15);
+}
+
+.search:focus + .searchIcon {
+  color: #0A66C2;
 }
 
 .search::placeholder {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 400;
 }
 
 .tabs {
@@ -90,14 +104,13 @@
   color: rgba(0, 0, 0, 0.6);
   text-decoration: none;
   border-bottom: 2px solid transparent;
-  transition: color 0.15s;
-  min-width: 72px;
+  transition: all 0.2s;
+  min-width: 80px;
   position: relative;
 }
 
 .tab:hover {
   color: rgba(0, 0, 0, 0.9);
-  border-bottom-color: rgba(0, 0, 0, 0.3);
 }
 
 .tabActive {
@@ -111,10 +124,15 @@
   justify-content: center;
   width: 24px;
   height: 24px;
+  transition: transform 0.2s;
+}
+
+.tab:hover .tabIcon {
+  transform: translateY(-1px);
 }
 
 .tabLabel {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   white-space: nowrap;
 }
@@ -130,4 +148,5 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 0 1px #fff;
 }

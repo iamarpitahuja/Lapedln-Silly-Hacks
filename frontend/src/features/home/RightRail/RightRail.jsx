@@ -1,5 +1,6 @@
 import { useMockData } from '../../../context/MockDataContext'
 import { getInitials } from '../../../utils/strings'
+import Icon from '../../../components/Icon/Icon'
 import styles from './RightRail.module.css'
 
 export default function RightRail() {
@@ -51,7 +52,7 @@ export default function RightRail() {
                 <div className={styles.fakeParagraph} style={{ width: '80%' }} />
               </div>
               <div className={styles.lockedOverlay}>
-                <span className={styles.lockIcon}>🔒</span>
+                <span className={styles.lockIcon}><Icon name="lock" size={24} /></span>
                 <p className={styles.lockMessage}>This content is above your professional aura.</p>
               </div>
             </div>

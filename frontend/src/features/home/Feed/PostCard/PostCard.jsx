@@ -1,5 +1,6 @@
 import LarpRatingBadge from '../../../../components/LarpRatingBadge/LarpRatingBadge'
 import SuggestedGlazes from '../SuggestedGlazes/SuggestedGlazes'
+import Icon from '../../../../components/Icon/Icon'
 import { getInitials } from '../../../../utils/strings'
 import styles from './PostCard.module.css'
 
@@ -36,8 +37,12 @@ export default function PostCard({ post }) {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <button className={styles.iconBtn}>···</button>
-          <button className={styles.iconBtn}>✕</button>
+          <button className={styles.iconBtn} aria-label="More options">
+            <Icon name="more" size={16} />
+          </button>
+          <button className={styles.iconBtn} aria-label="Dismiss">
+            <Icon name="x" size={16} />
+          </button>
         </div>
       </div>
 
@@ -48,7 +53,11 @@ export default function PostCard({ post }) {
 
       {/* Reactions */}
       <div className={styles.reactions}>
-        <span className={styles.reactionEmojis}>👍❤️🔥</span>
+        <span className={styles.reactionEmojis}>
+          <Icon name="thumbsUp" size={12} className={styles.reactionIcon} />
+          <Icon name="heart" size={12} className={styles.reactionIcon} />
+          <Icon name="flame" size={12} className={styles.reactionIcon} />
+        </span>
         <span className={styles.reactionCount}>
           {reactions.count} • {reactions.comments} comments
         </span>
@@ -57,16 +66,16 @@ export default function PostCard({ post }) {
       {/* Action bar */}
       <div className={styles.actions}>
         <button className={styles.action}>
-          <span>👍</span> Glaze
+          <Icon name="thumbsUp" size={18} /> <span>Glaze</span>
         </button>
         <button className={styles.action}>
-          <span>💬</span> Comment
+          <Icon name="message" size={18} /> <span>Comment</span>
         </button>
         <button className={styles.action}>
-          <span>🔁</span> Re-Larp
+          <Icon name="repeat" size={18} /> <span>Re-Larp</span>
         </button>
         <button className={styles.action}>
-          <span>✉️</span> DM
+          <Icon name="mail" size={18} /> <span>DM</span>
         </button>
       </div>
 

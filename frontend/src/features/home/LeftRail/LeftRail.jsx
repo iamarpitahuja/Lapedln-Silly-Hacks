@@ -1,5 +1,6 @@
 import { useMockData } from '../../../context/MockDataContext'
 import LarpRatingBadge from '../../../components/LarpRatingBadge/LarpRatingBadge'
+import Icon from '../../../components/Icon/Icon'
 import { getInitials } from '../../../utils/strings'
 import styles from './LeftRail.module.css'
 
@@ -47,7 +48,9 @@ export default function LeftRail() {
       <div className={styles.card}>
         <div className={styles.widgetHeader}>
           <h3 className={styles.widgetTitle}>Who&apos;s glazing you</h3>
-          <button className={styles.moreBtn}>···</button>
+          <button className={styles.moreBtn} aria-label="More">
+            <Icon name="more" size={16} />
+          </button>
         </div>
         <div className={styles.glazers}>
           {glazers.map((g, i) => (
@@ -66,7 +69,9 @@ export default function LeftRail() {
       <div className={styles.card}>
         <div className={styles.widgetHeader}>
           <h3 className={styles.widgetTitle}>Weekly aura growth</h3>
-          <button className={styles.moreBtn}>···</button>
+          <button className={styles.moreBtn} aria-label="More">
+            <Icon name="more" size={16} />
+          </button>
         </div>
         <div className={styles.auraRow}>
           <div>
@@ -78,7 +83,9 @@ export default function LeftRail() {
             <span className={styles.auraChange}>{stats.weeklyAuraGrowthPct}</span>
           </div>
         </div>
-        <button className={styles.seeMore}>See more →</button>
+        <button className={styles.seeMore}>
+          See more <Icon name="arrowRight" size={14} />
+        </button>
       </div>
     </div>
   )

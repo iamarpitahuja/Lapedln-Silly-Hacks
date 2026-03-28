@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useMockData } from '../../../../context/MockDataContext'
+import Icon from '../../../../components/Icon/Icon'
 import styles from './StartPost.module.css'
 
 const PLACEHOLDERS = [
@@ -10,10 +11,10 @@ const PLACEHOLDERS = [
 ]
 
 const ACTIONS = [
-  { icon: '🎉', label: 'Celebrate fake promotion' },
-  { icon: '🚀', label: 'Announce stealth startup' },
-  { icon: '💡', label: 'Share leadership insight' },
-  { icon: '🪞', label: 'Reflect on your journey' },
+  { icon: 'party', label: 'Celebrate fake promotion' },
+  { icon: 'rocket', label: 'Announce stealth startup' },
+  { icon: 'lightbulb', label: 'Share leadership insight' },
+  { icon: 'mirror', label: 'Reflect on your journey' },
 ]
 
 function getInitials(name) {
@@ -42,7 +43,9 @@ export default function StartPost() {
       <div className={styles.actions}>
         {ACTIONS.map(action => (
           <button key={action.label} className={styles.action}>
-            <span className={styles.actionIcon}>{action.icon}</span>
+            <span className={styles.actionIcon}>
+              <Icon name={action.icon} size={20} />
+            </span>
             <span className={styles.actionLabel}>{action.label}</span>
           </button>
         ))}
