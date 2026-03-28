@@ -196,3 +196,21 @@
 .tab:hover .avatarSmall {
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(10, 102, 194, 0.2);
 }
+
+.iconWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unreadDot {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: #e53935;
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+}
