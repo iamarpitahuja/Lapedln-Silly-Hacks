@@ -6,15 +6,22 @@ import styles from './LeftRail.module.css'
 
 export default function LeftRail() {
   const { currentUser } = useMockData()
-  const { name, headline, larpRating, persona, stats, glazers } = currentUser
+  const { name, headline, larpRating, persona, stats, glazers, avatar, coverPhoto } = currentUser
 
   return (
     <div className={styles.rail}>
       {/* Identity card */}
       <div className={styles.card}>
-        <div className={styles.coverPhoto} />
+        <div
+          className={styles.coverPhoto}
+          style={coverPhoto ? { backgroundImage: `url(${coverPhoto})` } : {}}
+        />
         <div className={styles.avatarWrap}>
-          <div className={styles.avatar}>{getInitials(name)}</div>
+          {avatar ? (
+            <img src={avatar} alt={name} className={styles.avatarImg} />
+          ) : (
+            <div className={styles.avatar}>{getInitials(name)}</div>
+          )}
         </div>
         <div className={styles.identity}>
           <h2 className={styles.name}>{name}</h2>
@@ -55,7 +62,11 @@ export default function LeftRail() {
         <div className={styles.glazers}>
           {glazers.map((g, i) => (
             <div key={i} className={styles.glazerRow}>
-              <div className={styles.glazerAvatar}>{getInitials(g.name)}</div>
+              {g.avatar ? (
+                <img src={g.avatar} alt={g.name} className={styles.glazerAvatarImg} />
+              ) : (
+                <div className={styles.glazerAvatar}>{getInitials(g.name)}</div>
+              )}
               <div>
                 <p className={styles.glazerName}>{g.name}</p>
                 <p className={styles.glazerSub}>{g.headline}</p>

@@ -1,11 +1,8 @@
 import { useMockData } from '../../../context/MockDataContext'
-import { getInitials } from '../../../utils/strings'
-import Icon from '../../../components/Icon/Icon'
 import styles from './RightRail.module.css'
 
 export default function RightRail() {
-  const { trendingDelusions, buzzwords, allPosts, isAccessible } = useMockData()
-  const lockedPosts = allPosts.filter(post => !isAccessible(post.author.larpRating)).slice(0, 2)
+  const { trendingDelusions, buzzwords } = useMockData()
 
   return (
     <div className={styles.rail}>
@@ -32,32 +29,6 @@ export default function RightRail() {
           ))}
         </ul>
         <button className={styles.seeMore}>see more</button>
-      </div>
-
-      {/* Locked posts */}
-      <div className={styles.card}>
-        <h3 className={styles.title}>Top posts you cannot view because of your LarpRating</h3>
-        <div className={styles.lockedList}>
-          {lockedPosts.map(post => (
-            <div key={post.id} className={styles.lockedCard}>
-              <div className={styles.lockedBlur}>
-                <div className={styles.lockedFakeContent}>
-                  <div className={styles.fakeAvatar}>{getInitials(post.author.name)}</div>
-                  <div className={styles.fakeLines}>
-                    <div className={styles.fakeLine} style={{ width: '60%' }} />
-                    <div className={styles.fakeLine} style={{ width: '40%' }} />
-                  </div>
-                </div>
-                <div className={styles.fakeParagraph} />
-                <div className={styles.fakeParagraph} style={{ width: '80%' }} />
-              </div>
-              <div className={styles.lockedOverlay}>
-                <span className={styles.lockIcon}><Icon name="lock" size={24} /></span>
-                <p className={styles.lockMessage}>This content is above your professional aura.</p>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   )

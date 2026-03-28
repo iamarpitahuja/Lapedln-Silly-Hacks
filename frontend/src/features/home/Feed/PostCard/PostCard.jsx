@@ -9,6 +9,7 @@ import styles from './PostCard.module.css'
 const AVATAR_COLORS = ['#0A66C2', '#057642', '#7c3aed', '#b45309', '#be123c', '#0891b2']
 const MAX_COMMENT_LENGTH = 280
 const MAX_RELARP_LENGTH = 220
+const CONTENT_TRUNCATE_LENGTH = 300
 
 function getAvatarColor(name) {
   let hash = 0
@@ -26,6 +27,7 @@ export default function PostCard({ post, isOwnPost = false }) {
   const [isLarped, setIsLarped] = useState(false)
   const [isLoved, setIsLoved] = useState(false)
   const [isCommentsOpen, setIsCommentsOpen] = useState(false)
+  const [isContentExpanded, setIsContentExpanded] = useState(false)
   const [commentDraft, setCommentDraft] = useState('')
   const [commentError, setCommentError] = useState('')
   const [isSubmittingComment, setIsSubmittingComment] = useState(false)
@@ -37,6 +39,11 @@ export default function PostCard({ post, isOwnPost = false }) {
 
   const userAlreadyRelarped = hasUserRelarped(post.id)
   const canRelarp = !isOwnPost && !userAlreadyRelarped
+
+  const shouldTruncateContent = content && content.length > CONTENT_TRUNCATE_LENGTH
+  const displayContent = shouldTruncateContent && !isContentExpanded
+    ? content.slice(0, CONTENT_TRUNCATE_LENGTH).trim() + '...'
+    : content
 
   const handleGlazeClick = () => {
     setIsGlazing(!isGlazing)
@@ -186,7 +193,19 @@ export default function PostCard({ post, isOwnPost = false }) {
       </div>
 
       <div className={styles.body}>
-        {content ? <p className={styles.content}>{content}</p> : null}
+        {content ? (
+          <div className={styles.contentWrap}>
+            <p className={styles.content}>{displayContent}</p>
+            {shouldTruncateContent && !isContentExpanded && (
+              <button
+                className={styles.readMoreBtn}
+                onClick={() => setIsContentExpanded(true)}
+              >
+                ...read more
+              </button>
+            )}
+          </div>
+        ) : null}
         {post.photo ? (
           <div className={styles.postPhotoWrap}>
             <img src={post.photo} alt="" className={styles.postPhoto} />
@@ -293,9 +312,11 @@ export default function PostCard({ post, isOwnPost = false }) {
                 : 'Re-Larp'}
           </span>
         </button>
-        <button className={`${styles.action} ${styles.actionDm}`} aria-label="DM">
-          <Icon name="mail" size={18} /> <span>DM</span>
-        </button>
+        {!isOwnPost ? (
+          <button className={`${styles.action} ${styles.actionDm}`} aria-label="DM">
+            <Icon name="mail" size={18} /> <span>DM</span>
+          </button>
+        ) : null}
       </div>
 
       {isGlazing && !isOwnPost ? <SuggestedGlazes onGlaze={handleSendGlaze} isGlazed={isGlazed} /> : null}

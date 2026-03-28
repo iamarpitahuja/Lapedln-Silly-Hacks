@@ -156,6 +156,28 @@
   line-height: 1.6;
 }
 
+.contentWrap {
+  position: relative;
+}
+
+.readMoreBtn {
+  display: block;
+  margin-top: 4px;
+  background: transparent;
+  border: none;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--transition-fast);
+}
+
+.readMoreBtn:hover {
+  color: #0A66C2;
+  text-decoration: underline;
+}
+
 .postPhotoWrap {
   margin-top: 12px;
   border-radius: 4px;

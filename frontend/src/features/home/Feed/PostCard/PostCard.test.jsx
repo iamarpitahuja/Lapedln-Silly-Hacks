@@ -48,7 +48,7 @@ describe('PostCard', () => {
     expect(screen.queryByRole('button', { name: /^Glaze$/i })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^Comment$/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^Re-Larp$/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /^DM$/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^DM$/i })).not.toBeInTheDocument()
   })
 
   it('supports quick re-larp and allows undoing it', () => {
