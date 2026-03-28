@@ -1,0 +1,42 @@
+.gauge {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gaugeInner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.gaugeValue {
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.9);
+  line-height: 1;
+}
+
+.gaugeTier {
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.small {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 1px 5px;
+  line-height: 1.4;
+  vertical-align: middle;
+}
