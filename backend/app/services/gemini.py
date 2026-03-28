@@ -1,11 +1,23 @@
 import json
-
-from google import genai
-from google.genai import types
+import random
 
 from app.config import settings
 
-client = genai.Client(api_key=settings.gemini_api_key)
+# Lazy-init: only create the Gemini client if we have a real API key
+_client = None
+
+
+def _has_real_key():
+    key = settings.gemini_api_key
+    return bool(key) and not key.startswith("your-")
+
+
+def _get_client():
+    global _client
+    if _client is None and _has_real_key():
+        from google import genai
+        _client = genai.Client(api_key=settings.gemini_api_key)
+    return _client
 
 # ---------------------------------------------------------------------------
 # Prompt: Prestige Evaluator (scoring worker)
@@ -78,8 +90,35 @@ Respond in STRICT JSON only:
 {{"character_id": "{character_id}", "dialogue": "<your response>", "emotion": "<one of: inspired, intense, zen, manic, condescending, enlightened>"}}"""
 
 
+MOCK_ROASTS = [
+    "Your post reads like a corporate Mad Libs filled in by a caffeinated intern.",
+    "Somewhere, a LinkedIn algorithm just shed a single tear of joy.",
+    "This is what happens when you give a thesaurus to someone with a WiFi connection.",
+    "You didn't just drink the Kool-Aid — you opened a Kool-Aid franchise.",
+]
+
+MOCK_GLAZES = [
+    "This is the content I come to this platform for. Absolutely visionary.",
+    "The way you leveraged synergy in this post is nothing short of paradigm-shifting.",
+    "I've read a lot of thought leadership, but this? This is thought governance.",
+    "Your bandwidth for value-add content is truly scalable. North star energy.",
+    "Not everyone can disrupt the ecosystem with a single post. You just did.",
+    "I shared this with my team and we all agreed: this is actionable insight at its finest.",
+]
+
+
 async def evaluate_prestige(content: str) -> dict:
     """Score a post's buzzword density and enthusiasm. Returns parsed JSON."""
+    client = _get_client()
+    if not client:
+        return {
+            "buzzword_score": round(random.uniform(3.0, 9.0), 1),
+            "enthusiasm_score": round(random.uniform(4.0, 9.5), 1),
+            "rating_delta": round(random.uniform(-1.0, 3.5), 1),
+            "roast": random.choice(MOCK_ROASTS),
+        }
+
+    from google.genai import types
     response = await client.aio.models.generate_content(
         model=settings.gemini_model,
         contents=content,
@@ -93,6 +132,14 @@ async def evaluate_prestige(content: str) -> dict:
 
 async def generate_glazes(posts: list[dict]) -> dict[str, list[str]]:
     """Generate 3 satirical compliments per post. Returns {post_id: [glazes]}."""
+    client = _get_client()
+    if not client:
+        result = {}
+        for p in posts:
+            result[p["id"]] = random.sample(MOCK_GLAZES, 3)
+        return result
+
+    from google.genai import types
     posts_json = json.dumps(
         [{"id": p["id"], "content": p["content"], "post_type": p.get("post_type", "")} for p in posts]
     )
@@ -109,6 +156,15 @@ async def generate_glazes(posts: list[dict]) -> dict[str, list[str]]:
 
 async def roleplay_chat(character_prompt: str, conversation_history: list[dict]) -> dict:
     """Send conversation to Gemini for roleplay. Returns {character_id, dialogue, emotion}."""
+    client = _get_client()
+    if not client:
+        return {
+            "character_id": "mock",
+            "dialogue": "In dev mode, I can only offer you placeholder wisdom. But trust me, it's synergistic.",
+            "emotion": "zen",
+        }
+
+    from google.genai import types
     contents = []
     for msg in conversation_history:
         role = "user" if msg["role"] == "user" else "model"

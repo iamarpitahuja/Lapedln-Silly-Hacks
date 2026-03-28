@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from supabase import Client
 
 from app.dependencies import get_current_user, get_service_client
 
@@ -15,7 +14,7 @@ class TitleUpdate(BaseModel):
 async def update_title(
     body: TitleUpdate,
     user_id: str = Depends(get_current_user),
-    supabase: Client = Depends(get_service_client),
+    supabase=Depends(get_service_client),
 ):
     """Instantly overwrite your professional title. No questions asked."""
     supabase.table("profiles").update({"title": body.title}).eq("id", user_id).execute()

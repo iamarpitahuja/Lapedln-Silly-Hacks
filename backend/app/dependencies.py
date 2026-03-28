@@ -1,12 +1,16 @@
 from fastapi import Header, HTTPException, Request
 from jose import JWTError, jwt
-from supabase import create_client, Client
 
 from app.config import settings
 
+DEV_USER_ID = "00000000-0000-0000-0000-000000000000"
 
-def get_current_user(authorization: str = Header(...)) -> str:
-    """Extract and verify user_id from Supabase JWT."""
+
+def get_current_user(authorization: str = Header(default="")) -> str:
+    """Extract and verify user_id from Supabase JWT. Skips auth until login UI is built."""
+    if settings.skip_auth:
+        return DEV_USER_ID
+
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
 
@@ -27,14 +31,11 @@ def get_current_user(authorization: str = Header(...)) -> str:
         raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
 
 
-def get_service_client(request: Request) -> Client:
+def get_service_client(request: Request):
     """Return the service-role Supabase client (bypasses RLS)."""
     return request.app.state.supabase
 
 
-def get_user_client(authorization: str = Header(...)) -> Client:
-    """Create a Supabase client with the user's JWT so RLS applies."""
-    token = authorization.removeprefix("Bearer ")
-    client = create_client(settings.supabase_url, settings.supabase_anon_key)
-    client.postgrest.auth(token)
-    return client
+def get_user_client(request: Request):
+    """Return the service-role client for now (no user JWT yet). TODO: use user JWT once auth is built."""
+    return request.app.state.supabase
