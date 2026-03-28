@@ -22,12 +22,6 @@ const TONE_GLAZES = {
     'Yet another masterclass.',
     'Massive inspiration for the ecosystem.',
   ],
-  investor: [
-    'This kind of velocity is impossible to ignore.',
-    'Strong signal. Watching closely.',
-    'Rare founder energy on display.',
-    'The market will notice.',
-  ],
 }
 
 export default function SuggestedGlazes() {
