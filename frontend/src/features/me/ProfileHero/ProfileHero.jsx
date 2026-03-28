@@ -22,7 +22,7 @@ export default function ProfileHero() {
         </div>
         <p className={styles.persona}>{persona}</p>
         <p className={styles.recruiterStat}>
-          <span className={styles.statValue}>{stats.recruiterViews} recruiters</span> are monitoring your trajectory.
+          {stats.recruiterViews} recruiters are monitoring your trajectory.
         </p>
       </div>
     </div>

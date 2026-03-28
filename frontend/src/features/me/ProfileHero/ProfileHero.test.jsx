@@ -16,9 +16,6 @@ describe('ProfileHero', () => {
 
   it('renders recruiter stat line', () => {
     render(<MockDataProvider><ProfileHero /></MockDataProvider>)
-    const elements = screen.getAllByText((content, element) => {
-      return element?.textContent?.includes('413') && element?.textContent?.includes('recruiters are monitoring')
-    })
-    expect(elements[elements.length - 1]).toBeTruthy()
+    expect(screen.getByText(/413 recruiters are monitoring/)).toBeTruthy()
   })
 })
