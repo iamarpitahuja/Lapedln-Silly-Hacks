@@ -8,7 +8,7 @@
 
 .row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   margin-bottom: 8px;
 }
@@ -25,22 +25,44 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 4px;
 }
 
-.input {
+/* Base textarea — expanded/active state */
+.textarea {
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 35px;
+  width: 100%;
+  resize: vertical;
+  min-height: 96px;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 12px;
+  padding: 10px 12px;
   font-size: 14px;
+  line-height: 1.45;
+  font-family: inherit;
+  color: rgba(0, 0, 0, 0.9);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #0A66C2;
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.15);
+}
+
+/* Resting / collapsed state — looks like the old pill input */
+.textareaResting {
+  min-height: unset;
+  height: 44px;
+  resize: none;
+  overflow: hidden;
+  border-radius: 35px;
+  padding: 11px 16px;
   color: rgba(0, 0, 0, 0.6);
-  text-align: left;
-  background: transparent;
-  transition: border-color 0.15s, background 0.15s;
   cursor: pointer;
 }
 
-.input:hover {
+.textareaResting:hover {
   background: rgba(0, 0, 0, 0.04);
   border-color: rgba(0, 0, 0, 0.6);
 }
@@ -51,6 +73,7 @@
   flex-wrap: wrap;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   padding-top: 8px;
+  margin-top: 6px;
 }
 
 .action {
@@ -76,4 +99,98 @@
 
 .actionLabel {
   white-space: nowrap;
+}
+
+.composerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.typeLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.02em;
+}
+
+.typeSelect {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+  background: #fff;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+}
+
+.composerMeta {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.metaHint {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.charCount {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.charCountWarn {
+  color: #b45309;
+}
+
+.error {
+  margin-top: 8px;
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.composerActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.cancelBtn,
+.publishBtn {
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  transition: background 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.cancelBtn {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.cancelBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.publishBtn {
+  background: #0A66C2;
+  color: #fff;
+}
+
+.publishBtn:hover:enabled {
+  background: #084f95;
+}
+
+.publishBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
