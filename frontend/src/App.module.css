@@ -1,0 +1,4 @@
+.main {
+  padding-top: 52px; /* offset for fixed TopNav height */
+  min-height: 100vh;
+}

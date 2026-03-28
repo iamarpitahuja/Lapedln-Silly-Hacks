@@ -1,0 +1,15 @@
+.stub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.stub h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+}
