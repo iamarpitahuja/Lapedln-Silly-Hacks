@@ -1,3 +1,15 @@
+:root {
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  --spring-soft: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition-fast: 0.15s var(--ease-out-quint);
+  --transition-normal: 0.3s var(--ease-out-quint);
+  --transition-slow: 0.5s var(--ease-out-quint);
+  
+  --active-scale: 0.96;
+  --hover-scale: 1.02;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -10,6 +22,35 @@ body {
   color: rgba(0, 0, 0, 0.9);
   font-size: 14px;
   line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, .interactive {
+  cursor: pointer;
+  transition: transform var(--transition-fast), opacity var(--transition-fast), background-color var(--transition-fast);
+}
+
+button:active, .interactive:active {
+  transform: scale(var(--active-scale));
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--transition-normal) var(--spring-soft) forwards;
 }
 
 a {

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { MockDataProvider } from './context/MockDataContext'
 import TopNav from './components/TopNav/TopNav'
 import Home from './features/home/Home'
+import Me from './features/me/Me'
 import StubPage from './pages/StubPage'
 import styles from './App.module.css'
 
@@ -17,7 +18,7 @@ export default function App() {
             <Route path="/jobs" element={<StubPage title="J*bs" />} />
             <Route path="/messaging" element={<StubPage title="Messaging" />} />
             <Route path="/notifications" element={<StubPage title="Notifications" />} />
-            <Route path="/me" element={<StubPage title="Me" />} />
+            <Route path="/me" element={<Me />} />
           </Routes>
         </main>
       </BrowserRouter>

@@ -35,6 +35,11 @@
   line-height: 1;
   text-decoration: none;
   flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.logo:active {
+  transform: scale(var(--active-scale));
 }
 
 .logoText {
@@ -42,6 +47,7 @@
   font-weight: 800;
   color: #0A66C2;
   letter-spacing: -0.5px;
+  text-shadow: 0 0 1px rgba(10, 102, 194, 0.1);
 }
 
 .searchWrap {
@@ -57,7 +63,7 @@
   height: 16px;
   color: rgba(0, 0, 0, 0.5);
   pointer-events: none;
-  transition: color 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .search {
@@ -69,23 +75,29 @@
   color: rgba(0, 0, 0, 0.9);
   width: 280px;
   outline: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-normal);
 }
 
 .search:focus {
   background: #fff;
   border-color: #0A66C2;
   width: 400px;
-  box-shadow: 0 4px 12px rgba(10, 102, 194, 0.15);
+  box-shadow: 0 8px 24px rgba(10, 102, 194, 0.12);
 }
 
 .search:focus + .searchIcon {
   color: #0A66C2;
+  transform: scale(1.1);
 }
 
 .search::placeholder {
   color: rgba(0, 0, 0, 0.5);
   font-weight: 400;
+  transition: opacity var(--transition-fast);
+}
+
+.search:focus::placeholder {
+  opacity: 0.7;
 }
 
 .tabs {
@@ -103,19 +115,35 @@
   padding: 0 12px;
   color: rgba(0, 0, 0, 0.6);
   text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  border-bottom: 2.5px solid transparent;
+  transition: all var(--transition-fast);
   min-width: 80px;
   position: relative;
 }
 
 .tab:hover {
   color: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.tab:active {
+  transform: scale(var(--active-scale));
 }
 
 .tabActive {
   color: rgba(0, 0, 0, 0.9);
   border-bottom-color: rgba(0, 0, 0, 0.9);
+}
+
+.tabActive::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: currentColor;
+  border-radius: 2px 2px 0 0;
 }
 
 .tabIcon {
@@ -124,11 +152,11 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  transition: transform 0.2s;
+  transition: transform var(--transition-fast);
 }
 
 .tab:hover .tabIcon {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .tabLabel {
@@ -149,4 +177,9 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 0 1px #fff;
+  transition: box-shadow var(--transition-fast);
+}
+
+.tab:hover .avatarSmall {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(10, 102, 194, 0.2);
 }

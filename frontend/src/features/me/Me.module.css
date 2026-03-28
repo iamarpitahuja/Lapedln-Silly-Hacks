@@ -1,0 +1,33 @@
+.page {
+  background: #f3f2ef;
+  min-height: calc(100vh - 52px);
+  padding: 24px 16px;
+}
+
+.content {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notice {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+  z-index: 300;
+  pointer-events: none;
+}
+
+.noticeVisible {
+  opacity: 1;
+}
