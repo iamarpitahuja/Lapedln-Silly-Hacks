@@ -1139,7 +1139,7 @@ export function MockDataProvider({ children }) {
     setAllPosts(existingPosts => [nextPost, ...existingPosts])
 
     // Persist to backend (fire-and-forget — optimistic UI already updated above)
-    apiCreatePost({ content: trimmedContent, postType: type?.trim() || 'thought_leadership' }).catch(() => {})
+    apiCreatePost({ content: trimmedContent, postType: type?.trim() || 'Career Lore' }).catch(() => {})
 
     return { ok: true }
   }
