@@ -1,0 +1,39 @@
+.page {
+  background: #f3f2ef;
+  min-height: 100vh;
+  padding: 24px 0;
+}
+
+.layout {
+  max-width: 1128px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 225px 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+.left {
+  position: sticky;
+  top: 76px; /* nav height + 24px gap */
+}
+
+.right {
+  position: sticky;
+  top: 76px;
+}
+
+.center {
+  min-width: 0;
+}
+
+@media (max-width: 992px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .left,
+  .right {
+    display: none;
+  }
+}
