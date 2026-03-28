@@ -21,17 +21,22 @@ export default function Feed() {
         <p className={styles.loadingText}>Recalculating prestige hierarchy…</p>
       ) : (
         <div className={styles.posts}>
-          {allPosts.map(post =>
-            isAccessible(post.author.larpRating) ? (
-              <PostCard
-                key={post.id}
-                post={post}
-                isOwnPost={!!post.isUserPost || post.author.name === currentUser.name}
-              />
-            ) : (
-              <LockedPostCard key={post.id} />
-            )
-          )}
+          {allPosts.map((post, index) => (
+            <div 
+              key={post.id} 
+              className="animate-fade-in" 
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              {isAccessible(post.author.larpRating) ? (
+                <PostCard
+                  post={post}
+                  isOwnPost={!!post.isUserPost || post.author.name === currentUser.name}
+                />
+              ) : (
+                <LockedPostCard />
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

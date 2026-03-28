@@ -1,9 +1,29 @@
+.expandable {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-normal);
+  overflow: hidden;
+}
+
+.expanded {
+  grid-template-rows: 1fr;
+}
+
+.expandableInner {
+  min-height: 0;
+}
+
 .card {
   background: #ffffff;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   padding: 12px 16px;
   margin-bottom: 8px;
+  transition: box-shadow var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .row {
@@ -26,6 +46,11 @@
   justify-content: center;
   flex-shrink: 0;
   margin-top: 4px;
+  transition: transform var(--transition-fast);
+}
+
+.avatar:hover {
+  transform: scale(1.05);
 }
 
 /* Base textarea — expanded/active state */
@@ -41,13 +66,26 @@
   line-height: 1.45;
   font-family: inherit;
   color: rgba(0, 0, 0, 0.9);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: all var(--transition-normal);
 }
 
 .textarea:focus {
   outline: none;
   border-color: #0A66C2;
   box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.15);
+}
+
+.textarea::placeholder {
+  transition: opacity 0.3s;
+}
+
+.textareaResting::placeholder {
+  animation: placeholderPulse 4s infinite;
+}
+
+@keyframes placeholderPulse {
+  0%, 100% { opacity: 0.6; transform: translateX(0); }
+  50% { opacity: 0.4; transform: translateX(2px); }
 }
 
 /* Resting / collapsed state — looks like the old pill input */
@@ -60,11 +98,13 @@
   padding: 11px 16px;
   color: rgba(0, 0, 0, 0.6);
   cursor: pointer;
+  background: #f3f2ef;
+  border-color: transparent;
 }
 
 .textareaResting:hover {
   background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 .actions {
@@ -72,8 +112,8 @@
   gap: 4px;
   flex-wrap: wrap;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
-  padding-top: 8px;
-  margin-top: 6px;
+  padding-top: 10px;
+  margin-top: 10px;
 }
 
 .action {
@@ -124,6 +164,105 @@
   font-size: 12px;
   font-weight: 600;
   padding: 6px 12px;
+}
+
+.templateBuilder {
+  border: 1px dashed rgba(10, 102, 194, 0.35);
+  border-radius: 10px;
+  background: rgba(10, 102, 194, 0.04);
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.templateHint {
+  font-size: 12px;
+  font-weight: 600;
+  color: #084f95;
+  margin-bottom: 8px;
+}
+
+.templatePreview {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.85);
+  margin-bottom: 10px;
+}
+
+.templateText {
+  white-space: pre-wrap;
+}
+
+.slotBlank {
+  display: inline-block;
+  margin: 1px 2px;
+  border: 1px dashed #0A66C2;
+  border-radius: 8px;
+  background: #fff;
+  color: #0A66C2;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.slotBlankFilled {
+  border-style: solid;
+  background: rgba(10, 102, 194, 0.12);
+  color: #063b6f;
+}
+
+.slotBlankActive {
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2);
+}
+
+.slotEditor {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.slotLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 6px;
+}
+
+.slotInput {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-size: 13px;
+  padding: 7px 9px;
+  margin-bottom: 8px;
+}
+
+.slotInput:focus {
+  outline: none;
+  border-color: #0A66C2;
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.12);
+}
+
+.slotSuggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.slotSuggestion {
+  border-radius: 999px;
+  border: 1px solid rgba(10, 102, 194, 0.3);
+  background: #fff;
+  color: #0A66C2;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+}
+
+.slotSuggestion:hover {
+  background: rgba(10, 102, 194, 0.08);
 }
 
 .composerMeta {

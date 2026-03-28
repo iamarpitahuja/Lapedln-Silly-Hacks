@@ -19,7 +19,7 @@ function getAvatarColor(name) {
 export default function PostCard({ post, isOwnPost = false }) {
   const { author, type, timestamp, content, reactions } = post
   const relarpSource = post.isRelarp ? post.relarpOf : null
-  const { currentUser, createComment, createRelarp, hasUserRelarped } = useMockData()
+  const { currentUser, createComment, createRelarp, undoRelarp, hasUserRelarped } = useMockData()
 
   const [isGlazing, setIsGlazing] = useState(false)
   const [isGlazed, setIsGlazed] = useState(false)
@@ -33,6 +33,7 @@ export default function PostCard({ post, isOwnPost = false }) {
   const [relarpDraft, setRelarpDraft] = useState('')
   const [relarpError, setRelarpError] = useState('')
   const [isSubmittingRelarp, setIsSubmittingRelarp] = useState(false)
+  const [isUndoingRelarp, setIsUndoingRelarp] = useState(false)
 
   const userAlreadyRelarped = hasUserRelarped(post.id)
   const canRelarp = !isOwnPost && !userAlreadyRelarped
@@ -49,6 +50,25 @@ export default function PostCard({ post, isOwnPost = false }) {
   }
 
   const handleRelarpClick = () => {
+    if (isOwnPost || isSubmittingRelarp || isUndoingRelarp) return
+
+    if (userAlreadyRelarped) {
+      setIsUndoingRelarp(true)
+      const result = undoRelarp({ postId: post.id })
+
+      if (!result.ok) {
+        setRelarpError(result.error ?? 'Unable to undo this Re-Larp right now.')
+        setIsUndoingRelarp(false)
+        return
+      }
+
+      setRelarpError('')
+      setRelarpDraft('')
+      setIsRelarpComposerOpen(false)
+      setIsUndoingRelarp(false)
+      return
+    }
+
     if (!canRelarp) return
     setRelarpError('')
     setIsRelarpComposerOpen(isOpen => !isOpen)
@@ -248,11 +268,17 @@ export default function PostCard({ post, isOwnPost = false }) {
             isRelarpComposerOpen || userAlreadyRelarped ? styles.actionRelarpActive : ''
           }`}
           onClick={handleRelarpClick}
-          disabled={!canRelarp}
-          aria-label={userAlreadyRelarped ? 'Re-Larped' : 'Re-Larp'}
+          disabled={isOwnPost || isSubmittingRelarp || isUndoingRelarp}
+          aria-label={userAlreadyRelarped ? 'Undo Re-Larp' : 'Re-Larp'}
         >
           <Icon name="repeat" size={18} />
-          <span>{userAlreadyRelarped ? 'Re-Larped' : 'Re-Larp'}</span>
+          <span>
+            {isUndoingRelarp
+              ? 'Undoing...'
+              : userAlreadyRelarped
+                ? 'Undo Re-Larp'
+                : 'Re-Larp'}
+          </span>
         </button>
         <button className={`${styles.action} ${styles.actionDm}`} aria-label="DM">
           <Icon name="mail" size={18} /> <span>DM</span>
@@ -261,133 +287,141 @@ export default function PostCard({ post, isOwnPost = false }) {
 
       {isGlazing && !isOwnPost ? <SuggestedGlazes onGlaze={handleSendGlaze} isGlazed={isGlazed} /> : null}
 
-      {isRelarpComposerOpen ? (
-        <form className={styles.relarpComposer} onSubmit={handleRelarpSubmit}>
-          <p className={styles.relarpTitle}>Re-Larp this post</p>
-          <textarea
-            className={styles.relarpInput}
-            value={relarpDraft}
-            onChange={event => setRelarpDraft(event.target.value)}
-            onKeyDown={handleRelarpKeyDown}
-            maxLength={MAX_RELARP_LENGTH}
-            rows={3}
-            placeholder="Add optional context before you Re-Larp..."
-          />
-          <div className={styles.relarpMeta}>
-            <p className={styles.relarpHint}>Ctrl/Cmd + Enter to publish</p>
-            <span
-              className={`${styles.charCount} ${remainingRelarpCharacters < 30 ? styles.charCountWarn : ''}`}
-            >
-              {remainingRelarpCharacters}
-            </span>
-          </div>
-          {relarpError ? <p className={styles.relarpError}>{relarpError}</p> : null}
-          <div className={styles.relarpActions}>
-            <button
-              type="button"
-              className={styles.relarpCancel}
-              onClick={() => {
-                setRelarpDraft('')
-                setRelarpError('')
-                setIsRelarpComposerOpen(false)
-              }}
-            >
-              Cancel
-            </button>
-            <button type="submit" className={styles.relarpSubmit} disabled={isSubmittingRelarp}>
-              {isSubmittingRelarp
-                ? 'Re-Larping...'
-                : relarpDraft.trim()
-                  ? 'Publish Re-Larp'
-                  : 'Quick Re-Larp'}
-            </button>
-          </div>
-        </form>
-      ) : null}
-
-      {isCommentsOpen ? (
-        <div className={styles.commentsSection}>
-          <div className={styles.commentsHeader}>
-            <h4 className={styles.commentsTitle}>Comments</h4>
-            <span className={styles.commentsMeta}>
-              {comments.length} shown
-              {hasUnloadedComments ? ` • ${totalCommentCount} total` : ''}
-            </span>
-          </div>
-
-          {comments.length ? (
-            <ul className={styles.commentList}>
-              {comments.map(comment => (
-                <li key={comment.id} className={styles.commentItem}>
-                  <div
-                    className={styles.commentAvatar}
-                    style={{ background: getAvatarColor(comment.author.name) }}
-                  >
-                    {getInitials(comment.author.name)}
-                  </div>
-                  <div className={styles.commentBody}>
-                    <div className={styles.commentBubble}>
-                      <p className={styles.commentAuthor}>{comment.author.name}</p>
-                      <p className={styles.commentContent}>{comment.content}</p>
-                    </div>
-                    <p className={styles.commentTime}>{comment.timestamp}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className={styles.emptyComments}>No comments yet. Be the first to glaze this post.</p>
-          )}
-
-          <form className={styles.commentComposer} onSubmit={handleCommentSubmit}>
-            <div
-              className={styles.commentAvatar}
-              style={{ background: getAvatarColor(currentUser.name) }}
-            >
-              {getInitials(currentUser.name)}
+      <div className={`${styles.expandable} ${isRelarpComposerOpen ? styles.expanded : ''}`}>
+        <div className={styles.expandableInner}>
+          <form className={styles.relarpComposer} onSubmit={handleRelarpSubmit}>
+            <p className={styles.relarpTitle}>Re-Larp this post</p>
+            <textarea
+              className={styles.relarpInput}
+              value={relarpDraft}
+              onChange={event => setRelarpDraft(event.target.value)}
+              onKeyDown={handleRelarpKeyDown}
+              maxLength={MAX_RELARP_LENGTH}
+              rows={3}
+              placeholder="Add optional context before you Re-Larp..."
+            />
+            <div className={styles.relarpMeta}>
+              <p className={styles.relarpHint}>Ctrl/Cmd + Enter to publish</p>
+              <span
+                className={`${styles.charCount} ${remainingRelarpCharacters < 30 ? styles.charCountWarn : ''}`}
+              >
+                {remainingRelarpCharacters}
+              </span>
             </div>
-            <div className={styles.commentComposerBody}>
-              <textarea
-                className={styles.commentInput}
-                value={commentDraft}
-                onChange={event => setCommentDraft(event.target.value)}
-                onKeyDown={handleCommentKeyDown}
-                maxLength={MAX_COMMENT_LENGTH}
-                rows={2}
-                placeholder="Add your high-conviction comment..."
-              />
-              <div className={styles.commentComposerMeta}>
-                <p className={styles.commentHint}>Ctrl/Cmd + Enter to post</p>
-                <span
-                  className={`${styles.charCount} ${remainingCharacters < 40 ? styles.charCountWarn : ''}`}
-                >
-                  {remainingCharacters}
-                </span>
-              </div>
-              {commentError ? <p className={styles.commentError}>{commentError}</p> : null}
-              <div className={styles.commentComposerActions}>
-                <button
-                  type="button"
-                  className={styles.commentCancel}
-                  onClick={() => {
-                    setCommentDraft('')
-                    setCommentError('')
-                  }}
-                >
-                  Clear
-                </button>
-                <button
-                  type="submit"
-                  className={styles.commentSubmit}
-                  disabled={!commentDraft.trim() || isSubmittingComment}
-                >
-                  {isSubmittingComment ? 'Posting...' : 'Post comment'}
-                </button>
-              </div>
+            {relarpError ? <p className={styles.relarpError}>{relarpError}</p> : null}
+            <div className={styles.relarpActions}>
+              <button
+                type="button"
+                className={styles.relarpCancel}
+                onClick={() => {
+                  setRelarpDraft('')
+                  setRelarpError('')
+                  setIsRelarpComposerOpen(false)
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className={styles.relarpSubmit}
+                disabled={isSubmittingRelarp || isUndoingRelarp}
+              >
+                {isSubmittingRelarp
+                  ? 'Re-Larping...'
+                  : relarpDraft.trim()
+                    ? 'Publish Re-Larp'
+                    : 'Quick Re-Larp'}
+              </button>
             </div>
           </form>
         </div>
-      ) : null}
+      </div>
+
+      <div className={`${styles.expandable} ${isCommentsOpen ? styles.expanded : ''}`}>
+        <div className={styles.expandableInner}>
+          <div className={styles.commentsSection}>
+            <div className={styles.commentsHeader}>
+              <h4 className={styles.commentsTitle}>Comments</h4>
+              <span className={styles.commentsMeta}>
+                {comments.length} shown
+                {hasUnloadedComments ? ` • ${totalCommentCount} total` : ''}
+              </span>
+            </div>
+
+            {comments.length ? (
+              <ul className={styles.commentList}>
+                {comments.map(comment => (
+                  <li key={comment.id} className={styles.commentItem}>
+                    <div
+                      className={styles.commentAvatar}
+                      style={{ background: getAvatarColor(comment.author.name) }}
+                    >
+                      {getInitials(comment.author.name)}
+                    </div>
+                    <div className={styles.commentBody}>
+                      <div className={styles.commentBubble}>
+                        <p className={styles.commentAuthor}>{comment.author.name}</p>
+                        <p className={styles.commentContent}>{comment.content}</p>
+                      </div>
+                      <p className={styles.commentTime}>{comment.timestamp}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className={styles.emptyComments}>No comments yet. Be the first to glaze this post.</p>
+            )}
+
+            <form className={styles.commentComposer} onSubmit={handleCommentSubmit}>
+              <div
+                className={styles.commentAvatar}
+                style={{ background: getAvatarColor(currentUser.name) }}
+              >
+                {getInitials(currentUser.name)}
+              </div>
+              <div className={styles.commentComposerBody}>
+                <textarea
+                  className={styles.commentInput}
+                  value={commentDraft}
+                  onChange={event => setCommentDraft(event.target.value)}
+                  onKeyDown={handleCommentKeyDown}
+                  maxLength={MAX_COMMENT_LENGTH}
+                  rows={2}
+                  placeholder="Add your high-conviction comment..."
+                />
+                <div className={styles.commentComposerMeta}>
+                  <p className={styles.commentHint}>Ctrl/Cmd + Enter to post</p>
+                  <span
+                    className={`${styles.charCount} ${remainingCharacters < 40 ? styles.charCountWarn : ''}`}
+                  >
+                    {remainingCharacters}
+                  </span>
+                </div>
+                {commentError ? <p className={styles.commentError}>{commentError}</p> : null}
+                <div className={styles.commentComposerActions}>
+                  <button
+                    type="button"
+                    className={styles.commentCancel}
+                    onClick={() => {
+                      setCommentDraft('')
+                      setCommentError('')
+                    }}
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="submit"
+                    className={styles.commentSubmit}
+                    disabled={!commentDraft.trim() || isSubmittingComment}
+                  >
+                    {isSubmittingComment ? 'Posting...' : 'Post comment'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

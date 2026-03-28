@@ -1,12 +1,24 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-const CURRENT_USER = {
+const PROFILE_STORAGE_KEY = 'larpedin.profile.v1'
+const POSTS_STORAGE_KEY = 'larpedin.posts.v1'
+
+const DEFAULT_OPPORTUNITY_TYPES = [
+  'Fractional Visionary',
+  'Keynote Speaker at Events I Have Not Been Invited To',
+  "Angel Investor in Ideas I Haven't Had Yet",
+  'Interim Thought Leader',
+]
+
+const DEFAULT_PROFILE = {
   name: 'Arjun Malhotra',
   headline: 'Incoming Quant VC Product Strategist',
   avatar: null,
   larpRating: 67.2,
   persona: 'Stealth Founder / Ex-McKinsey Adjacent',
+  about:
+    "I build at the intersection of ambiguity and momentum. My superpower is turning vague intuitions into decks. I've been described as a systems thinker, a narrative architect, and someone who 'gets it.' I don't know what it is. But I get it.",
   stats: {
     recruiterViews: 413,
     impressionVelocity: 'Elite',
@@ -17,9 +29,103 @@ const CURRENT_USER = {
     { name: 'Arjun Arjun', headline: 'You! glazing you.', avatar: null },
     { name: 'Arjun Malhotra', headline: 'Incoming Quant VC Product Strategist', avatar: null },
   ],
+  larpStatus: {
+    opportunities: DEFAULT_OPPORTUNITY_TYPES,
+  },
+  experience: [
+    {
+      id: 'exp-1',
+      title: 'Interim Global Strategy Vision Lead',
+      company: 'Myself Inc.',
+      dates: 'Jan 2023-Present',
+      description:
+        "Leading cross-functional alignment across a team of one toward a vision I'm still workshopping.",
+    },
+    {
+      id: 'exp-2',
+      title: 'Fractional Brand Philosopher',
+      company: 'Narrative Leverage Co.',
+      dates: 'Jun 2021-Dec 2022',
+      description: 'Delivered transformational ambiguity at scale.',
+    },
+    {
+      id: 'exp-3',
+      title: 'Incoming Summer Analyst',
+      company: 'PrestigeBank',
+      dates: 'Jun 2020-Aug 2020',
+      description: 'Attended orientation. Sent follow-up emails. Left before the trauma set in.',
+    },
+  ],
+  education: [
+    {
+      id: 'edu-1',
+      school: 'University of Networking',
+      degree: 'B.S. in Perceived Expertise',
+      dates: '2017-2021',
+      activities: 'Coffee Chat Club, LinkedIn Optimization Society',
+    },
+    {
+      id: 'edu-2',
+      school: 'The School of Hard Knocks (Self-Reported)',
+      degree: 'Certificate in Resilience Narrative',
+      dates: 'Ongoing',
+      activities: '',
+    },
+  ],
+  skills: [
+    { id: 'skill-1', name: 'Strategic Ambiguity', endorsements: 47 },
+    { id: 'skill-2', name: 'Narrative Leverage', endorsements: 38 },
+    { id: 'skill-3', name: 'Founder Energy', endorsements: 91 },
+    { id: 'skill-4', name: 'Deck Architecture', endorsements: 22 },
+    { id: 'skill-5', name: 'Vague Optimism', endorsements: 64 },
+  ],
+  larpHistory: [
+    {
+      id: 'hist-1',
+      date: 'Mar 2026',
+      from: 'Regional Hustler',
+      to: 'Aspirational Visionary',
+      note: 'Attended 3 webinars and updated LinkedIn banner.',
+      createdAt: '2026-03-01T12:00:00.000Z',
+    },
+    {
+      id: 'hist-2',
+      date: 'Nov 2025',
+      from: 'Incoming Analyst',
+      to: 'Regional Hustler',
+      note: 'Got a business card. Changed everything.',
+      createdAt: '2025-11-01T12:00:00.000Z',
+    },
+    {
+      id: 'hist-3',
+      date: 'Aug 2024',
+      from: 'Student',
+      to: 'Incoming Analyst',
+      note: 'Accepted offer. Announced on LinkedIn before telling family.',
+      createdAt: '2024-08-01T12:00:00.000Z',
+    },
+  ],
+  glazesReceived: [
+    {
+      id: 'glaze-1',
+      name: 'Arjun Arjun',
+      relationship: 'glazed you 2h ago',
+      text: "Arjun doesn't just think outside the box - he has transcended the concept of boxes entirely.",
+    },
+    {
+      id: 'glaze-2',
+      name: 'Priya Krishnamurthy',
+      relationship: 'glazed you 1d ago',
+      text: 'Working adjacent to Arjun changed my relationship with ambiguity. I am a different person.',
+    },
+    {
+      id: 'glaze-3',
+      name: 'Marcus Vanderbilt III',
+      relationship: 'glazed you 3d ago',
+      text: 'Rare. Generational. Inevitable.',
+    },
+  ],
 }
-
-const POSTS_STORAGE_KEY = 'larpedin.posts.v1'
 
 const SEED_POSTS = [
   {
@@ -61,7 +167,7 @@ const SEED_POSTS = [
     type: 'Thought Leadership Incident',
     timestamp: '3h',
     content:
-      "Hot take: execution is overrated. What separates elite operators from the rest is their ability to synthesize frameworks across disciplines and communicate them in a way that makes investors feel something.",
+      'Hot take: execution is overrated. What separates elite operators from the rest is their ability to synthesize frameworks across disciplines and communicate them in a way that makes investors feel something.',
     reactions: { count: 1203, likes: 845, loves: 212, insights: 146, comments: 287 },
   },
   {
@@ -150,12 +256,7 @@ const SEED_COMMENTS_BY_POST_ID = {
   ],
 }
 
-const TRENDING_DELUSIONS = [
-  'Career Loring',
-  'Conivroation',
-  'Prestige signaling',
-  'Usw emmied',
-]
+const TRENDING_DELUSIONS = ['Career Loring', 'Conivroation', 'Prestige signaling', 'Usw emmied']
 
 const BUZZWORDS = ['Hyperscale', 'Narrative leverage', 'Operator mindset', 'Aura velocity']
 
@@ -165,6 +266,251 @@ function makeEntityId() {
   return typeof crypto !== 'undefined' && crypto.randomUUID
     ? crypto.randomUUID()
     : `${Date.now()}-${Math.floor(Math.random() * 10000)}`
+}
+
+function normalizeText(value, fallback = '') {
+  const nextValue = String(value ?? '')
+  const trimmedValue = nextValue.trim()
+  return trimmedValue || fallback
+}
+
+function normalizeNumber(value, fallback = 0) {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : fallback
+}
+
+function formatMonthYear(date = new Date()) {
+  return date.toLocaleString('en-US', { month: 'short', year: 'numeric' })
+}
+
+function cloneDefaultProfile() {
+  return {
+    ...DEFAULT_PROFILE,
+    stats: { ...DEFAULT_PROFILE.stats },
+    glazers: DEFAULT_PROFILE.glazers.map(glazer => ({ ...glazer })),
+    larpStatus: {
+      ...DEFAULT_PROFILE.larpStatus,
+      opportunities: [...DEFAULT_PROFILE.larpStatus.opportunities],
+    },
+    experience: DEFAULT_PROFILE.experience.map(entry => ({ ...entry })),
+    education: DEFAULT_PROFILE.education.map(entry => ({ ...entry })),
+    skills: DEFAULT_PROFILE.skills.map(skill => ({ ...skill })),
+    larpHistory: DEFAULT_PROFILE.larpHistory.map(entry => ({ ...entry })),
+    glazesReceived: DEFAULT_PROFILE.glazesReceived.map(glaze => ({ ...glaze })),
+  }
+}
+
+function normalizeStringList(values, fallbackValues) {
+  if (!Array.isArray(values)) {
+    return [...fallbackValues]
+  }
+
+  const nextValues = values
+    .map(value => String(value ?? '').trim())
+    .filter(Boolean)
+
+  return nextValues.length ? nextValues : [...fallbackValues]
+}
+
+function normalizeExperienceEntry(entry) {
+  if (!entry || typeof entry !== 'object') return null
+  const title = String(entry.title ?? '').trim()
+  const company = String(entry.company ?? '').trim()
+
+  if (!title || !company) return null
+
+  return {
+    id: entry.id ?? makeEntityId(),
+    title,
+    company,
+    dates: normalizeText(entry.dates, 'Dates not set'),
+    description: normalizeText(entry.description, 'No description yet.'),
+  }
+}
+
+function normalizeEducationEntry(entry) {
+  if (!entry || typeof entry !== 'object') return null
+  const school = String(entry.school ?? '').trim()
+  const degree = String(entry.degree ?? '').trim()
+  if (!school || !degree) return null
+
+  return {
+    id: entry.id ?? makeEntityId(),
+    school,
+    degree,
+    dates: normalizeText(entry.dates, 'Dates not set'),
+    activities: String(entry.activities ?? '').trim(),
+  }
+}
+
+function normalizeSkillEntry(entry) {
+  if (!entry || typeof entry !== 'object') return null
+  const name = String(entry.name ?? '').trim()
+  if (!name) return null
+
+  return {
+    id: entry.id ?? makeEntityId(),
+    name,
+    endorsements: Math.max(0, Math.round(normalizeNumber(entry.endorsements, 0))),
+  }
+}
+
+function normalizeHistoryEntry(entry) {
+  if (!entry || typeof entry !== 'object') return null
+  const from = String(entry.from ?? '').trim()
+  const to = String(entry.to ?? '').trim()
+  if (!from || !to) return null
+
+  return {
+    id: entry.id ?? makeEntityId(),
+    date: normalizeText(entry.date, formatMonthYear()),
+    from,
+    to,
+    note: normalizeText(entry.note, 'Persona update recorded.'),
+    createdAt: entry.createdAt ?? new Date().toISOString(),
+  }
+}
+
+function normalizeGlazeEntry(entry) {
+  if (!entry || typeof entry !== 'object') return null
+  const name = String(entry.name ?? '').trim()
+  const text = String(entry.text ?? '').trim()
+  if (!name || !text) return null
+
+  return {
+    id: entry.id ?? makeEntityId(),
+    name,
+    relationship: normalizeText(entry.relationship, 'glazed you recently'),
+    text,
+  }
+}
+
+function normalizeGlazerEntry(entry) {
+  if (!entry || typeof entry !== 'object') return null
+  const name = String(entry.name ?? '').trim()
+  if (!name) return null
+
+  return {
+    name,
+    headline: normalizeText(entry.headline, 'Mysterious ecosystem participant'),
+    avatar: entry.avatar ?? null,
+  }
+}
+
+function normalizeProfile(profile) {
+  const fallbackProfile = cloneDefaultProfile()
+  if (!profile || typeof profile !== 'object') {
+    return fallbackProfile
+  }
+
+  const stats = profile.stats ?? {}
+  const larpStatus = profile.larpStatus ?? {}
+
+  const experience = Array.isArray(profile.experience)
+    ? profile.experience.map(normalizeExperienceEntry).filter(Boolean)
+    : []
+  const education = Array.isArray(profile.education)
+    ? profile.education.map(normalizeEducationEntry).filter(Boolean)
+    : []
+  const skills = Array.isArray(profile.skills)
+    ? profile.skills.map(normalizeSkillEntry).filter(Boolean)
+    : []
+  const larpHistory = Array.isArray(profile.larpHistory)
+    ? profile.larpHistory.map(normalizeHistoryEntry).filter(Boolean)
+    : []
+  const glazesReceived = Array.isArray(profile.glazesReceived)
+    ? profile.glazesReceived.map(normalizeGlazeEntry).filter(Boolean)
+    : []
+  const glazers = Array.isArray(profile.glazers)
+    ? profile.glazers.map(normalizeGlazerEntry).filter(Boolean)
+    : []
+
+  return {
+    ...fallbackProfile,
+    name: normalizeText(profile.name, fallbackProfile.name),
+    headline: normalizeText(profile.headline, fallbackProfile.headline),
+    avatar: profile.avatar ?? fallbackProfile.avatar,
+    larpRating: normalizeNumber(profile.larpRating, fallbackProfile.larpRating),
+    persona: normalizeText(profile.persona, fallbackProfile.persona),
+    about: normalizeText(profile.about, fallbackProfile.about),
+    stats: {
+      recruiterViews: normalizeNumber(stats.recruiterViews, fallbackProfile.stats.recruiterViews),
+      impressionVelocity: normalizeText(
+        stats.impressionVelocity,
+        fallbackProfile.stats.impressionVelocity
+      ),
+      weeklyAuraGrowth: normalizeNumber(
+        stats.weeklyAuraGrowth,
+        fallbackProfile.stats.weeklyAuraGrowth
+      ),
+      weeklyAuraGrowthPct: normalizeText(
+        stats.weeklyAuraGrowthPct,
+        fallbackProfile.stats.weeklyAuraGrowthPct
+      ),
+    },
+    glazers: glazers.length ? glazers : fallbackProfile.glazers,
+    larpStatus: {
+      opportunities: normalizeStringList(
+        larpStatus.opportunities,
+        fallbackProfile.larpStatus.opportunities
+      ),
+    },
+    experience: experience.length ? experience : fallbackProfile.experience,
+    education: education.length ? education : fallbackProfile.education,
+    skills: skills.length ? skills : fallbackProfile.skills,
+    larpHistory: larpHistory.length ? larpHistory : fallbackProfile.larpHistory,
+    glazesReceived: glazesReceived.length ? glazesReceived : fallbackProfile.glazesReceived,
+  }
+}
+
+function makeLarpHistoryEntry({ from, to, note }) {
+  return {
+    id: makeEntityId(),
+    date: formatMonthYear(),
+    from,
+    to,
+    note: normalizeText(note, `Shifted narrative from ${from} to ${to}.`),
+    createdAt: new Date().toISOString(),
+  }
+}
+
+function applyPersonaUpdate(profile, nextPersona, note) {
+  const normalizedPersona = String(nextPersona ?? '').trim()
+  if (!normalizedPersona || normalizedPersona === profile.persona) {
+    return profile
+  }
+
+  return {
+    ...profile,
+    persona: normalizedPersona,
+    larpHistory: [
+      makeLarpHistoryEntry({
+        from: profile.persona,
+        to: normalizedPersona,
+        note,
+      }),
+      ...profile.larpHistory,
+    ],
+  }
+}
+
+function loadInitialProfile() {
+  const fallbackProfile = cloneDefaultProfile()
+  if (typeof window === 'undefined') {
+    return fallbackProfile
+  }
+
+  try {
+    const rawProfile = window.localStorage.getItem(PROFILE_STORAGE_KEY)
+    if (!rawProfile) {
+      return fallbackProfile
+    }
+
+    const parsedProfile = JSON.parse(rawProfile)
+    return normalizeProfile(parsedProfile)
+  } catch {
+    return fallbackProfile
+  }
 }
 
 function normalizeComment(comment) {
@@ -279,16 +625,412 @@ function loadInitialPosts() {
 }
 
 export function MockDataProvider({ children }) {
+  const [profile, setProfile] = useState(loadInitialProfile)
   const [allPosts, setAllPosts] = useState(loadInitialPosts)
 
   function isAccessible(targetRating) {
-    return targetRating <= CURRENT_USER.larpRating
+    return targetRating <= profile.larpRating
   }
 
   useEffect(() => {
     if (typeof window === 'undefined') return
     window.localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(allPosts))
   }, [allPosts])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile))
+  }, [profile])
+
+  function updateProfile({ name, headline, persona, note } = {}) {
+    if (name !== undefined && !String(name ?? '').trim()) {
+      return { ok: false, error: 'Name cannot be empty.' }
+    }
+
+    if (headline !== undefined && !String(headline ?? '').trim()) {
+      return { ok: false, error: 'Headline cannot be empty.' }
+    }
+
+    if (persona !== undefined && !String(persona ?? '').trim()) {
+      return { ok: false, error: 'Persona cannot be empty.' }
+    }
+
+    setProfile(existingProfile => {
+      let nextProfile = { ...existingProfile }
+
+      if (name !== undefined) {
+        nextProfile.name = String(name).trim()
+      }
+
+      if (headline !== undefined) {
+        nextProfile.headline = String(headline).trim()
+      }
+
+      if (persona !== undefined) {
+        nextProfile = applyPersonaUpdate(
+          nextProfile,
+          persona,
+          note ?? 'Updated persona from profile settings.'
+        )
+      }
+
+      return nextProfile
+    })
+
+    return { ok: true }
+  }
+
+  function updateAbout(about) {
+    const nextAbout = String(about ?? '').trim()
+    if (!nextAbout) {
+      return { ok: false, error: 'About section cannot be empty.' }
+    }
+
+    setProfile(existingProfile => ({
+      ...existingProfile,
+      about: nextAbout,
+    }))
+
+    return { ok: true }
+  }
+
+  function cyclePersona() {
+    let mutationResult = { ok: false, error: 'Unable to switch persona.' }
+
+    setProfile(existingProfile => {
+      const opportunities = existingProfile.larpStatus.opportunities
+      if (!opportunities.length) {
+        mutationResult = { ok: false, error: 'No personas available to switch.' }
+        return existingProfile
+      }
+
+      const currentIndex = opportunities.indexOf(existingProfile.persona)
+      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % opportunities.length
+      const nextPersona = opportunities[nextIndex]
+
+      if (!nextPersona || nextPersona === existingProfile.persona) {
+        mutationResult = { ok: false, error: 'Add more persona options before switching.' }
+        return existingProfile
+      }
+
+      mutationResult = { ok: true, persona: nextPersona }
+      return applyPersonaUpdate(existingProfile, nextPersona, 'Switched persona from Open to Larping.')
+    })
+
+    return mutationResult
+  }
+
+  function updateLarpStatus({ persona, opportunities } = {}) {
+    const hasPersonaUpdate = persona !== undefined
+    const hasOpportunityUpdate = opportunities !== undefined
+
+    if (hasPersonaUpdate && !String(persona ?? '').trim()) {
+      return { ok: false, error: 'Persona cannot be empty.' }
+    }
+
+    const normalizedOpportunities = hasOpportunityUpdate
+      ? normalizeStringList(opportunities, profile.larpStatus.opportunities)
+      : null
+
+    if (hasOpportunityUpdate && !normalizedOpportunities.length) {
+      return { ok: false, error: 'At least one opportunity type is required.' }
+    }
+
+    setProfile(existingProfile => {
+      let nextProfile = { ...existingProfile }
+
+      if (hasOpportunityUpdate) {
+        nextProfile = {
+          ...nextProfile,
+          larpStatus: {
+            ...nextProfile.larpStatus,
+            opportunities: normalizedOpportunities,
+          },
+        }
+      }
+
+      if (hasPersonaUpdate) {
+        nextProfile = applyPersonaUpdate(
+          nextProfile,
+          persona,
+          'Updated persona from Open to Larping settings.'
+        )
+      } else if (hasOpportunityUpdate && !normalizedOpportunities.includes(nextProfile.persona)) {
+        nextProfile = applyPersonaUpdate(
+          nextProfile,
+          normalizedOpportunities[0],
+          'Adjusted persona to match available opportunities.'
+        )
+      }
+
+      return nextProfile
+    })
+
+    return { ok: true }
+  }
+
+  function addExperience(entry) {
+    const title = String(entry?.title ?? '').trim()
+    const company = String(entry?.company ?? '').trim()
+
+    if (!title || !company) {
+      return { ok: false, error: 'Experience needs both title and company.' }
+    }
+
+    const nextExperience = {
+      id: makeEntityId(),
+      title,
+      company,
+      dates: normalizeText(entry?.dates, 'Dates not set'),
+      description: normalizeText(entry?.description, 'No description yet.'),
+    }
+
+    setProfile(existingProfile => ({
+      ...existingProfile,
+      experience: [nextExperience, ...existingProfile.experience],
+    }))
+
+    return { ok: true, entry: nextExperience }
+  }
+
+  function updateExperience({ id, updates } = {}) {
+    if (!id) {
+      return { ok: false, error: 'Experience entry not found.' }
+    }
+
+    if (updates?.title !== undefined && !String(updates.title ?? '').trim()) {
+      return { ok: false, error: 'Experience title cannot be empty.' }
+    }
+
+    if (updates?.company !== undefined && !String(updates.company ?? '').trim()) {
+      return { ok: false, error: 'Experience company cannot be empty.' }
+    }
+
+    let didUpdate = false
+
+    setProfile(existingProfile => ({
+      ...existingProfile,
+      experience: existingProfile.experience.map(entry => {
+        if (String(entry.id) !== String(id)) return entry
+
+        didUpdate = true
+        return {
+          ...entry,
+          ...(updates?.title !== undefined ? { title: String(updates.title).trim() } : {}),
+          ...(updates?.company !== undefined ? { company: String(updates.company).trim() } : {}),
+          ...(updates?.dates !== undefined ? { dates: normalizeText(updates.dates, entry.dates) } : {}),
+          ...(updates?.description !== undefined
+            ? { description: normalizeText(updates.description, entry.description) }
+            : {}),
+        }
+      }),
+    }))
+
+    if (!didUpdate) {
+      return { ok: false, error: 'Experience entry not found.' }
+    }
+
+    return { ok: true }
+  }
+
+  function removeExperience(id) {
+    if (!id) {
+      return { ok: false, error: 'Experience entry not found.' }
+    }
+
+    let didDelete = false
+
+    setProfile(existingProfile => {
+      const remainingExperience = existingProfile.experience.filter(entry => {
+        const shouldDelete = String(entry.id) === String(id)
+        if (shouldDelete) didDelete = true
+        return !shouldDelete
+      })
+
+      return {
+        ...existingProfile,
+        experience: remainingExperience,
+      }
+    })
+
+    if (!didDelete) {
+      return { ok: false, error: 'Experience entry not found.' }
+    }
+
+    return { ok: true }
+  }
+
+  function addEducation(entry) {
+    const school = String(entry?.school ?? '').trim()
+    const degree = String(entry?.degree ?? '').trim()
+
+    if (!school || !degree) {
+      return { ok: false, error: 'Education needs both school and degree.' }
+    }
+
+    const nextEducation = {
+      id: makeEntityId(),
+      school,
+      degree,
+      dates: normalizeText(entry?.dates, 'Dates not set'),
+      activities: String(entry?.activities ?? '').trim(),
+    }
+
+    setProfile(existingProfile => ({
+      ...existingProfile,
+      education: [nextEducation, ...existingProfile.education],
+    }))
+
+    return { ok: true, entry: nextEducation }
+  }
+
+  function updateEducation({ id, updates } = {}) {
+    if (!id) {
+      return { ok: false, error: 'Education entry not found.' }
+    }
+
+    if (updates?.school !== undefined && !String(updates.school ?? '').trim()) {
+      return { ok: false, error: 'School cannot be empty.' }
+    }
+
+    if (updates?.degree !== undefined && !String(updates.degree ?? '').trim()) {
+      return { ok: false, error: 'Degree cannot be empty.' }
+    }
+
+    let didUpdate = false
+
+    setProfile(existingProfile => ({
+      ...existingProfile,
+      education: existingProfile.education.map(entry => {
+        if (String(entry.id) !== String(id)) return entry
+
+        didUpdate = true
+        return {
+          ...entry,
+          ...(updates?.school !== undefined ? { school: String(updates.school).trim() } : {}),
+          ...(updates?.degree !== undefined ? { degree: String(updates.degree).trim() } : {}),
+          ...(updates?.dates !== undefined ? { dates: normalizeText(updates.dates, entry.dates) } : {}),
+          ...(updates?.activities !== undefined
+            ? { activities: String(updates.activities ?? '').trim() }
+            : {}),
+        }
+      }),
+    }))
+
+    if (!didUpdate) {
+      return { ok: false, error: 'Education entry not found.' }
+    }
+
+    return { ok: true }
+  }
+
+  function removeEducation(id) {
+    if (!id) {
+      return { ok: false, error: 'Education entry not found.' }
+    }
+
+    let didDelete = false
+
+    setProfile(existingProfile => {
+      const remainingEducation = existingProfile.education.filter(entry => {
+        const shouldDelete = String(entry.id) === String(id)
+        if (shouldDelete) didDelete = true
+        return !shouldDelete
+      })
+
+      return {
+        ...existingProfile,
+        education: remainingEducation,
+      }
+    })
+
+    if (!didDelete) {
+      return { ok: false, error: 'Education entry not found.' }
+    }
+
+    return { ok: true }
+  }
+
+  function addSkill({ name } = {}) {
+    const normalizedName = String(name ?? '').trim()
+    if (!normalizedName) {
+      return { ok: false, error: 'Skill name cannot be empty.' }
+    }
+
+    let result = { ok: true }
+
+    setProfile(existingProfile => {
+      const hasDuplicate = existingProfile.skills.some(
+        skill => skill.name.toLowerCase() === normalizedName.toLowerCase()
+      )
+
+      if (hasDuplicate) {
+        result = { ok: false, error: 'That skill already exists.' }
+        return existingProfile
+      }
+
+      return {
+        ...existingProfile,
+        skills: [
+          { id: makeEntityId(), name: normalizedName, endorsements: 0 },
+          ...existingProfile.skills,
+        ],
+      }
+    })
+
+    return result
+  }
+
+  function removeSkill(skillId) {
+    if (!skillId) {
+      return { ok: false, error: 'Skill not found.' }
+    }
+
+    let didDelete = false
+
+    setProfile(existingProfile => {
+      const remainingSkills = existingProfile.skills.filter(skill => {
+        const shouldDelete = String(skill.id) === String(skillId)
+        if (shouldDelete) didDelete = true
+        return !shouldDelete
+      })
+
+      return {
+        ...existingProfile,
+        skills: remainingSkills,
+      }
+    })
+
+    if (!didDelete) {
+      return { ok: false, error: 'Skill not found.' }
+    }
+
+    return { ok: true }
+  }
+
+  function endorseSkill(skillId) {
+    if (!skillId) {
+      return { ok: false, error: 'Skill not found.' }
+    }
+
+    const skillExists = profile.skills.some(skill => String(skill.id) === String(skillId))
+    if (!skillExists) {
+      return { ok: false, error: 'Skill not found.' }
+    }
+
+    setProfile(existingProfile => ({
+      ...existingProfile,
+      skills: existingProfile.skills.map(skill => {
+        if (String(skill.id) !== String(skillId)) return skill
+        return {
+          ...skill,
+          endorsements: skill.endorsements + 1,
+        }
+      }),
+    }))
+
+    return { ok: true }
+  }
 
   function createPost({ content, type }) {
     const trimmedContent = (content ?? '').trim()
@@ -302,10 +1044,10 @@ export function MockDataProvider({ children }) {
     const nextPost = {
       id: postId,
       author: {
-        name: CURRENT_USER.name,
-        headline: CURRENT_USER.headline,
-        avatar: CURRENT_USER.avatar,
-        larpRating: CURRENT_USER.larpRating,
+        name: profile.name,
+        headline: profile.headline,
+        avatar: profile.avatar,
+        larpRating: profile.larpRating,
       },
       type: type?.trim() || 'Personal Update',
       timestamp: 'Just now',
@@ -335,10 +1077,10 @@ export function MockDataProvider({ children }) {
     const nextComment = {
       id: makeEntityId(),
       author: {
-        name: CURRENT_USER.name,
-        headline: CURRENT_USER.headline,
-        avatar: CURRENT_USER.avatar,
-        larpRating: CURRENT_USER.larpRating,
+        name: profile.name,
+        headline: profile.headline,
+        avatar: profile.avatar,
+        larpRating: profile.larpRating,
       },
       timestamp: 'Just now',
       content: trimmedContent,
@@ -384,7 +1126,7 @@ export function MockDataProvider({ children }) {
     }
 
     const isOwnSourcePost =
-      sourcePost.isUserPost || String(sourcePost.author?.name) === String(CURRENT_USER.name)
+      sourcePost.isUserPost || String(sourcePost.author?.name) === String(profile.name)
 
     if (isOwnSourcePost) {
       return { ok: false, error: 'You cannot Re-Larp your own post.' }
@@ -394,17 +1136,18 @@ export function MockDataProvider({ children }) {
       return { ok: false, error: 'You already Re-Larped this post.' }
     }
 
-    const relarpSource = sourcePost.isRelarp && sourcePost.relarpOf
-      ? sourcePost.relarpOf
-      : toRelarpSnapshot(sourcePost)
+    const relarpSource =
+      sourcePost.isRelarp && sourcePost.relarpOf
+        ? sourcePost.relarpOf
+        : toRelarpSnapshot(sourcePost)
 
     const nextRelarpPost = normalizePost({
       id: makeEntityId(),
       author: {
-        name: CURRENT_USER.name,
-        headline: CURRENT_USER.headline,
-        avatar: CURRENT_USER.avatar,
-        larpRating: CURRENT_USER.larpRating,
+        name: profile.name,
+        headline: profile.headline,
+        avatar: profile.avatar,
+        larpRating: profile.larpRating,
       },
       type: 'Re-Larp',
       timestamp: 'Just now',
@@ -421,7 +1164,8 @@ export function MockDataProvider({ children }) {
       const updatedPosts = existingPosts.map(post => {
         if (String(post.id) !== String(postId)) return post
 
-        const relarpCount = typeof post.reactions?.relarps === 'number' ? post.reactions.relarps : 0
+        const relarpCount =
+          typeof post.reactions?.relarps === 'number' ? post.reactions.relarps : 0
 
         return {
           ...post,
@@ -438,22 +1182,70 @@ export function MockDataProvider({ children }) {
     return { ok: true, relarpPost: nextRelarpPost }
   }
 
+  function undoRelarp({ postId }) {
+    const userRelarpPost = allPosts.find(
+      post => post.isRelarp && post.isUserPost && String(post.relarpOf?.id) === String(postId)
+    )
+
+    if (!userRelarpPost) {
+      return { ok: false, error: 'You have not Re-Larped this post yet.' }
+    }
+
+    setAllPosts(existingPosts => {
+      const remainingPosts = existingPosts.filter(
+        post => String(post.id) !== String(userRelarpPost.id)
+      )
+
+      return remainingPosts.map(post => {
+        if (String(post.id) !== String(postId)) return post
+
+        const relarpCount =
+          typeof post.reactions?.relarps === 'number' ? post.reactions.relarps : 0
+
+        return {
+          ...post,
+          reactions: {
+            ...(post.reactions ?? {}),
+            relarps: Math.max(0, relarpCount - 1),
+          },
+        }
+      })
+    })
+
+    return { ok: true }
+  }
+
   const feedPosts = useMemo(
-    () => allPosts.filter(post => isAccessible(post.author.larpRating)),
-    [allPosts]
+    () => allPosts.filter(post => post.author.larpRating <= profile.larpRating),
+    [allPosts, profile.larpRating]
   )
 
   const value = {
-    currentUser: CURRENT_USER,
+    currentUser: profile,
+    meProfile: profile,
     feedPosts,
     allPosts,
     trendingDelusions: TRENDING_DELUSIONS,
     buzzwords: BUZZWORDS,
     isAccessible,
+    updateProfile,
+    updateAbout,
+    cyclePersona,
+    updateLarpStatus,
+    addExperience,
+    updateExperience,
+    removeExperience,
+    addEducation,
+    updateEducation,
+    removeEducation,
+    addSkill,
+    removeSkill,
+    endorseSkill,
     createPost,
     createComment,
     hasUserRelarped,
     createRelarp,
+    undoRelarp,
   }
 
   return <MockDataContext.Provider value={value}>{children}</MockDataContext.Provider>

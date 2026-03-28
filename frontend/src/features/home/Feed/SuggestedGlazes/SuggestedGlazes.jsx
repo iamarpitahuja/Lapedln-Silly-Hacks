@@ -60,7 +60,7 @@ export default function SuggestedGlazes({ onGlaze, isGlazed }) {
         <p className={styles.confirmation}>Glaze sent: &ldquo;{submitted}&rdquo;</p>
       ) : (
         <>
-          <div className={styles.pills}>
+          <div className={styles.pills} key={getToneKey(tone)}>
             {glazes.slice(0, 3).map(g => (
               <button 
                 key={g} 

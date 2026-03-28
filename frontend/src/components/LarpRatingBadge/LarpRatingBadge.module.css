@@ -7,6 +7,15 @@
   justify-content: center;
 }
 
+.gaugeCircle {
+  transition: stroke-dasharray 1.2s var(--ease-out-quint);
+  animation: gaugeFill 1.5s var(--ease-out-quint) forwards;
+}
+
+@keyframes gaugeFill {
+  from { stroke-dasharray: 0 251.32; }
+}
+
 .gaugeInner {
   position: absolute;
   display: flex;
@@ -14,6 +23,7 @@
   align-items: center;
   justify-content: center;
   gap: 0;
+  animation: fadeIn var(--transition-slow) forwards;
 }
 
 .gaugeValue {
@@ -39,11 +49,17 @@
   padding: 2px 6px;
   vertical-align: middle;
   line-height: 1;
-  transition: box-shadow 0.15s ease;
+  transition: all var(--transition-fast);
+  cursor: help;
 }
 
 .small:hover {
-  box-shadow: 0 0 6px 1px var(--tier-color, #666);
+  box-shadow: 0 2px 8px var(--tier-color, #666);
+  transform: translateY(-1px);
+}
+
+.small:active {
+  transform: scale(var(--active-scale));
 }
 
 .smallValue {

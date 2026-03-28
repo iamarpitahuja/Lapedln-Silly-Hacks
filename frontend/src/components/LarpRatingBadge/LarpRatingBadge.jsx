@@ -53,6 +53,7 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
           strokeWidth="10"
         />
         <circle
+          className={styles.gaugeCircle}
           cx="50" cy="50" r={radius}
           fill="none"
           stroke={color}

@@ -1,9 +1,29 @@
+.expandable {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-normal);
+  overflow: hidden;
+}
+
+.expanded {
+  grid-template-rows: 1fr;
+}
+
+.expandableInner {
+  min-height: 0;
+}
+
 .card {
   background: #ffffff;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   overflow: hidden;
   margin-bottom: 8px;
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .cardOwn {
@@ -47,6 +67,11 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.avatar:hover {
+  transform: scale(1.05);
 }
 
 .meta {
@@ -105,10 +130,13 @@
   padding: 4px 6px;
   border-radius: 50%;
   line-height: 1;
+  transition: all var(--transition-fast);
 }
 
 .iconBtn:hover {
   background: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.9);
+  transform: rotate(90deg);
 }
 
 .body {
@@ -127,6 +155,12 @@
   border-radius: 10px;
   padding: 10px 11px;
   background: #fbfcfd;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.relarpEmbed:hover {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.25);
 }
 
 .relarpEmbedHeader {
@@ -198,11 +232,16 @@
   margin: -4px -4px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all var(--transition-fast);
 }
 
 .reactionGroup:hover {
   background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.reactionGroup:active {
+  transform: scale(var(--active-scale));
 }
 
 .reactionStat {
@@ -223,6 +262,11 @@
 
 .reactionIcon {
   flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.reactionGroup:hover .reactionIcon {
+  transform: scale(1.15);
 }
 
 .individualCount {
@@ -246,14 +290,24 @@
   margin: -2px -4px;
   border-radius: 4px;
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .commentSummary:hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
+.commentSummary:active {
+  transform: scale(var(--active-scale));
+}
+
 .commentIcon {
   color: rgba(0, 0, 0, 0.5);
+  transition: transform var(--transition-fast);
+}
+
+.commentSummary:hover .commentIcon {
+  transform: rotate(-10deg) scale(1.1);
 }
 
 .commentCount {
@@ -282,8 +336,20 @@
   font-size: 13px;
   font-weight: 700;
   color: rgba(0, 0, 0, 0.6);
-  border-top: 2px solid transparent;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  border-top: 2.5px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.action:active {
+  transform: scale(var(--active-scale));
+}
+
+.action svg {
+  transition: transform var(--transition-fast);
+}
+
+.action:hover svg {
+  transform: scale(1.1) translateY(-1px);
 }
 
 .action:disabled {
