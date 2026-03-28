@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useAuth } from './AuthContext'
 import { createPost as apiCreatePost } from '../services/api'
 
 const PROFILE_STORAGE_KEY = 'larpedin.profile.v1'
@@ -659,8 +660,24 @@ function loadInitialPosts() {
 }
 
 export function MockDataProvider({ children }) {
+  const { user } = useAuth()
   const [profile, setProfile] = useState(loadInitialProfile)
   const [allPosts, setAllPosts] = useState(loadInitialPosts)
+
+  // Seed profile name & avatar from Supabase auth user
+  useEffect(() => {
+    if (!user) return
+    const meta = user.user_metadata ?? {}
+    const authName = meta.full_name || meta.name || user.email?.split('@')[0] || ''
+    const authAvatar = meta.avatar_url || null
+    if (authName) {
+      setProfile(prev => ({
+        ...prev,
+        name: authName,
+        ...(authAvatar ? { avatar: authAvatar } : {}),
+      }))
+    }
+  }, [user])
 
   function isAccessible(targetRating) {
     return targetRating <= profile.larpRating

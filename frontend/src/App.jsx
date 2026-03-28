@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import { MockDataProvider } from './context/MockDataContext'
 import TopNav from './components/TopNav/TopNav'
 import Home from './features/home/Home'
@@ -7,24 +8,43 @@ import Network from './features/network/Network'
 import Messaging from './features/messaging/Messaging'
 import JobsPage from './pages/JobsPage'
 import StubPage from './pages/StubPage'
+import AuthPage from './features/auth/AuthPage'
 import styles from './App.module.css'
+
+function AppRoutes() {
+  const { session, loading } = useAuth()
+
+  if (loading) {
+    return <div className={styles.loading}>Synergizing your session...</div>
+  }
+
+  if (!session) {
+    return <AuthPage />
+  }
+
+  return (
+    <MockDataProvider>
+      <TopNav />
+      <main className={styles.main}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/network" element={<Network />} />
+          <Route path="/jobs" element={<JobsPage />} />
+          <Route path="/messaging" element={<Messaging />} />
+          <Route path="/notifications" element={<StubPage title="Notifications" />} />
+          <Route path="/me" element={<Me />} />
+        </Routes>
+      </main>
+    </MockDataProvider>
+  )
+}
 
 export default function App() {
   return (
-    <MockDataProvider>
+    <AuthProvider>
       <BrowserRouter>
-        <TopNav />
-        <main className={styles.main}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/network" element={<Network />} />
-            <Route path="/jobs" element={<JobsPage />} />
-            <Route path="/messaging" element={<Messaging />} />
-            <Route path="/notifications" element={<StubPage title="Notifications" />} />
-            <Route path="/me" element={<Me />} />
-          </Routes>
-        </main>
+        <AppRoutes />
       </BrowserRouter>
-    </MockDataProvider>
+    </AuthProvider>
   )
 }
