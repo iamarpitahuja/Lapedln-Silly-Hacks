@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createPost as apiCreatePost } from '../services/api'
 
 const PROFILE_STORAGE_KEY = 'larpedin.profile.v1'
 const POSTS_STORAGE_KEY = 'larpedin.posts.v1'
@@ -1136,6 +1137,10 @@ export function MockDataProvider({ children }) {
     }
 
     setAllPosts(existingPosts => [nextPost, ...existingPosts])
+
+    // Persist to backend (fire-and-forget — optimistic UI already updated above)
+    apiCreatePost({ content: trimmedContent, postType: type?.trim() || 'thought_leadership' }).catch(() => {})
+
     return { ok: true }
   }
 
