@@ -12,11 +12,11 @@ function getAvatarColor(name) {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
 }
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, isOwnPost = false }) {
   const { author, type, timestamp, content, reactions } = post
 
   return (
-    <div className={styles.card}>
+    <div className={`${styles.card} ${isOwnPost ? styles.cardOwn : ''}`}>
       {/* Header */}
       <div className={styles.header}>
         <div
@@ -28,6 +28,7 @@ export default function PostCard({ post }) {
         <div className={styles.meta}>
           <div className={styles.nameRow}>
             <span className={styles.name}>{author.name}</span>
+            {isOwnPost && <span className={styles.youLabel}>· You</span>}
             <LarpRatingBadge rating={author.larpRating} size="small" />
           </div>
           <p className={styles.headline}>{author.headline}</p>
@@ -40,9 +41,11 @@ export default function PostCard({ post }) {
           <button className={styles.iconBtn} aria-label="More options">
             <Icon name="more" size={16} />
           </button>
-          <button className={styles.iconBtn} aria-label="Dismiss">
-            <Icon name="x" size={16} />
-          </button>
+          {!isOwnPost && (
+            <button className={styles.iconBtn} aria-label="Dismiss">
+              <Icon name="x" size={16} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -65,16 +68,18 @@ export default function PostCard({ post }) {
 
       {/* Action bar */}
       <div className={styles.actions}>
-        <button className={styles.action}>
-          <Icon name="thumbsUp" size={18} /> <span>Glaze</span>
-        </button>
-        <button className={styles.action}>
+        {!isOwnPost && (
+          <button className={`${styles.action} ${styles.actionGlaze}`}>
+            <Icon name="sparkles" size={18} /> <span>Glaze</span>
+          </button>
+        )}
+        <button className={`${styles.action} ${styles.actionComment}`}>
           <Icon name="message" size={18} /> <span>Comment</span>
         </button>
-        <button className={styles.action}>
+        <button className={`${styles.action} ${styles.actionRelarp}`}>
           <Icon name="repeat" size={18} /> <span>Re-Larp</span>
         </button>
-        <button className={styles.action}>
+        <button className={`${styles.action} ${styles.actionDm}`}>
           <Icon name="mail" size={18} /> <span>DM</span>
         </button>
       </div>

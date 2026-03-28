@@ -1,27 +1,30 @@
 .page {
   background: #f3f2ef;
-  min-height: 100vh;
-  padding: 24px 0;
+  min-height: calc(100vh - 52px);
 }
 
 .layout {
   max-width: 1128px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 24px 16px;
   display: grid;
   grid-template-columns: 225px 1fr 300px;
   gap: 24px;
   align-items: start;
 }
 
-.left {
+.left, .right {
   position: sticky;
-  top: 76px; /* nav height + 24px gap */
+  top: 64px; /* nav height + 12px gap */
+  max-height: calc(100vh - 64px - 24px); /* viewport minus top gap and bottom padding */
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 
-.right {
-  position: sticky;
-  top: 76px;
+.left::-webkit-scrollbar,
+.right::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .center {

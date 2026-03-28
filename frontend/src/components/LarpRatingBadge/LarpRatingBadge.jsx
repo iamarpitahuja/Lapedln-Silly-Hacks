@@ -24,10 +24,16 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
     return (
       <span
         className={styles.small}
-        style={{ color, borderColor: color }}
+        style={{
+          color,
+          borderColor: color,
+          background: `${color}14`,
+          '--tier-color': color,
+        }}
         title={`LarpRating: ${rating} — ${tier}`}
       >
-        {rating}
+        <span className={styles.smallValue}>{rating}</span>
+        <span className={styles.smallTier}>{tier}</span>
       </span>
     )
   }
@@ -39,25 +45,25 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
 
   return (
     <div className={styles.gauge}>
-      <svg width="100" height="100" viewBox="0 0 100 100">
+      <svg width="100" height="100" viewBox="0 0 100 100" style={{ filter: `drop-shadow(0 0 5px ${color}66)` }}>
         <circle
           cx="50" cy="50" r={radius}
           fill="none"
-          stroke="#e0e0e0"
-          strokeWidth="8"
+          stroke="#e8e8e8"
+          strokeWidth="10"
         />
         <circle
           cx="50" cy="50" r={radius}
           fill="none"
           stroke={color}
-          strokeWidth="8"
+          strokeWidth="10"
           strokeDasharray={`${progress} ${circumference}`}
           strokeLinecap="round"
           transform="rotate(-90 50 50)"
         />
       </svg>
       <div className={styles.gaugeInner}>
-        <span className={styles.gaugeValue}>{rating}</span>
+        <span className={styles.gaugeValue} style={{ textShadow: `0 1px 4px ${color}55` }}>{rating}</span>
         <span className={styles.gaugeTier} style={{ color }}>({tier})</span>
       </div>
     </div>

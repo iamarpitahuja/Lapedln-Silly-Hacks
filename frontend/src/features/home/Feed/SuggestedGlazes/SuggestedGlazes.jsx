@@ -24,8 +24,9 @@ const TONE_GLAZES = {
   ],
 }
 
-export default function SuggestedGlazes() {
+export default function SuggestedGlazes({ onGlaze, isGlazed }) {
   const [tone, setTone] = useState(0) // 0 = professional, 50 = founder, 100 = unnatural
+  const [customGlaze, setCustomGlaze] = useState('')
   const [submitted, setSubmitted] = useState(null)
 
   function getToneKey(value) {
@@ -36,24 +37,60 @@ export default function SuggestedGlazes() {
 
   const glazes = TONE_GLAZES[getToneKey(tone)]
 
-  function handleGlaze(text) {
-    setSubmitted(text)
-    setTimeout(() => setSubmitted(null), 2000)
+  function handleSelectPill(text) {
+    if (isGlazed) return
+    setCustomGlaze(text)
+  }
+
+  function handleSend() {
+    if (!customGlaze.trim() || isGlazed) return
+
+    setSubmitted(customGlaze)
+    if (onGlaze) onGlaze()
+    setCustomGlaze('')
+    setTimeout(() => setSubmitted(null), 3000)
   }
 
   return (
     <div className={styles.wrap}>
-      <p className={styles.label}>Suggested Glazes</p>
+      <p className={styles.label}>
+        {isGlazed ? 'Glaze sent successfully' : 'Suggested Glazes'}
+      </p>
       {submitted ? (
         <p className={styles.confirmation}>Glaze sent: &ldquo;{submitted}&rdquo;</p>
       ) : (
-        <div className={styles.pills}>
-          {glazes.slice(0, 3).map(g => (
-            <button key={g} className={styles.pill} onClick={() => handleGlaze(g)}>
-              {g}
+        <>
+          <div className={styles.pills}>
+            {glazes.slice(0, 3).map(g => (
+              <button 
+                key={g} 
+                className={styles.pill} 
+                onClick={() => handleSelectPill(g)}
+                disabled={isGlazed}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+          <div className={styles.customRow}>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder={isGlazed ? "Already glazed this post" : "Your own glaze..."}
+              value={customGlaze}
+              onChange={e => setCustomGlaze(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSend()}
+              disabled={isGlazed}
+            />
+            <button 
+              className={styles.sendBtn} 
+              onClick={handleSend}
+              disabled={!customGlaze.trim() || isGlazed}
+            >
+              {isGlazed ? 'Sent' : 'Send'}
             </button>
-          ))}
-        </div>
+          </div>
+        </>
       )}
       <div className={styles.sliderRow}>
         <span className={styles.sliderLabel}>Professional</span>
