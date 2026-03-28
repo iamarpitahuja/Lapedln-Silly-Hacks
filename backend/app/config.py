@@ -24,7 +24,7 @@ class Settings(BaseSettings):
         """Skip JWT verification (no login UI yet). Always true until auth is built."""
         return True
 
-    model_config = {"env_file": str(_ROOT / ".env"), "env_file_encoding": "utf-8"}
+    model_config = {"env_file": str(_ROOT / ".env"), "env_file_encoding": "utf-8", "extra": "ignore"}
 
 
 settings = Settings()

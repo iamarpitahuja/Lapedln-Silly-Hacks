@@ -14,7 +14,7 @@ const SUGGESTED_TITLES = [
 ]
 
 export default function JobsPage() {
-  const { currentUser, updateCurrentUser } = useMockData()
+  const { currentUser, updateProfile } = useMockData()
   const [title, setTitle] = useState('')
   const [status, setStatus] = useState(null) // 'updating' | 'success' | 'error'
   const [lastTitle, setLastTitle] = useState(null)
@@ -25,7 +25,7 @@ export default function JobsPage() {
     setStatus('updating')
     try {
       const result = await updateTitle(title)
-      updateCurrentUser({ headline: result.new_title })
+      await updateProfile({ headline: result.new_title })
       setLastTitle(result.new_title)
       setTitle('')
       setStatus('success')
