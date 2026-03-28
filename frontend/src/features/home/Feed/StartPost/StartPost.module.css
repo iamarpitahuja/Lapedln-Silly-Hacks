@@ -47,6 +47,60 @@
   flex-shrink: 0;
   margin-top: 4px;
   transition: transform var(--transition-fast);
+  overflow: hidden;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photoPreviewWrap {
+  margin: 8px 0;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  max-height: 400px;
+}
+
+.photoPreview {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  background: #f3f2ef;
+}
+
+.removePhotoBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  transition: all var(--transition-fast);
+  z-index: 10;
+}
+
+.removePhotoBtn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.actionIconMedia {
+  color: #0a66c2;
+}
+
+.hiddenInput {
+  display: none;
 }
 
 .avatar:hover {

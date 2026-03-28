@@ -153,9 +153,13 @@ export default function PostCard({ post, isOwnPost = false }) {
       <div className={styles.header}>
         <div
           className={styles.avatar}
-          style={{ background: getAvatarColor(author.name) }}
+          style={author.avatar ? {} : { background: getAvatarColor(author.name) }}
         >
-          {getInitials(author.name)}
+          {author.avatar ? (
+            <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
+          ) : (
+            getInitials(author.name)
+          )}
         </div>
         <div className={styles.meta}>
           <div className={styles.nameRow}>
@@ -183,15 +187,24 @@ export default function PostCard({ post, isOwnPost = false }) {
 
       <div className={styles.body}>
         {content ? <p className={styles.content}>{content}</p> : null}
+        {post.photo ? (
+          <div className={styles.postPhotoWrap}>
+            <img src={post.photo} alt="" className={styles.postPhoto} />
+          </div>
+        ) : null}
 
         {relarpSource ? (
           <article className={styles.relarpEmbed}>
             <div className={styles.relarpEmbedHeader}>
               <div
                 className={styles.relarpEmbedAvatar}
-                style={{ background: getAvatarColor(relarpSource.author.name) }}
+                style={relarpSource.author.avatar ? {} : { background: getAvatarColor(relarpSource.author.name) }}
               >
-                {getInitials(relarpSource.author.name)}
+                {relarpSource.author.avatar ? (
+                  <img src={relarpSource.author.avatar} alt={relarpSource.author.name} className={styles.avatarImg} />
+                ) : (
+                  getInitials(relarpSource.author.name)
+                )}
               </div>
               <div>
                 <p className={styles.relarpEmbedAuthor}>{relarpSource.author.name}</p>
@@ -354,9 +367,13 @@ export default function PostCard({ post, isOwnPost = false }) {
                   <li key={comment.id} className={styles.commentItem}>
                     <div
                       className={styles.commentAvatar}
-                      style={{ background: getAvatarColor(comment.author.name) }}
+                      style={comment.author.avatar ? {} : { background: getAvatarColor(comment.author.name) }}
                     >
-                      {getInitials(comment.author.name)}
+                      {comment.author.avatar ? (
+                        <img src={comment.author.avatar} alt={comment.author.name} className={styles.avatarImg} />
+                      ) : (
+                        getInitials(comment.author.name)
+                      )}
                     </div>
                     <div className={styles.commentBody}>
                       <div className={styles.commentBubble}>
@@ -375,9 +392,13 @@ export default function PostCard({ post, isOwnPost = false }) {
             <form className={styles.commentComposer} onSubmit={handleCommentSubmit}>
               <div
                 className={styles.commentAvatar}
-                style={{ background: getAvatarColor(currentUser.name) }}
+                style={currentUser.avatar ? {} : { background: getAvatarColor(currentUser.name) }}
               >
-                {getInitials(currentUser.name)}
+                {currentUser.avatar ? (
+                  <img src={currentUser.avatar} alt={currentUser.name} className={styles.avatarImg} />
+                ) : (
+                  getInitials(currentUser.name)
+                )}
               </div>
               <div className={styles.commentComposerBody}>
                 <textarea

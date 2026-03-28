@@ -109,9 +109,15 @@ export default function TopNav() {
             >
               <span className={styles.tabIcon}>
                 {item.isMe ? (
-                  <span className={styles.avatarSmall}>
-                    {getInitials(currentUser.name)}
-                  </span>
+                  currentUser.avatar ? (
+                    <img
+                      src={currentUser.avatar}
+                      alt={currentUser.name}
+                      className={styles.avatarSmallImg}
+                    />
+                  ) : (
+                    <span className={styles.avatarSmall}>{getInitials(currentUser.name)}</span>
+                  )
                 ) : (
                   item.icon
                 )}

@@ -184,7 +184,9 @@ export default function StartPost() {
   const [activeSlotKey, setActiveSlotKey] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [photo, setPhoto] = useState(null)
   const textareaRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -193,12 +195,34 @@ export default function StartPost() {
     return () => clearInterval(timer)
   }, [])
 
-  const showFooter = isFocused || draft.trim().length > 0
+  const showFooter = isFocused || draft.trim().length > 0 || photo
 
   function handleContainerBlur(event) {
     if (!event.currentTarget.contains(event.relatedTarget)) {
-      if (!draft.trim()) setIsFocused(false)
+      if (!draft.trim() && !photo) setIsFocused(false)
     }
+  }
+
+  function handlePhotoUpload(event) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = e => {
+      setPhoto(e.target.result)
+      setIsFocused(true)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  function removePhoto() {
+    setPhoto(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   function resetTemplateMode() {
@@ -248,17 +272,19 @@ export default function StartPost() {
 
   function handleCancel() {
     setDraft('')
+    setPhoto(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
     resetTemplateMode()
     setError('')
     setIsFocused(false)
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     if (isSubmitting) return
 
     setIsSubmitting(true)
-    const result = createPost({ content: draft, type: postType })
+    const result = await createPost({ content: draft, type: postType, photo })
 
     if (!result.ok) {
       setError(result.error ?? 'Could not publish this post. Please try again.')
@@ -267,6 +293,8 @@ export default function StartPost() {
     }
 
     setDraft('')
+    setPhoto(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
     resetTemplateMode()
     setError('')
     setIsFocused(false)
@@ -280,7 +308,7 @@ export default function StartPost() {
   }
 
   const charactersRemaining = MAX_POST_LENGTH - draft.length
-  const isPostDisabled = !draft.trim() || isSubmitting
+  const isPostDisabled = (!draft.trim() && !photo) || isSubmitting
   const templateSlots = activeTemplate ? getTemplateSlots(activeTemplate.template) : []
   const activeSlot = templateSlots.find(slot => slot.key === activeSlotKey) ?? templateSlots[0]
   const activeSlotValue = activeSlot ? (slotValues[activeSlot.key] ?? '') : ''
@@ -288,7 +316,13 @@ export default function StartPost() {
   return (
     <div className={styles.card} onBlur={handleContainerBlur}>
       <div className={styles.row}>
-        <div className={styles.avatar}>{getInitials(currentUser.name)}</div>
+        <div className={styles.avatar}>
+          {currentUser.avatar ? (
+            <img src={currentUser.avatar} alt={currentUser.name} className={styles.avatarImg} />
+          ) : (
+            getInitials(currentUser.name)
+          )}
+        </div>
         <textarea
           ref={textareaRef}
           aria-label="Post content"
@@ -308,11 +342,22 @@ export default function StartPost() {
         />
       </div>
 
+      {photo && (
+        <div className={styles.photoPreviewWrap}>
+          <img src={photo} alt="Post preview" className={styles.photoPreview} />
+          <button className={styles.removePhotoBtn} onClick={removePhoto} aria-label="Remove photo">
+            <Icon name="x" size={16} />
+          </button>
+        </div>
+      )}
+
       <div className={`${styles.expandable} ${showFooter ? styles.expanded : ''}`}>
         {showFooter ? (
           <div className={styles.expandableInner}>
             <div className={styles.composerHeader}>
-              <label htmlFor="post-type" className={styles.typeLabel}>Post type</label>
+              <label htmlFor="post-type" className={styles.typeLabel}>
+                Post type
+              </label>
               <select
                 id="post-type"
                 className={styles.typeSelect}
@@ -417,6 +462,23 @@ export default function StartPost() {
       </div>
 
       <div className={styles.actions}>
+        <button
+          type="button"
+          className={styles.action}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <span className={`${styles.actionIcon} ${styles.actionIconMedia}`}>
+            <Icon name="camera" size={20} />
+          </span>
+          <span className={styles.actionLabel}>Media</span>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className={styles.hiddenInput}
+            accept="image/*"
+            onChange={handlePhotoUpload}
+          />
+        </button>
         {ACTIONS.map(action => (
           <button
             key={action.label}

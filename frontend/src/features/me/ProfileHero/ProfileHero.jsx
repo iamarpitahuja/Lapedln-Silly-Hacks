@@ -10,12 +10,14 @@ function toFormValues(currentUser) {
     name: currentUser.name,
     headline: currentUser.headline,
     persona: currentUser.persona,
+    avatar: currentUser.avatar ?? '',
+    coverPhoto: currentUser.coverPhoto ?? '',
   }
 }
 
 export default function ProfileHero({ onNotice }) {
   const { currentUser, updateProfile } = useMockData()
-  const { name, headline, larpRating, persona, stats } = currentUser
+  const { name, headline, larpRating, persona, stats, avatar, coverPhoto } = currentUser
   const [isEditing, setIsEditing] = useState(false)
   const [formValues, setFormValues] = useState(toFormValues(currentUser))
 
@@ -29,12 +31,35 @@ export default function ProfileHero({ onNotice }) {
     setIsEditing(false)
   }
 
-  function handleFormSubmit(event) {
+  function handleFileUpload(event, type) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      onNotice?.('Please upload an image file')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = e => {
+      const dataUrl = e.target.result
+      if (type === 'avatar') {
+        setFormValues(prev => ({ ...prev, avatar: dataUrl }))
+      } else {
+        setFormValues(prev => ({ ...prev, coverPhoto: dataUrl }))
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
+  async function handleFormSubmit(event) {
     event.preventDefault()
-    const result = updateProfile({
+    const result = await updateProfile({
       name: formValues.name,
       headline: formValues.headline,
       persona: formValues.persona,
+      avatar: formValues.avatar,
+      coverPhoto: formValues.coverPhoto,
     })
 
     if (!result.ok) {
@@ -48,10 +73,52 @@ export default function ProfileHero({ onNotice }) {
 
   return (
     <div className={styles.card}>
-      <div className={styles.coverPhoto} />
+      <div
+        className={styles.coverPhoto}
+        style={
+          isEditing && formValues.coverPhoto
+            ? { backgroundImage: `url(${formValues.coverPhoto})` }
+            : coverPhoto
+              ? { backgroundImage: `url(${coverPhoto})` }
+              : {}
+        }
+      >
+        {isEditing && (
+          <label className={styles.uploadOverlay} title="Upload cover photo">
+            <Icon name="camera" size={24} />
+            <input
+              type="file"
+              className={styles.hiddenInput}
+              accept="image/*"
+              onChange={e => handleFileUpload(e, 'cover')}
+            />
+          </label>
+        )}
+      </div>
       <div className={styles.heroBody}>
         <div className={styles.avatarWrap}>
-          <div className={styles.avatar}>{getInitials(name)}</div>
+          {isEditing ? (
+            <div className={styles.avatarEditContainer}>
+              {formValues.avatar ? (
+                <img src={formValues.avatar} alt="Avatar preview" className={styles.avatarImg} />
+              ) : (
+                <div className={styles.avatar}>{getInitials(name)}</div>
+              )}
+              <label className={styles.avatarUploadOverlay} title="Upload profile picture">
+                <Icon name="camera" size={20} />
+                <input
+                  type="file"
+                  className={styles.hiddenInput}
+                  accept="image/*"
+                  onChange={e => handleFileUpload(e, 'avatar')}
+                />
+              </label>
+            </div>
+          ) : avatar ? (
+            <img src={avatar} alt={name} className={styles.avatarImg} />
+          ) : (
+            <div className={styles.avatar}>{getInitials(name)}</div>
+          )}
           {!isEditing ? (
             <button className={styles.editBtn} aria-label="Edit profile" onClick={handleStartEditing}>
               <Icon name="pencil" size={18} />
@@ -116,6 +183,54 @@ export default function ProfileHero({ onNotice }) {
                   }
                   placeholder="e.g. Level 14 Arcane Webweaver"
                 />
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Profile Image</label>
+                <div className={styles.inputWithAction}>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={formValues.avatar}
+                    onChange={event =>
+                      setFormValues(existing => ({ ...existing, avatar: event.target.value }))
+                    }
+                    placeholder="https://..."
+                  />
+                  <label className={styles.inlineUploadBtn}>
+                    <Icon name="camera" size={16} />
+                    <span>Upload</span>
+                    <input
+                      type="file"
+                      className={styles.hiddenInput}
+                      accept="image/*"
+                      onChange={e => handleFileUpload(e, 'avatar')}
+                    />
+                  </label>
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Banner Image</label>
+                <div className={styles.inputWithAction}>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={formValues.coverPhoto}
+                    onChange={event =>
+                      setFormValues(existing => ({ ...existing, coverPhoto: event.target.value }))
+                    }
+                    placeholder="https://..."
+                  />
+                  <label className={styles.inlineUploadBtn}>
+                    <Icon name="camera" size={16} />
+                    <span>Upload</span>
+                    <input
+                      type="file"
+                      className={styles.hiddenInput}
+                      accept="image/*"
+                      onChange={e => handleFileUpload(e, 'cover')}
+                    />
+                  </label>
+                </div>
               </div>
               <div className={styles.formActions}>
                 <button type="submit" className={styles.saveBtn}>

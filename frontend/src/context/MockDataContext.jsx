@@ -15,6 +15,7 @@ const DEFAULT_PROFILE = {
   name: 'Arjun Malhotra',
   headline: 'Incoming Quant VC Product Strategist',
   avatar: null,
+  coverPhoto: null,
   larpRating: 67.2,
   persona: 'Stealth Founder / Ex-McKinsey Adjacent',
   about:
@@ -260,6 +261,37 @@ const TRENDING_DELUSIONS = ['Career Loring', 'Conivroation', 'Prestige signaling
 
 const BUZZWORDS = ['Hyperscale', 'Narrative leverage', 'Operator mindset', 'Aura velocity']
 
+async function downscaleImage(dataUrl, maxWidth = 800, maxHeight = 800, quality = 0.7) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve(dataUrl); // Fallback
+    img.src = dataUrl;
+  });
+}
+
 const MockDataContext = createContext(null)
 
 function makeEntityId() {
@@ -430,6 +462,7 @@ function normalizeProfile(profile) {
     name: normalizeText(profile.name, fallbackProfile.name),
     headline: normalizeText(profile.headline, fallbackProfile.headline),
     avatar: profile.avatar ?? fallbackProfile.avatar,
+    coverPhoto: profile.coverPhoto ?? fallbackProfile.coverPhoto,
     larpRating: normalizeNumber(profile.larpRating, fallbackProfile.larpRating),
     persona: normalizeText(profile.persona, fallbackProfile.persona),
     about: normalizeText(profile.about, fallbackProfile.about),
@@ -634,15 +667,35 @@ export function MockDataProvider({ children }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    window.localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(allPosts))
+    try {
+      window.localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(allPosts))
+    } catch (e) {
+      if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+        // Evict oldest user posts if quota hit
+        setAllPosts(prev => {
+          const userPosts = prev.filter(p => p.isUserPost)
+          if (userPosts.length > 5) {
+            const keepCount = Math.floor(userPosts.length / 2)
+            const toKeep = userPosts.slice(0, keepCount)
+            const seeds = prev.filter(p => !p.isUserPost)
+            return [...toKeep, ...seeds]
+          }
+          return prev
+        })
+      }
+    }
   }, [allPosts])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile))
+    try {
+      window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile))
+    } catch (e) {
+      console.error('Failed to save profile to localStorage:', e)
+    }
   }, [profile])
 
-  function updateProfile({ name, headline, persona, note } = {}) {
+  async function updateProfile({ name, headline, persona, avatar, coverPhoto, note } = {}) {
     if (name !== undefined && !String(name ?? '').trim()) {
       return { ok: false, error: 'Name cannot be empty.' }
     }
@@ -655,6 +708,16 @@ export function MockDataProvider({ children }) {
       return { ok: false, error: 'Persona cannot be empty.' }
     }
 
+    let processedAvatar = avatar
+    if (avatar && avatar.startsWith('data:image')) {
+      processedAvatar = await downscaleImage(avatar, 400, 400, 0.6)
+    }
+
+    let processedCover = coverPhoto
+    if (coverPhoto && coverPhoto.startsWith('data:image')) {
+      processedCover = await downscaleImage(coverPhoto, 1200, 400, 0.6)
+    }
+
     setProfile(existingProfile => {
       let nextProfile = { ...existingProfile }
 
@@ -664,6 +727,14 @@ export function MockDataProvider({ children }) {
 
       if (headline !== undefined) {
         nextProfile.headline = String(headline).trim()
+      }
+
+      if (avatar !== undefined) {
+        nextProfile.avatar = processedAvatar ? String(processedAvatar).trim() : null
+      }
+
+      if (coverPhoto !== undefined) {
+        nextProfile.coverPhoto = processedCover ? String(processedCover).trim() : null
       }
 
       if (persona !== undefined) {
@@ -1032,11 +1103,16 @@ export function MockDataProvider({ children }) {
     return { ok: true }
   }
 
-  function createPost({ content, type }) {
+  async function createPost({ content, type, photo }) {
     const trimmedContent = (content ?? '').trim()
 
-    if (!trimmedContent) {
-      return { ok: false, error: 'Post content cannot be empty.' }
+    if (!trimmedContent && !photo) {
+      return { ok: false, error: 'Post must have content or a photo.' }
+    }
+
+    let processedPhoto = photo
+    if (photo && photo.startsWith('data:image')) {
+      processedPhoto = await downscaleImage(photo, 1000, 1000, 0.7)
     }
 
     const postId = makeEntityId()
@@ -1052,6 +1128,7 @@ export function MockDataProvider({ children }) {
       type: type?.trim() || 'Personal Update',
       timestamp: 'Just now',
       content: trimmedContent,
+      photo: processedPhoto ?? null,
       reactions: { count: 0, comments: 0 },
       comments: [],
       createdAt: new Date().toISOString(),

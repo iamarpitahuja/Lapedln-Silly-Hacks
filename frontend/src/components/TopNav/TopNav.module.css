@@ -180,6 +180,19 @@
   transition: box-shadow var(--transition-fast);
 }
 
+.avatarSmallImg {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px #fff;
+  transition: box-shadow var(--transition-fast);
+}
+
+.tab:hover .avatarSmallImg {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(10, 102, 194, 0.2);
+}
+
 .tab:hover .avatarSmall {
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(10, 102, 194, 0.2);
 }

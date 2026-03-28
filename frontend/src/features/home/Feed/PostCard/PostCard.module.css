@@ -68,6 +68,13 @@
   justify-content: center;
   flex-shrink: 0;
   transition: transform var(--transition-fast);
+  overflow: hidden;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .avatar:hover {
@@ -147,6 +154,23 @@
   font-size: 14px;
   color: rgba(0, 0, 0, 0.9);
   line-height: 1.6;
+}
+
+.postPhotoWrap {
+  margin-top: 12px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  max-height: 512px;
+  background: #f3f2ef;
+}
+
+.postPhoto {
+  width: 100%;
+  height: auto;
+  max-height: 512px;
+  display: block;
+  object-fit: contain;
 }
 
 .relarpEmbed {

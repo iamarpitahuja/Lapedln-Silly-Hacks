@@ -5,6 +5,7 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   overflow: hidden;
   min-height: 160px;
+  margin-bottom: 8px;
 }
 
 /* Blurred fake content layer */
