@@ -1,0 +1,74 @@
+.btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.connect {
+  background: transparent;
+  border-color: #0A66C2;
+  color: #0A66C2;
+}
+
+.connect:hover:not(:disabled) {
+  background: rgba(10, 102, 194, 0.08);
+}
+
+.pending {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.4);
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.pending:hover:not(:disabled) {
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.accept {
+  background: #0A66C2;
+  color: #fff;
+}
+
+.accept:hover:not(:disabled) {
+  background: #0858a8;
+}
+
+.decline {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.4);
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.decline:hover:not(:disabled) {
+  border-color: rgba(0, 0, 0, 0.7);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.connected {
+  background: transparent;
+  border-color: #057642;
+  color: #057642;
+  font-size: 13px;
+}
+
+.connected:hover:not(:disabled) {
+  background: rgba(5, 118, 66, 0.06);
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}

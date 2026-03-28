@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useMockData } from '../../context/MockDataContext'
 import { getInitials } from '../../utils/strings'
+import { fetchConversations } from '../../services/api'
 import styles from './TopNav.module.css'
 
 const NAV_ITEMS = [
@@ -38,6 +40,7 @@ const NAV_ITEMS = [
     path: '/messaging',
     label: 'Messaging',
     tooltip: 'Cold outreach, hot delusion',
+    isMessaging: true,
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M16 4H8a7 7 0 000 14h4l4 4v-4a7 7 0 000-14z" />
@@ -64,6 +67,16 @@ const NAV_ITEMS = [
 
 export default function TopNav() {
   const { currentUser } = useMockData()
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  useEffect(() => {
+    fetchConversations()
+      .then(data => {
+        const total = (data.conversations ?? []).reduce((sum, c) => sum + (c.unread_count ?? 0), 0)
+        setUnreadCount(total)
+      })
+      .catch(() => {}) // Silently fail if backend is down
+  }, [])
 
   return (
     <header className={styles.nav}>
@@ -74,14 +87,14 @@ export default function TopNav() {
             <span className={styles.logoText}>LarpedIn</span>
           </NavLink>
           <div className={styles.searchWrap}>
-            <svg 
-              className={styles.searchIcon} 
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2.5" 
-              strokeLinecap="round" 
+            <svg
+              className={styles.searchIcon}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
               strokeLinejoin="round"
             >
               <circle cx="11" cy="11" r="8" />
@@ -119,7 +132,12 @@ export default function TopNav() {
                     <span className={styles.avatarSmall}>{getInitials(currentUser.name)}</span>
                   )
                 ) : (
-                  item.icon
+                  <span className={styles.iconWrap}>
+                    {item.icon}
+                    {item.isMessaging && unreadCount > 0 && (
+                      <span className={styles.unreadDot} />
+                    )}
+                  </span>
                 )}
               </span>
               <span className={styles.tabLabel}>{item.label}</span>

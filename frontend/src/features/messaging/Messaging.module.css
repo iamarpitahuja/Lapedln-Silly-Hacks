@@ -1,0 +1,29 @@
+.page {
+  height: calc(100vh - 52px);
+  background: #f3f2ef;
+  display: flex;
+  align-items: stretch;
+}
+
+.loading {
+  margin: auto;
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 14px;
+}
+
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: 1128px;
+  margin: 0 auto;
+  background: #fff;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow: hidden;
+}
+
+.chat {
+  flex: 1;
+  overflow: hidden;
+}
