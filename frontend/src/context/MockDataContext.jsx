@@ -196,17 +196,52 @@ function normalizePost(post) {
     ...(post.reactions ?? {}),
   }
 
+  const relarpOf =
+    post.relarpOf && typeof post.relarpOf === 'object'
+      ? {
+          id: post.relarpOf.id ?? null,
+          type: post.relarpOf.type ?? 'Post',
+          timestamp: post.relarpOf.timestamp ?? 'Earlier',
+          content: String(post.relarpOf.content ?? '').trim(),
+          author: {
+            name: post.relarpOf.author?.name ?? 'Unknown User',
+            headline: post.relarpOf.author?.headline ?? 'Mysterious ecosystem participant',
+            avatar: post.relarpOf.author?.avatar ?? null,
+            larpRating: post.relarpOf.author?.larpRating ?? 0,
+          },
+        }
+      : null
+
   const baselineCommentCount =
     typeof normalizedReactions.comments === 'number'
       ? normalizedReactions.comments
       : normalizedComments.length
 
   normalizedReactions.comments = Math.max(baselineCommentCount, normalizedComments.length)
+  normalizedReactions.relarps =
+    typeof normalizedReactions.relarps === 'number' ? normalizedReactions.relarps : 0
 
   return {
     ...post,
     reactions: normalizedReactions,
     comments: normalizedComments,
+    isRelarp: Boolean(post.isRelarp && relarpOf),
+    relarpOf,
+  }
+}
+
+function toRelarpSnapshot(post) {
+  return {
+    id: post.id ?? null,
+    type: post.type ?? 'Post',
+    timestamp: post.timestamp ?? 'Earlier',
+    content: String(post.content ?? '').trim(),
+    author: {
+      name: post.author?.name ?? 'Unknown User',
+      headline: post.author?.headline ?? 'Mysterious ecosystem participant',
+      avatar: post.author?.avatar ?? null,
+      larpRating: post.author?.larpRating ?? 0,
+    },
   }
 }
 
@@ -335,6 +370,74 @@ export function MockDataProvider({ children }) {
     return { ok: true, comment: nextComment }
   }
 
+  function hasUserRelarped(postId) {
+    if (!postId) return false
+    return allPosts.some(
+      post => post.isRelarp && post.isUserPost && String(post.relarpOf?.id) === String(postId)
+    )
+  }
+
+  function createRelarp({ postId, commentary }) {
+    const sourcePost = allPosts.find(post => String(post.id) === String(postId))
+    if (!sourcePost) {
+      return { ok: false, error: 'This post could not be found.' }
+    }
+
+    const isOwnSourcePost =
+      sourcePost.isUserPost || String(sourcePost.author?.name) === String(CURRENT_USER.name)
+
+    if (isOwnSourcePost) {
+      return { ok: false, error: 'You cannot Re-Larp your own post.' }
+    }
+
+    if (hasUserRelarped(postId)) {
+      return { ok: false, error: 'You already Re-Larped this post.' }
+    }
+
+    const relarpSource = sourcePost.isRelarp && sourcePost.relarpOf
+      ? sourcePost.relarpOf
+      : toRelarpSnapshot(sourcePost)
+
+    const nextRelarpPost = normalizePost({
+      id: makeEntityId(),
+      author: {
+        name: CURRENT_USER.name,
+        headline: CURRENT_USER.headline,
+        avatar: CURRENT_USER.avatar,
+        larpRating: CURRENT_USER.larpRating,
+      },
+      type: 'Re-Larp',
+      timestamp: 'Just now',
+      content: String(commentary ?? '').trim(),
+      reactions: { count: 0, likes: 0, loves: 0, insights: 0, comments: 0, relarps: 0 },
+      comments: [],
+      createdAt: new Date().toISOString(),
+      isUserPost: true,
+      isRelarp: true,
+      relarpOf: relarpSource,
+    })
+
+    setAllPosts(existingPosts => {
+      const updatedPosts = existingPosts.map(post => {
+        if (String(post.id) !== String(postId)) return post
+
+        const relarpCount = typeof post.reactions?.relarps === 'number' ? post.reactions.relarps : 0
+
+        return {
+          ...post,
+          reactions: {
+            ...(post.reactions ?? {}),
+            relarps: relarpCount + 1,
+          },
+        }
+      })
+
+      return [nextRelarpPost, ...updatedPosts]
+    })
+
+    return { ok: true, relarpPost: nextRelarpPost }
+  }
+
   const feedPosts = useMemo(
     () => allPosts.filter(post => isAccessible(post.author.larpRating)),
     [allPosts]
@@ -349,6 +452,8 @@ export function MockDataProvider({ children }) {
     isAccessible,
     createPost,
     createComment,
+    hasUserRelarped,
+    createRelarp,
   }
 
   return <MockDataContext.Provider value={value}>{children}</MockDataContext.Provider>
