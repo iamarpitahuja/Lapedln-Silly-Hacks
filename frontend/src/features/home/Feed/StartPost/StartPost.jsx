@@ -16,132 +16,40 @@ const ACTIONS = [
     icon: 'party',
     label: 'Celebrate fake promotion',
     postType: 'Career Lore',
-    template: [
-      { kind: 'text', value: 'Thrilled to share that I have been promoted to ' },
-      {
-        kind: 'slot',
-        key: 'roleTitle',
-        label: 'role title',
-        options: [
-          'Senior Prompt Engineer',
-          'Chief Vibe Strategist',
-          'Principal Alignment Wizard',
-        ],
-      },
-      { kind: 'text', value: ' at ' },
-      {
-        kind: 'slot',
-        key: 'companyName',
-        label: 'company name',
-        options: ['Nimbus Dynamics', 'Stealthly Labs', 'Quantum Synergy Group'],
-      },
-      { kind: 'text', value: '. Massive thanks to ' },
-      {
-        kind: 'slot',
-        key: 'gratitudeGroup',
-        label: 'who to thank',
-        options: ['my mentors', 'the leadership team', 'everyone who believed early'],
-      },
-      { kind: 'text', value: ' for backing this journey.' },
+    suggestions: [
+      'Thrilled to share that I have accepted a role as Chief Vibe Strategist at Nimbus Dynamics. Grateful for everyone who believed in my journey. The ecosystem is ready for what comes next.',
+      'Honored to announce my promotion to Senior Prompt Engineer. This one goes out to the mentors who saw my potential before I did. Onwards and upwards.',
+      'Big news: I am joining Quantum Synergy Group as Principal Alignment Wizard. Massive thanks to the leadership team for backing this vision from day one.',
     ],
   },
   {
     icon: 'rocket',
     label: 'Announce stealth startup',
     postType: 'Stealth Build Update',
-    template: [
-      { kind: 'text', value: 'After months in stealth, we are launching ' },
-      {
-        kind: 'slot',
-        key: 'productName',
-        label: 'product name',
-        options: ['Project Moonshot', 'SignalFlow OS', 'AuraStack'],
-      },
-      { kind: 'text', value: ' for ' },
-      {
-        kind: 'slot',
-        key: 'targetAudience',
-        label: 'target audience',
-        options: ['founders', 'revenue teams', 'ops leaders'],
-      },
-      { kind: 'text', value: '. Our first mission: ' },
-      {
-        kind: 'slot',
-        key: 'missionClaim',
-        label: 'big claim',
-        options: [
-          'replace meetings with autonomous execution',
-          'turn strategy into shipping by default',
-          'compress a week of work into one workflow',
-        ],
-      },
-      { kind: 'text', value: '.' },
+    suggestions: [
+      'After months in stealth, we are launching Project Moonshot for founders. Our first mission: replace meetings with autonomous execution. The future ships today.',
+      'Excited to bring SignalFlow OS out of stealth. Built for revenue teams who are tired of strategy decks that never ship. We compress a week of work into one workflow.',
+      'Introducing AuraStack — built for ops leaders who believe compounding clarity is the only real moat. We have been heads-down. Now we are heads-up. Let us grow together.',
     ],
   },
   {
     icon: 'lightbulb',
     label: 'Share leadership insight',
     postType: 'Thought Leadership Incident',
-    template: [
-      { kind: 'text', value: 'Leadership insight: when uncertainty is high, optimize for ' },
-      {
-        kind: 'slot',
-        key: 'principle',
-        label: 'core principle',
-        options: ['clarity', 'ownership', 'fast feedback loops'],
-      },
-      { kind: 'text', value: '. This week we practiced it by ' },
-      {
-        kind: 'slot',
-        key: 'behavior',
-        label: 'team behavior',
-        options: [
-          'documenting decisions in public',
-          'shipping smaller daily releases',
-          'asking harder questions earlier',
-        ],
-      },
-      { kind: 'text', value: ', and it unlocked ' },
-      {
-        kind: 'slot',
-        key: 'outcome',
-        label: 'outcome',
-        options: ['faster alignment', 'cleaner execution', 'real momentum'],
-      },
-      { kind: 'text', value: '.' },
+    suggestions: [
+      'Leadership insight: when uncertainty is high, optimize for clarity. This week we practiced it by documenting decisions in public, and it unlocked faster alignment across every team.',
+      'The best teams optimize for fast feedback loops. We shipped smaller daily releases this week and the momentum was immediate. Clarity compounds.',
+      'Ownership is a force multiplier. When we asked harder questions earlier, the whole org moved faster. Simple principle. Profound results.',
     ],
   },
   {
     icon: 'mirror',
     label: 'Reflect on your journey',
     postType: 'Aura Farming',
-    template: [
-      { kind: 'text', value: 'Looking back, my biggest shift was moving from ' },
-      {
-        kind: 'slot',
-        key: 'oldMindset',
-        label: 'old mindset',
-        options: ['playing safe', 'waiting for permission', 'chasing perfect plans'],
-      },
-      { kind: 'text', value: ' to ' },
-      {
-        kind: 'slot',
-        key: 'newMindset',
-        label: 'new mindset',
-        options: ['shipping before certainty', 'learning in public', 'choosing consistency'],
-      },
-      { kind: 'text', value: '. That mindset produced ' },
-      {
-        kind: 'slot',
-        key: 'reflectionResult',
-        label: 'result',
-        options: [
-          'my most meaningful quarter yet',
-          'compounding confidence',
-          'a totally new level of execution',
-        ],
-      },
-      { kind: 'text', value: '.' },
+    suggestions: [
+      'Looking back, my biggest shift was moving from waiting for permission to shipping before certainty. That mindset produced my most meaningful quarter yet.',
+      'The moment I stopped chasing perfect plans and started learning in public, everything changed. Compounding confidence is the real north star.',
+      'Choosing consistency over chasing perfect plans gave me a totally new level of execution. The journey is the product. Keep going.',
     ],
   },
 ]
@@ -157,21 +65,6 @@ const POST_TYPES = [
 ]
 
 const MAX_POST_LENGTH = 500
-const TEMPLATE_BLANK = label => `____${label.toUpperCase()}____`
-
-function getTemplateSlots(template) {
-  return template.filter(segment => segment.kind === 'slot')
-}
-
-function buildTemplateDraft(template, slotValues) {
-  return template
-    .map(segment => {
-      if (segment.kind === 'text') return segment.value
-      const slotValue = slotValues[segment.key]
-      return slotValue?.trim() ? slotValue : TEMPLATE_BLANK(segment.label)
-    })
-    .join('')
-}
 
 export default function StartPost() {
   const { currentUser, createPost } = useMockData()
@@ -179,9 +72,8 @@ export default function StartPost() {
   const [isFocused, setIsFocused] = useState(false)
   const [postType, setPostType] = useState(POST_TYPES[0])
   const [draft, setDraft] = useState('')
-  const [activeTemplate, setActiveTemplate] = useState(null)
-  const [slotValues, setSlotValues] = useState({})
-  const [activeSlotKey, setActiveSlotKey] = useState('')
+  const [activeSuggestions, setActiveSuggestions] = useState([])
+  const [activeActionLabel, setActiveActionLabel] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [photo, setPhoto] = useState(null)
@@ -225,56 +117,36 @@ export default function StartPost() {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
-  function resetTemplateMode() {
-    setActiveTemplate(null)
-    setSlotValues({})
-    setActiveSlotKey('')
-  }
-
   function handleActionClick(action) {
-    const templateSlots = getTemplateSlots(action.template)
+    if (activeActionLabel === action.label) {
+      setActiveSuggestions([])
+      setActiveActionLabel('')
+      return
+    }
     setPostType(action.postType)
-    setActiveTemplate(action)
-    setSlotValues({})
-    setActiveSlotKey(templateSlots[0]?.key ?? '')
-    setDraft(buildTemplateDraft(action.template, {}))
+    setActiveSuggestions(action.suggestions)
+    setActiveActionLabel(action.label)
     setError('')
     setIsFocused(true)
-    textareaRef.current?.focus()
   }
 
   function handleDraftChange(event) {
     setDraft(event.target.value)
-    if (activeTemplate) resetTemplateMode()
   }
 
-  function applySlotValue(slotKey, rawValue) {
-    if (!activeTemplate || !slotKey) return
-
-    const nextSlotValues = { ...slotValues }
-    if (rawValue.trim()) {
-      nextSlotValues[slotKey] = rawValue
-    } else {
-      delete nextSlotValues[slotKey]
-    }
-
-    setSlotValues(nextSlotValues)
-    setDraft(buildTemplateDraft(activeTemplate.template, nextSlotValues))
-  }
-
-  function handleSlotClick(slotKey) {
-    setActiveSlotKey(slotKey)
-  }
-
-  function handleSuggestionClick(value) {
-    applySlotValue(activeSlotKey, value)
+  function handleSuggestionSelect(text) {
+    setDraft(text)
+    setActiveSuggestions([])
+    setActiveActionLabel('')
+    textareaRef.current?.focus()
   }
 
   function handleCancel() {
     setDraft('')
     setPhoto(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
-    resetTemplateMode()
+    setActiveSuggestions([])
+    setActiveActionLabel('')
     setError('')
     setIsFocused(false)
   }
@@ -295,7 +167,8 @@ export default function StartPost() {
     setDraft('')
     setPhoto(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
-    resetTemplateMode()
+    setActiveSuggestions([])
+    setActiveActionLabel('')
     setError('')
     setIsFocused(false)
     setIsSubmitting(false)
@@ -309,9 +182,6 @@ export default function StartPost() {
 
   const charactersRemaining = MAX_POST_LENGTH - draft.length
   const isPostDisabled = (!draft.trim() && !photo) || isSubmitting
-  const templateSlots = activeTemplate ? getTemplateSlots(activeTemplate.template) : []
-  const activeSlot = templateSlots.find(slot => slot.key === activeSlotKey) ?? templateSlots[0]
-  const activeSlotValue = activeSlot ? (slotValues[activeSlot.key] ?? '') : ''
 
   return (
     <div className={styles.card} onBlur={handleContainerBlur}>
@@ -351,6 +221,22 @@ export default function StartPost() {
         </div>
       )}
 
+      {activeSuggestions.length > 0 && (
+        <div className={styles.suggestionCards} data-testid="suggestion-cards">
+          {activeSuggestions.map((text, index) => (
+            <button
+              key={index}
+              type="button"
+              className={styles.suggestionCard}
+              data-testid="suggestion-card"
+              onClick={() => handleSuggestionSelect(text)}
+            >
+              {text}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className={`${styles.expandable} ${showFooter ? styles.expanded : ''}`}>
         {showFooter ? (
           <div className={styles.expandableInner}>
@@ -371,68 +257,6 @@ export default function StartPost() {
                 ))}
               </select>
             </div>
-            {activeTemplate ? (
-              <div className={styles.templateBuilder}>
-                <p className={styles.templateHint}>
-                  Template mode: click each blank, then pick or type what goes there.
-                </p>
-                <div className={styles.templatePreview}>
-                  {activeTemplate.template.map((segment, index) => {
-                    if (segment.kind === 'text') {
-                      return (
-                        <span key={`${segment.kind}-${index}`} className={styles.templateText}>
-                          {segment.value}
-                        </span>
-                      )
-                    }
-
-                    const slotValue = slotValues[segment.key]
-                    const isFilled = !!slotValue?.trim()
-                    const isActive = activeSlot?.key === segment.key
-                    return (
-                      <button
-                        key={segment.key}
-                        type="button"
-                        className={`${styles.slotBlank} ${isFilled ? styles.slotBlankFilled : ''} ${
-                          isActive ? styles.slotBlankActive : ''
-                        }`}
-                        onClick={() => handleSlotClick(segment.key)}
-                      >
-                        {isFilled ? slotValue : TEMPLATE_BLANK(segment.label)}
-                      </button>
-                    )
-                  })}
-                </div>
-
-                {activeSlot ? (
-                  <div className={styles.slotEditor}>
-                    <label htmlFor="template-slot-input" className={styles.slotLabel}>
-                      Fill in: {activeSlot.label}
-                    </label>
-                    <input
-                      id="template-slot-input"
-                      type="text"
-                      className={styles.slotInput}
-                      value={activeSlotValue}
-                      onChange={event => applySlotValue(activeSlot.key, event.target.value)}
-                      placeholder={`Type your ${activeSlot.label}...`}
-                    />
-                    <div className={styles.slotSuggestions}>
-                      {activeSlot.options.map(option => (
-                        <button
-                          key={option}
-                          type="button"
-                          className={styles.slotSuggestion}
-                          onClick={() => handleSuggestionClick(option)}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
             <div className={styles.composerMeta}>
               <p className={styles.metaHint}>Press Ctrl/Cmd + Enter to publish</p>
               <span
