@@ -1,8 +1,8 @@
 # LARP Platform — Backend Architecture Reference
 
-A satirical, hyper-gamified professional networking platform where corporate culture is taken to its absurd logical endpoint. AI scores your "buzzword density," a caste system hides the elite from peasants, auto-generated sycophantic compliments flood every post, and you can voice-chat with parody CEO characters.
+A satirical, hyper-gamified professional networking platform where corporate culture is taken to its absurd logical endpoint. AI scores your "buzzword density," a caste system hides the elite from peasants, and auto-generated sycophantic compliments flood every post.
 
-**Stack**: Supabase (Postgres + Auth) | FastAPI (orchestration + AI) | Gemini 2.0 Flash (scoring, glazes, roleplay) | ElevenLabs (streaming TTS)
+**Stack**: Supabase (Postgres + Auth) | FastAPI (orchestration + AI) | Gemini 2.0 Flash (scoring + glazes)
 
 ---
 
@@ -21,7 +21,9 @@ npx supabase db reset        # applies migrations + seeds
 
 # 2. Backend
 cd backend
-cp .env.example .env         # fill in keys
+python -m venv .venv
+source .venv/bin/activate    # Windows: .venv\Scripts\activate
+cp .env.example .env         # fill in keys from `npx supabase status`
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 
@@ -35,10 +37,10 @@ SUPABASE_URL=http://127.0.0.1:54321        # or https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key             # for user-context queries (RLS applies)
 SUPABASE_SERVICE_ROLE_KEY=your-service-key  # for privileged backend operations (bypasses RLS)
 GEMINI_API_KEY=your-gemini-api-key
-ELEVENLABS_API_KEY=your-elevenlabs-api-key
+ELEVENLABS_API_KEY=your-elevenlabs-api-key  # optional, for teammate's TTS feature
 ```
 
-For local dev, get keys from `npx supabase status` after starting.
+For local dev, get Supabase keys from `npx supabase status` after starting.
 
 ---
 
@@ -80,7 +82,7 @@ Migration file: `supabase/migrations/20260328000000_initial_schema.sql`
 | glaze_type | text | organic, ai_generated, premium_glaze |
 | created_at | timestamptz | |
 
-**roleplay_sessions**
+**roleplay_sessions** (teammate-owned — LarpMaxxing feature)
 | Column | Type | Notes |
 |---|---|---|
 | id | uuid PK | |
@@ -136,33 +138,24 @@ backend/
 │   │   ├── feed.py            # GET /api/feed — Glaze-o-matic
 │   │   ├── posts.py           # POST /api/posts — create + trigger scoring
 │   │   ├── jobs.py            # PATCH /api/jobs/title — unvalidated prestige
-│   │   └── roleplay.py        # POST /api/roleplay/chat, GET /api/roleplay/speak
+│   │   └── roleplay.py        # STUB — teammate owns this (LarpMaxxing)
 │   ├── services/
 │   │   ├── __init__.py
-│   │   ├── gemini.py          # Gemini API wrapper (scoring, glazes, roleplay)
-│   │   ├── elevenlabs.py      # ElevenLabs WebSocket TTS streaming
-│   │   └── voice_registry.py  # character_id -> voice_id + character metadata
+│   │   ├── gemini.py          # Gemini API wrapper (scoring + glazes)
+│   │   ├── elevenlabs.py      # STUB — teammate owns this (TTS streaming)
+│   │   └── voice_registry.py  # STUB — teammate owns this (character definitions)
 │   └── workers/
 │       ├── __init__.py
 │       └── scoring.py         # Prestige Evaluator background task
 ```
 
+### Ownership
+- **Active (your scope)**: main.py, config.py, dependencies.py, feed.py, posts.py, jobs.py, gemini.py, scoring.py
+- **Stubs (teammate's scope)**: roleplay.py, elevenlabs.py, voice_registry.py
+
 ---
 
-## API Endpoints
-
-### PATCH /api/jobs/title — "J*bs" Unvalidated Title Update
-- **Auth**: Bearer JWT required
-- **Body**: `{"title": "any string at all"}`
-- **Supabase client**: Service role
-- **Behavior**: Overwrites `profiles.title` with zero validation. No length check. No profanity filter. That's the joke — instant unearned prestige.
-
-### POST /api/posts — Create Post
-- **Auth**: Bearer JWT required
-- **Body**: `{"content": "...", "post_type": "thought_leadership"}`
-- **Supabase client**: Service role (insert)
-- **Side effect**: Fires `score_content()` as a BackgroundTask
-- **Returns**: The created post (buzzword_score = 0 initially, updated async)
+## API Endpoints (Active)
 
 ### GET /api/feed — Glaze-o-matic Feed
 - **Auth**: Bearer JWT required
@@ -174,28 +167,22 @@ backend/
   3. Batch post contents to Gemini for AI glaze generation (3 per post)
   4. Return `{posts: [{...post, glazes: [...], ai_glazes: [...]}]}`
 
-### POST /api/roleplay/chat — LarpMaxxing Chat
+### POST /api/posts — Create Post
 - **Auth**: Bearer JWT required
-- **Body**: `{"session_id": null|"uuid", "character_id": "gary_vee", "message": "..."}`
-- **Supabase client**: Service role
-- **Flow**:
-  1. Load or create roleplay_sessions row
-  2. Append user message to conversation_history
-  3. Send full history to Gemini with character system prompt
-  4. Gemini returns `{character_id, dialogue, emotion}`
-  5. Append response, save to DB
-  6. Return `{session_id, character_id, dialogue, emotion}`
+- **Body**: `{"content": "...", "post_type": "thought_leadership"}`
+- **Supabase client**: Service role (insert)
+- **Side effect**: Fires `score_content()` as a BackgroundTask
+- **Returns**: The created post (buzzword_score = 0 initially, updated async)
 
-### GET /api/roleplay/speak — Streaming TTS
+### PATCH /api/jobs/title — "J*bs" Unvalidated Title Update
 - **Auth**: Bearer JWT required
-- **Query params**: `text=...`, `character_id=...`
-- **Returns**: `StreamingResponse(media_type="audio/mpeg")`
-- **Flow**:
-  1. Look up voice_id from Voice Registry
-  2. Split text into sentence chunks (on `.`, `!`, `?`, `;`)
-  3. Open WebSocket to ElevenLabs
-  4. Stream text chunks in, yield audio bytes out
-  5. Client receives continuous audio stream
+- **Body**: `{"title": "any string at all"}`
+- **Supabase client**: Service role
+- **Behavior**: Overwrites `profiles.title` with zero validation. No length check. No profanity filter. That's the joke — instant unearned prestige.
+
+### GET /health — Health Check
+- **Auth**: None
+- **Returns**: `{"status": "larping"}`
 
 ---
 
@@ -203,18 +190,16 @@ backend/
 
 | Endpoint | Client Type | Why |
 |---|---|---|
-| PATCH /api/jobs/title | **Service role** | Privileged update, no RLS issues |
-| POST /api/posts | **Service role** | Insert on behalf of user |
 | GET /api/feed | **Anon key + user JWT** | **MUST respect Social Blindness RLS** |
+| POST /api/posts | **Service role** | Insert on behalf of user |
+| PATCH /api/jobs/title | **Service role** | Privileged update |
 | Scoring worker | **Service role** | Writes buzzword_score, calls update_larp_rating RPC |
-| POST /api/roleplay/chat | **Service role** | Read/write roleplay_sessions |
-| GET /api/roleplay/speak | **None** | No DB interaction, only ElevenLabs |
 
 ---
 
 ## Gemini Prompts
 
-### 1. Prestige Evaluator (used by scoring worker)
+### 1. Prestige Evaluator (used by scoring worker — `workers/scoring.py`)
 
 ```
 You are the Prestige Evaluator, a merciless AI judge of corporate performativity.
@@ -243,7 +228,7 @@ Respond in STRICT JSON only, no markdown:
 {"buzzword_score": <float>, "enthusiasm_score": <float>, "rating_delta": <float>, "roast": "<string>"}
 ```
 
-### 2. Glaze-o-matic 3000 (used by feed endpoint)
+### 2. Glaze-o-matic 3000 (used by feed endpoint — `routers/feed.py`)
 
 ```
 You are the Glaze-o-matic 3000, the world's most aggressively sycophantic
@@ -271,93 +256,6 @@ Respond in STRICT JSON only, no markdown:
 }
 ```
 
-### 3. Roleplay Character (used by roleplay chat — template, filled per character)
-
-```
-You are {character_name}, a legendary figure in the corporate LARP universe.
-You are being consulted by an aspiring professional who seeks your wisdom.
-
-Character bio: {character_bio}
-
-Personality traits: {personality_traits}
-
-Rules:
-- Stay in character at all times. Never break the fourth wall.
-- Your responses should be satirical exaggerations of {character_archetype} advice.
-- Be absurdly confident. Every piece of advice should sound profound but be
-  hilariously impractical or tautological.
-- Pepper your speech with the character's signature catchphrases.
-- Keep responses to 2-4 sentences for natural conversation flow.
-
-Respond in STRICT JSON only:
-{"character_id": "{character_id}", "dialogue": "<your response>", "emotion": "<one of: inspired, intense, zen, manic, condescending, enlightened>"}
-```
-
----
-
-## Voice Registry — Character Definitions
-
-Four placeholder characters. Voice IDs are ElevenLabs pre-made voices — swap with your own later.
-
-```python
-CHARACTER_REGISTRY = {
-    "gary_vee": {
-        "name": "Gary Vee (Parody)",
-        "voice_id": "pNInz6obpgDQGcFmaJgB",       # "Adam" — energetic male
-        "bio": "A serial entrepreneur who believes every moment not spent hustling is wasted.",
-        "personality_traits": "Manic energy, interrupts self, uses 'crush it' as punctuation",
-        "archetype": "hustle culture guru",
-    },
-    "corporate_buddha": {
-        "name": "The Corporate Buddha",
-        "voice_id": "EXAVITQu4vr4xnSDxMaL",       # "Bella" — calm female
-        "bio": "Former McKinsey partner who achieved enlightenment during a quarterly review.",
-        "personality_traits": "Serene, speaks in koans that are actually business jargon",
-        "archetype": "mindfulness-meets-management consultant",
-    },
-    "hustle_sensei": {
-        "name": "The Hustle Sensei",
-        "voice_id": "VR6AewLTigWG4xSOukaG",       # "Arnold" — authoritative
-        "bio": "A LinkedIn thought leader who wakes up at 3AM to post about waking up at 3AM.",
-        "personality_traits": "Relentlessly optimistic, humble-brags constantly",
-        "archetype": "LinkedIn motivational poster come to life",
-    },
-    "disruption_diva": {
-        "name": "The Disruption Diva",
-        "voice_id": "21m00Tcm4TlvDq8ikWAM",       # "Rachel" — confident female
-        "bio": "Startup founder who has pivoted 47 times and calls each one 'a strategic evolution'.",
-        "personality_traits": "Uses 'disrupt' as every part of speech, pitches constantly",
-        "archetype": "startup founder on permanent pitch mode",
-    },
-}
-```
-
----
-
-## ElevenLabs WebSocket TTS Protocol
-
-The streaming audio flow for `/api/roleplay/speak`:
-
-1. **Connect**: `wss://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream-input?model_id=eleven_turbo_v2_5`
-2. **Send initial config** (JSON):
-   ```json
-   {"text": " ", "voice_settings": {"stability": 0.5, "similarity_boost": 0.75}, "xi_api_key": "YOUR_KEY"}
-   ```
-3. **Send text chunks** (JSON, one per sentence):
-   ```json
-   {"text": "First sentence. ", "try_trigger_generation": true}
-   ```
-4. **Send end signal**: `{"text": ""}`
-5. **Receive audio** (JSON with base64 mp3):
-   ```json
-   {"audio": "<base64>", "isFinal": false}
-   ```
-6. **Decode and yield** each audio chunk to the StreamingResponse
-
-**Text chunking**: Split on `(?<=[.!?;])\s+` — natural sentence boundaries for smooth TTS.
-
-**Critical**: The API key goes in the first WebSocket message payload (`xi_api_key`), NOT as a header or query param.
-
 ---
 
 ## Data Flows
@@ -384,21 +282,18 @@ Client -> GET /api/feed (Bearer: user JWT)
   -> Return bundled feed to client
 ```
 
-### Roleplay Chat + Voice
-```
-Client -> POST /api/roleplay/chat
-  -> Load/create session from roleplay_sessions
-  -> Append user message to conversation_history
-  -> Gemini returns {character_id, dialogue, emotion}
-  -> Save updated history to DB
-  -> Return response
+---
 
-Client -> GET /api/roleplay/speak?text=<dialogue>&character_id=<id>
-  -> Voice Registry lookup -> voice_id
-  -> chunk_text(dialogue) -> sentence chunks
-  -> ElevenLabs WebSocket: stream text in, audio out
-  -> StreamingResponse yields audio bytes to client
-```
+## Teammate Integration: Roleplay / LarpMaxxing / ElevenLabs
+
+The following files are **stubs** ready for the teammate to build out:
+
+- `routers/roleplay.py` — currently an empty router. Wire into `main.py` with `app.include_router(roleplay.router, prefix="/api")` when ready.
+- `services/voice_registry.py` — has 4 placeholder characters with ElevenLabs voice IDs and a Gemini roleplay prompt template. Ready to use.
+- `services/elevenlabs.py` — has `chunk_text()` and `stream_tts()` scaffolded for WebSocket TTS streaming.
+- `services/gemini.py` — already has `roleplay_chat()` function and the roleplay prompt template.
+
+The database table `roleplay_sessions` and its RLS policy are already in the migration.
 
 ---
 
@@ -414,6 +309,7 @@ npx supabase status                   # show local URLs and keys
 
 # Backend
 cd backend
+source .venv/bin/activate             # activate virtualenv
 uvicorn app.main:app --reload         # start FastAPI dev server
 pip install -r requirements.txt       # install dependencies
 
@@ -432,12 +328,12 @@ curl http://localhost:8000/api/feed -H "Authorization: Bearer <jwt>"
 
 3. **`google-genai`** (package name) is the modern SDK. NOT `google-generativeai` (legacy). Use `client.aio.models.generate_content()` for async calls in FastAPI.
 
-4. **ElevenLabs auth** goes in the WebSocket first-message payload as `xi_api_key`, not as a header.
+4. **`update_larp_rating`** is `SECURITY DEFINER` — runs with function owner's privileges regardless of caller. Safe to call from any client type via `.rpc()`.
 
-5. **`update_larp_rating`** is `SECURITY DEFINER` — runs with function owner's privileges regardless of caller. Safe to call from any client type via `.rpc()`.
+5. **Scoring is fire-and-forget.** Uses FastAPI `BackgroundTasks`, not Celery. If the server restarts mid-scoring, that score is lost. Acceptable for a hackathon.
 
-6. **Scoring is fire-and-forget.** Uses FastAPI `BackgroundTasks`, not Celery. If the server restarts mid-scoring, that score is lost. Acceptable for a hackathon.
+6. **CORS**: Frontend expected at `localhost:3000` or `localhost:5173` (Vite default). Configured in `main.py`.
 
-7. **CORS**: Frontend expected at `localhost:3000`. Configured in `main.py`.
+7. **Supabase Python client for user-context**: Use `create_client(url, anon_key)` then `client.postgrest.auth(user_jwt)` to set the Bearer token so PostgREST enforces RLS as that user.
 
-8. **Supabase Python client for user-context**: Use `create_client(url, anon_key)` then `client.postgrest.auth(user_jwt)` to set the Bearer token so PostgREST enforces RLS as that user.
+8. **Frontend proxy**: Add `server: { proxy: { '/api': 'http://localhost:8000' } }` to `vite.config.ts` so fetch('/api/feed') hits FastAPI without CORS issues in dev.
