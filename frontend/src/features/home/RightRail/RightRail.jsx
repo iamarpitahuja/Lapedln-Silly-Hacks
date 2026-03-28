@@ -1,13 +1,10 @@
 import { useMockData } from '../../../context/MockDataContext'
+import { getInitials } from '../../../utils/strings'
 import styles from './RightRail.module.css'
 
-const LOCKED_POSTS = [
-  { id: 'a', authorInitials: 'TW', blur: true },
-  { id: 'b', authorInitials: 'SB', blur: true },
-]
-
 export default function RightRail() {
-  const { trendingDelusions, buzzwords } = useMockData()
+  const { trendingDelusions, buzzwords, allPosts, isAccessible } = useMockData()
+  const lockedPosts = allPosts.filter(post => !isAccessible(post.author.larpRating)).slice(0, 2)
 
   return (
     <div className={styles.rail}>
@@ -40,11 +37,11 @@ export default function RightRail() {
       <div className={styles.card}>
         <h3 className={styles.title}>Top posts you cannot view because of your LarpRating</h3>
         <div className={styles.lockedList}>
-          {LOCKED_POSTS.map(post => (
+          {lockedPosts.map(post => (
             <div key={post.id} className={styles.lockedCard}>
               <div className={styles.lockedBlur}>
                 <div className={styles.lockedFakeContent}>
-                  <div className={styles.fakeAvatar}>{post.authorInitials}</div>
+                  <div className={styles.fakeAvatar}>{getInitials(post.author.name)}</div>
                   <div className={styles.fakeLines}>
                     <div className={styles.fakeLine} style={{ width: '60%' }} />
                     <div className={styles.fakeLine} style={{ width: '40%' }} />

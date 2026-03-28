@@ -1,10 +1,7 @@
 import { useMockData } from '../../../context/MockDataContext'
 import LarpRatingBadge from '../../../components/LarpRatingBadge/LarpRatingBadge'
+import { getInitials } from '../../../utils/strings'
 import styles from './LeftRail.module.css'
-
-function getInitials(name) {
-  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-}
 
 export default function LeftRail() {
   const { currentUser } = useMockData()

@@ -1,10 +1,7 @@
 import LarpRatingBadge from '../../../../components/LarpRatingBadge/LarpRatingBadge'
 import SuggestedGlazes from '../SuggestedGlazes/SuggestedGlazes'
+import { getInitials } from '../../../../utils/strings'
 import styles from './PostCard.module.css'
-
-function getInitials(name) {
-  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-}
 
 const AVATAR_COLORS = ['#0A66C2', '#057642', '#7c3aed', '#b45309', '#be123c', '#0891b2']
 

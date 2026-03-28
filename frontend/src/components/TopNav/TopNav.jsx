@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useMockData } from '../../context/MockDataContext'
+import { getInitials } from '../../utils/strings'
 import styles from './TopNav.module.css'
 
 const NAV_ITEMS = [
