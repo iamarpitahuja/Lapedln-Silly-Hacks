@@ -1,0 +1,90 @@
+.card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.banner {
+  background: #057642;
+  padding: 16px 20px;
+  border-radius: 8px;
+}
+
+.bannerHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.persona {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.pill {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btnOutlined {
+  padding: 6px 16px;
+  border-radius: 16px;
+  border: 1px solid #fff;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+}
+
+.btnOutlined:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btnFilled {
+  padding: 6px 16px;
+  border-radius: 16px;
+  background: #fff;
+  color: #057642;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+}
+
+.btnFilled:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
