@@ -1,0 +1,156 @@
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 12px 16px;
+  overflow: hidden;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+  margin-bottom: 10px;
+}
+
+/* Trending list */
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.listItem {
+  display: flex;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.listNum {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  min-width: 16px;
+}
+
+/* Buzzwords */
+.buzzList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.buzzItem {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.9);
+  padding: 2px 0;
+}
+
+.seeMore {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 4px 0;
+  display: block;
+}
+
+.seeMore:hover {
+  color: rgba(0, 0, 0, 0.9);
+  text-decoration: underline;
+}
+
+/* Locked posts */
+.lockedList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lockedCard {
+  position: relative;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.lockedBlur {
+  padding: 12px;
+  filter: blur(5px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.lockedFakeContent {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.fakeAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ccc;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.fakeLines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.fakeLine {
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.fakeParagraph {
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.lockedOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.55);
+  gap: 4px;
+  padding: 8px;
+}
+
+.lockIcon {
+  font-size: 20px;
+}
+
+.lockMessage {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
