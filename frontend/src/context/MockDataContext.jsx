@@ -1,4 +1,5 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { fetchProfile } from '../services/api'
 
 const CURRENT_USER = {
   name: 'Arjun Malhotra',
@@ -116,19 +117,51 @@ const BUZZWORDS = ['Hyperscale', 'Narrative leverage', 'Operator mindset', 'Aura
 const MockDataContext = createContext(null)
 
 export function MockDataProvider({ children }) {
+  const [userPosts, setUserPosts] = useState([])
+  const [currentUser, setCurrentUser] = useState(CURRENT_USER)
+
+  // Sync profile from backend on mount (picks up persisted title changes etc.)
+  useEffect(() => {
+    fetchProfile()
+      .then(profile => {
+        setCurrentUser(prev => ({
+          ...prev,
+          headline: profile.title || prev.headline,
+          larpRating: profile.larp_rating ?? prev.larpRating,
+          name: profile.display_name || prev.name,
+        }))
+      })
+      .catch(() => {
+        // Backend not running — keep mock data
+      })
+  }, [])
+
   function isAccessible(targetRating) {
-    return targetRating <= CURRENT_USER.larpRating
+    return targetRating <= currentUser.larpRating
   }
 
-  const feedPosts = ALL_POSTS.filter(post => isAccessible(post.author.larpRating))
+  const feedPosts = [
+    ...userPosts,
+    ...ALL_POSTS.filter(post => isAccessible(post.author.larpRating)),
+  ]
+
+  const addPost = useCallback((post) => {
+    setUserPosts(prev => [post, ...prev])
+  }, [])
+
+  const updateCurrentUser = useCallback((updates) => {
+    setCurrentUser(prev => ({ ...prev, ...updates }))
+  }, [])
 
   const value = {
-    currentUser: CURRENT_USER,
+    currentUser,
     feedPosts,
     allPosts: ALL_POSTS,
     trendingDelusions: TRENDING_DELUSIONS,
     buzzwords: BUZZWORDS,
     isAccessible,
+    addPost,
+    updateCurrentUser,
   }
 
   return <MockDataContext.Provider value={value}>{children}</MockDataContext.Provider>
