@@ -11,6 +11,24 @@
   background: rgba(10, 102, 194, 0.03);
 }
 
+.relarpBanner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #f3f8f5;
+  border-bottom: 1px solid rgba(5, 118, 66, 0.15);
+}
+
+.relarpBannerIcon {
+  color: #057642;
+}
+
+.relarpBannerText {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.72);
+}
+
 .header {
   display: flex;
   align-items: flex-start;
@@ -103,6 +121,59 @@
   line-height: 1.6;
 }
 
+.relarpEmbed {
+  margin-top: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 10px 11px;
+  background: #fbfcfd;
+}
+
+.relarpEmbedHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.relarpEmbedAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.relarpEmbedAuthor {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.82);
+}
+
+.relarpEmbedHeadline {
+  margin-top: 1px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.relarpEmbedMeta {
+  margin-top: 2px;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.48);
+}
+
+.relarpEmbedContent {
+  margin-top: 8px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.82);
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
 .reactions {
   padding: 8px 16px;
   display: flex;
@@ -134,6 +205,13 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
+.reactionStat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+}
+
 .activeReaction {
   background: rgba(10, 102, 194, 0.08);
 }
@@ -156,6 +234,7 @@
 .iconLike { color: #0A66C2; fill: #0A66C2; }
 .iconLove { color: #df3333; fill: #df3333; }
 .iconGlaze { color: #f59e0b; fill: #f59e0b; }
+.iconRelarp { color: #057642; fill: #057642; }
 
 .commentSummary {
   display: flex;
@@ -207,6 +286,13 @@
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
+.action:disabled {
+  background: #f7f8fa;
+  color: rgba(0, 0, 0, 0.35);
+  border-top-color: transparent;
+  cursor: not-allowed;
+}
+
 .actionGlaze:hover,
 .actionGlaze.selected {
   background: rgba(251, 191, 36, 0.12);
@@ -226,10 +312,102 @@
   border-top-color: #057642;
 }
 
+.actionRelarpActive {
+  background: rgba(5, 118, 66, 0.12);
+  color: #057642;
+  border-top-color: #057642;
+}
+
 .actionDm:hover {
   background: rgba(124, 58, 237, 0.08);
   color: #7c3aed;
   border-top-color: #7c3aed;
+}
+
+.relarpComposer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: #f7fbf8;
+  padding: 12px 16px 14px;
+}
+
+.relarpTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.relarpInput {
+  margin-top: 8px;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+  padding: 9px 10px;
+  resize: vertical;
+  min-height: 64px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.relarpInput:focus {
+  border-color: #057642;
+  box-shadow: 0 0 0 2px rgba(5, 118, 66, 0.12);
+  outline: none;
+}
+
+.relarpMeta {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.relarpHint {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.relarpError {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #b42318;
+}
+
+.relarpActions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.relarpCancel {
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.relarpCancel:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.relarpSubmit {
+  border-radius: 999px;
+  background: #057642;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+}
+
+.relarpSubmit:hover {
+  background: #045e35;
+}
+
+.relarpSubmit:disabled {
+  background: rgba(5, 118, 66, 0.5);
+  cursor: not-allowed;
 }
 
 .commentsSection {
