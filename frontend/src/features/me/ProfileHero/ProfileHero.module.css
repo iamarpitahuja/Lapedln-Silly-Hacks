@@ -1,0 +1,85 @@
+.card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.coverPhoto {
+  height: 120px;
+  background: linear-gradient(135deg, #0A66C2 0%, #004182 100%);
+}
+
+.heroBody {
+  padding: 0 24px 24px;
+  position: relative;
+}
+
+.avatarWrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: -36px;
+  margin-bottom: 12px;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #0A66C2;
+  color: #fff;
+  font-size: 32px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #fff;
+}
+
+.editBtn {
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 6px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+
+.editBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.name {
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.9);
+  margin-bottom: 4px;
+}
+
+.headline {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 10px;
+}
+
+.badgeRow {
+  margin-bottom: 8px;
+}
+
+.persona {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.recruiterStat {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.statValue {
+  font-weight: 600;
+  color: #0A66C2;
+}
