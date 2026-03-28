@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useMockData } from '../../../../context/MockDataContext'
 import Icon from '../../../../components/Icon/Icon'
+import { getInitials } from '../../../../utils/strings'
 import styles from './StartPost.module.css'
 
 const PLACEHOLDERS = [
@@ -16,10 +17,6 @@ const ACTIONS = [
   { icon: 'lightbulb', label: 'Share leadership insight', postType: 'Thought Leadership Incident' },
   { icon: 'mirror', label: 'Reflect on your journey', postType: 'Aura Farming' },
 ]
-
-function getInitials(name) {
-  return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-}
 
 const POST_TYPES = [
   'Career Lore',
@@ -50,7 +47,7 @@ export default function StartPost() {
     return () => clearInterval(timer)
   }, [])
 
-  const showFooter = isFocused || draft.length > 0
+  const showFooter = isFocused || draft.trim().length > 0
 
   function handleContainerBlur(event) {
     if (!event.currentTarget.contains(event.relatedTarget)) {
