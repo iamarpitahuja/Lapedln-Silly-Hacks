@@ -39,11 +39,14 @@ describe('StartPost', () => {
     expect(screen.getByRole('button', { name: 'Post' })).toBeInTheDocument()
   })
 
-  it('hides footer when Cancel is clicked', () => {
+  it('hides footer and clears draft when Cancel is clicked', () => {
     renderStartPost()
-    fireEvent.focus(screen.getByRole('textbox'))
+    const textarea = screen.getByRole('textbox')
+    fireEvent.focus(textarea)
+    fireEvent.change(textarea, { target: { value: 'Half-baked hot take.' } })
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(screen.queryByRole('button', { name: 'Post' })).not.toBeInTheDocument()
+    expect(screen.getByRole('textbox')).toHaveValue('')
   })
 
   it('action buttons expand the footer and pre-select the post type', () => {
