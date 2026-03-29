@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useMockData } from '../../context/MockDataContext'
+import { useAuth } from '../../context/AuthContext'
 import { getInitials } from '../../utils/strings'
 import { fetchConversations } from '../../services/api'
 import styles from './TopNav.module.css'
@@ -67,6 +68,7 @@ const NAV_ITEMS = [
 
 export default function TopNav() {
   const { currentUser } = useMockData()
+  const { signOut } = useAuth()
   const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
@@ -84,6 +86,7 @@ export default function TopNav() {
         {/* Left: Logo + Search */}
         <div className={styles.left}>
           <NavLink to="/" className={styles.logo}>
+            <img src="/logo.png" alt="LarpedIn" className={styles.logoImg} />
             <span className={styles.logoText}>LarpedIn</span>
           </NavLink>
           <div className={styles.searchWrap}>
@@ -143,6 +146,13 @@ export default function TopNav() {
               <span className={styles.tabLabel}>{item.label}</span>
             </NavLink>
           ))}
+          <button className={styles.signOut} onClick={signOut} title="Sign out">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
         </nav>
       </div>
     </header>

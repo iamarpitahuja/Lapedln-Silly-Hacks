@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     supabase_url: str = "http://127.0.0.1:54321"
     supabase_anon_key: str = ""
     supabase_service_role_key: str = ""
+    supabase_jwt_secret: str = ""
     gemini_api_key: str = ""
     elevenlabs_api_key: str = ""
 
@@ -21,8 +22,8 @@ class Settings(BaseSettings):
 
     @property
     def skip_auth(self) -> bool:
-        """Skip JWT verification (no login UI yet). Always true until auth is built."""
-        return True
+        """Skip JWT verification. Set DEV_MODE=true to bypass auth."""
+        return self.dev_mode
 
     model_config = {"env_file": str(_ROOT / ".env"), "env_file_encoding": "utf-8", "extra": "ignore"}
 

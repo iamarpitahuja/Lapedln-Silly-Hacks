@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useMemo, useState, useEffect } from 'react'
+import { useAuth } from './AuthContext'
 import {
   createPost as apiCreatePost,
   createPostComment,
@@ -244,6 +245,7 @@ function toProfilePatch(profile) {
 }
 
 export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
+  const { user } = useAuth()
   const [profile, setProfile] = useState(testMode ? { ...TEST_PROFILE } : { ...EMPTY_PROFILE })
   const [allPosts, setAllPosts] = useState(
     testMode ? [{ ...TEST_SOURCE_POST, author: { ...TEST_SOURCE_POST.author } }] : []
@@ -299,6 +301,21 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
       return { ok: false, error: e instanceof Error ? e.message : 'Profile update failed.' }
     }
   }
+
+  // Seed profile name & avatar from Supabase auth user
+  useEffect(() => {
+    if (!user) return
+    const meta = user.user_metadata ?? {}
+    const authName = meta.full_name || meta.name || user.email?.split('@')[0] || ''
+    const authAvatar = meta.avatar_url || null
+    if (authName) {
+      setProfile(prev => ({
+        ...prev,
+        name: authName,
+        ...(authAvatar ? { avatar: authAvatar } : {}),
+      }))
+    }
+  }, [user])
 
   function isAccessible(targetRating) {
     return Number(targetRating ?? 0) <= profile.larpRating
