@@ -1,8 +1,8 @@
-# LARP Platform — Backend Architecture Reference
+# LARP Platform — Full-Stack Architecture Reference
 
-A satirical, hyper-gamified professional networking platform where corporate culture is taken to its absurd logical endpoint. AI scores your "buzzword density," a caste system hides the elite from peasants, and auto-generated sycophantic compliments flood every post.
+A satirical, hyper-gamified professional networking platform where corporate culture is taken to its absurd logical endpoint. AI scores your "buzzword density," a caste system hides the elite from peasants, auto-generated sycophantic compliments flood every post, and you can roleplay as parody corporate archetypes.
 
-**Stack**: Supabase (Postgres + Auth) | FastAPI (orchestration + AI) | Gemini 2.0 Flash (scoring + glazes)
+**Stack**: Supabase (Postgres + Auth) | FastAPI (orchestration + AI) | React 19 + Vite (frontend) | Gemini 2.0 Flash (scoring + glazes + roleplay) | ElevenLabs (TTS) | Meme Lord API (roast memes)
 
 ---
 
@@ -10,14 +10,14 @@ A satirical, hyper-gamified professional networking platform where corporate cul
 
 ### Prerequisites
 - Python 3.11+
-- Node.js 18+ (for Supabase CLI)
+- Node.js 18+ (for Supabase CLI and frontend)
 - Supabase account (remote) or Docker (local via `supabase start`)
 
 ### Install & Run
 ```bash
 # 1. Supabase (local)
 npx supabase start          # starts local Postgres, Auth, API
-npx supabase db reset        # applies migrations + seeds
+npx supabase db reset        # applies all migrations + seed
 
 # 2. Backend
 cd backend
@@ -27,17 +27,33 @@ cp .env.example .env         # fill in keys from `npx supabase status`
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 
-# 3. Verify
+# 3. Frontend
+cd frontend
+cp .env.example .env.local   # fill in VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+npm install
+npm run dev                  # starts at http://localhost:5173
+
+# 4. Verify
 curl http://localhost:8000/docs   # Swagger UI
 ```
 
-### Environment Variables (.env)
+### Environment Variables
+
+**backend/.env**
 ```
 SUPABASE_URL=http://127.0.0.1:54321        # or https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key             # for user-context queries (RLS applies)
 SUPABASE_SERVICE_ROLE_KEY=your-service-key  # for privileged backend operations (bypasses RLS)
 GEMINI_API_KEY=your-gemini-api-key
-ELEVENLABS_API_KEY=your-elevenlabs-api-key  # optional, for teammate's TTS feature
+ELEVENLABS_API_KEY=your-elevenlabs-api-key  # optional, for TTS in roleplay
+MEMELORD_API_KEY=your-memelord-api-key      # optional, for roast meme generation
+DEV_MODE=false                              # true skips JWT auth (uses hardcoded DEV_USER_ID)
+```
+
+**frontend/.env.local**
+```
+VITE_SUPABASE_URL=http://127.0.0.1:54321
+VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 For local dev, get Supabase keys from `npx supabase status` after starting.
@@ -46,7 +62,7 @@ For local dev, get Supabase keys from `npx supabase status` after starting.
 
 ## Database Schema
 
-Migration file: `supabase/migrations/20260328000000_initial_schema.sql`
+Migrations are in `supabase/migrations/` and applied in order.
 
 ### Tables
 
@@ -55,10 +71,19 @@ Migration file: `supabase/migrations/20260328000000_initial_schema.sql`
 |---|---|---|
 | id | uuid PK | references auth.users(id) |
 | display_name | text | default 'Anonymous Larper' |
-| title | text | default 'Aspiring Thought Leader' |
+| job | text NOT NULL | current role/title (replaces old `title` column) |
 | bio | text | |
 | avatar_url | text | |
+| cover_photo_url | text | |
 | larp_rating | numeric(10,2) | **THE sacred number.** Default 0.00 |
+| stats | jsonb | `{recruiter_views, impression_velocity, aura_growth}` |
+| glazers | jsonb | list of users who have glazed this profile |
+| larp_status | jsonb | `{opportunities: [], current_goals: []}` |
+| experience | jsonb | work history array |
+| education | jsonb | education history array |
+| skills | jsonb | skills array |
+| larp_history | jsonb | LARP event history array |
+| glazes_received | jsonb | compliments received array |
 | created_at | timestamptz | |
 | updated_at | timestamptz | auto-updated via trigger |
 
@@ -68,11 +93,12 @@ Migration file: `supabase/migrations/20260328000000_initial_schema.sql`
 | id | uuid PK | gen_random_uuid() |
 | author_id | uuid FK | -> profiles(id) |
 | content | text | |
-| post_type | text | thought_leadership, humble_brag, announcement, hot_take, glaze |
+| post_type | text | Career Lore, Humblebrag, Announcement, Hot Take, etc. |
 | buzzword_score | numeric(10,2) | AI-evaluated, default 0.00 |
+| roast_meme_url | text | URL to generated meme image (async, nullable) |
 | created_at | timestamptz | |
 
-**glazes** (satirical compliments)
+**glazes** (satirical compliments on posts)
 | Column | Type | Notes |
 |---|---|---|
 | id | uuid PK | |
@@ -82,13 +108,94 @@ Migration file: `supabase/migrations/20260328000000_initial_schema.sql`
 | glaze_type | text | organic, ai_generated, premium_glaze |
 | created_at | timestamptz | |
 
-**roleplay_sessions** (teammate-owned — LarpMaxxing feature)
+**comments**
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| post_id | uuid FK | -> posts(id) CASCADE DELETE |
+| author_id | uuid FK | -> profiles(id) |
+| content | text | |
+| created_at | timestamptz | |
+
+**relarps** (satirical reimaginings of posts)
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| post_id | uuid FK | -> posts(id) CASCADE DELETE |
+| user_id | uuid FK | -> profiles(id) |
+| commentary | text | |
+| created_at | timestamptz | |
+| UNIQUE | (post_id, user_id) | one relarp per user per post |
+
+**post_reactions**
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| post_id | uuid FK | -> posts(id) CASCADE DELETE |
+| user_id | uuid FK | -> profiles(id) |
+| reaction_type | text | like, love |
+| UNIQUE | (post_id, user_id, reaction_type) | |
+
+**relarp_reactions**
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| relarp_id | uuid FK | -> relarps(id) CASCADE DELETE |
+| user_id | uuid FK | -> profiles(id) |
+| reaction_type | text | like, love, glaze |
+| UNIQUE | (relarp_id, user_id, reaction_type) | |
+
+**connections**
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| requester_id | uuid FK | -> profiles(id) |
+| addressee_id | uuid FK | -> profiles(id) |
+| status | text | pending, accepted, declined |
+| created_at | timestamptz | |
+| UNIQUE | (requester_id, addressee_id) | |
+
+**messages** (1:1 DMs)
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| sender_id | uuid FK | -> profiles(id) |
+| receiver_id | uuid FK | -> profiles(id) |
+| content | text | |
+| read | bool | default false |
+| created_at | timestamptz | |
+
+**conversations** (group chats)
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| name | text | |
+| is_group | bool | |
+| created_by | uuid FK | -> profiles(id) |
+| created_at | timestamptz | |
+
+**conversation_members**
+| Column | Type | Notes |
+|---|---|---|
+| conversation_id | uuid FK | -> conversations(id) |
+| user_id | uuid FK | -> profiles(id) |
+
+**group_messages**
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| conversation_id | uuid FK | -> conversations(id) |
+| sender_id | uuid FK | -> profiles(id) |
+| content | text | |
+| created_at | timestamptz | |
+
+**roleplay_sessions**
 | Column | Type | Notes |
 |---|---|---|
 | id | uuid PK | |
 | user_id | uuid FK | -> profiles(id) |
-| character_id | text | e.g. "gary_vee", "corporate_buddha" |
-| conversation_history | jsonb | array of {role, text} messages |
+| character_id | text | gary_vee, corporate_buddha, hustle_sensei, disruption_diva |
+| conversation_history | jsonb | array of `{role, text}` messages |
 | created_at | timestamptz | |
 | updated_at | timestamptz | auto-updated via trigger |
 
@@ -118,6 +225,9 @@ create policy "Social Blindness: hide posts from higher-rated users"
 Other RLS policies:
 - Profiles: anyone can SELECT, only owner can UPDATE
 - Glazes: visible if the parent post is visible (cascades Social Blindness)
+- Comments/relarps/reactions: visible on visible posts, users manage own
+- Connections: users see/manage only their own
+- Messages: users see only messages they sent or received
 - Roleplay sessions: full CRUD for owner only
 
 ---
@@ -128,61 +238,99 @@ Other RLS policies:
 backend/
 ├── .env.example
 ├── requirements.txt
-├── app/
-│   ├── __init__.py
-│   ├── main.py                # FastAPI app, lifespan, CORS, router mounts
-│   ├── config.py              # pydantic-settings, loads .env
-│   ├── dependencies.py        # JWT auth, Supabase client factories
-│   ├── routers/
-│   │   ├── __init__.py
-│   │   ├── feed.py            # GET /api/feed — Glaze-o-matic
-│   │   ├── posts.py           # POST /api/posts — create + trigger scoring
-│   │   ├── jobs.py            # PATCH /api/jobs/title — unvalidated prestige
-│   │   └── roleplay.py        # STUB — teammate owns this (LarpMaxxing)
-│   ├── services/
-│   │   ├── __init__.py
-│   │   ├── gemini.py          # Gemini API wrapper (scoring + glazes)
-│   │   ├── elevenlabs.py      # STUB — teammate owns this (TTS streaming)
-│   │   └── voice_registry.py  # STUB — teammate owns this (character definitions)
-│   └── workers/
-│       ├── __init__.py
-│       └── scoring.py         # Prestige Evaluator background task
+└── app/
+    ├── main.py                # FastAPI app, lifespan, CORS, router mounts
+    ├── config.py              # pydantic-settings, loads .env
+    ├── dependencies.py        # JWT auth, Supabase client factories
+    ├── dev_state.py           # Dev mode helpers (DEV_USER_ID)
+    ├── routers/
+    │   ├── feed.py            # GET /api/feed — Glaze-o-matic + Social Blindness
+    │   ├── posts.py           # CRUD posts + comments + relarps + reactions
+    │   ├── jobs.py            # GET /api/jobs/options, PATCH /api/jobs/current
+    │   ├── profile.py         # GET /api/me, GET /api/users/{id}, PATCH /api/me
+    │   ├── connections.py     # Connection requests (send/accept/decline/list)
+    │   ├── messages.py        # 1:1 DMs + group conversations
+    │   ├── notifications.py   # Aggregated notifications
+    │   ├── relarps.py         # Relarp reactions (like/love/glaze)
+    │   └── roleplay.py        # GET characters, POST chat (LarpMaxxing)
+    ├── services/
+    │   ├── gemini.py          # Gemini API wrapper (scoring + glazes + roleplay)
+    │   ├── voice_registry.py  # Character definitions (Gary Vee, Corporate Buddha, etc.)
+    │   ├── elevenlabs.py      # TTS streaming (WebSocket)
+    │   └── memelord.py        # Roast meme generation API
+    └── workers/
+        └── scoring.py         # Background task: Prestige Evaluator + roast meme
 ```
-
-### Ownership
-- **Active (your scope)**: main.py, config.py, dependencies.py, feed.py, posts.py, jobs.py, gemini.py, scoring.py
-- **Stubs (teammate's scope)**: roleplay.py, elevenlabs.py, voice_registry.py
 
 ---
 
-## API Endpoints (Active)
+## API Endpoints
 
-### GET /api/feed — Glaze-o-matic Feed
-- **Auth**: Bearer JWT required
-- **Query params**: `limit=20`, `offset=0`
-- **Supabase client**: **Anon key + user JWT** (Social Blindness RLS MUST apply)
-- **Flow**:
-  1. Query posts with user JWT — Postgres filters via Social Blindness
-  2. Fetch existing glazes for visible posts
-  3. Batch post contents to Gemini for AI glaze generation (3 per post)
-  4. Return `{posts: [{...post, glazes: [...], ai_glazes: [...]}]}`
+### Feed
+- **GET `/api/feed`** — Glaze-o-matic feed
+  - Query: `limit=20`, `offset=0`
+  - Client: **Anon key + user JWT** (Social Blindness RLS MUST apply)
+  - Returns posts + relarps enriched with comments, reactions, AI glazes, organic glazes
+  - Also returns `trending_delusions` and extracted `buzzwords`
 
-### POST /api/posts — Create Post
-- **Auth**: Bearer JWT required
-- **Body**: `{"content": "...", "post_type": "thought_leadership"}`
-- **Supabase client**: Service role (insert)
-- **Side effect**: Fires `score_content()` as a BackgroundTask
-- **Returns**: The created post (buzzword_score = 0 initially, updated async)
+### Posts
+- **POST `/api/posts`** — Create post; body: `{content, post_type}`
+  - Fires `score_content()` BackgroundTask (Prestige Evaluator + roast meme)
+- **DELETE `/api/posts/{post_id}`** — Delete own post (cascades all reactions/comments)
+- **POST `/api/posts/{post_id}/comments`** — Add comment; body: `{content}`
+- **PATCH `/api/posts/{post_id}/comments/{comment_id}`** — Edit own comment
+- **DELETE `/api/posts/{post_id}/comments/{comment_id}`** — Delete own comment
+- **POST `/api/posts/{post_id}/relarp`** — Relarp (reimagine) a post; body: `{commentary}`
+- **DELETE `/api/posts/{post_id}/relarp`** — Remove relarp
+- **POST/DELETE `/api/posts/{post_id}/like`** — Toggle like
+- **POST/DELETE `/api/posts/{post_id}/love`** — Toggle love reaction
+- **POST/DELETE `/api/posts/{post_id}/glaze`** — Toggle organic glaze; body: `{content?}`
 
-### PATCH /api/jobs/title — "J*bs" Unvalidated Title Update
-- **Auth**: Bearer JWT required
-- **Body**: `{"title": "any string at all"}`
-- **Supabase client**: Service role
-- **Behavior**: Overwrites `profiles.title` with zero validation. No length check. No profanity filter. That's the joke — instant unearned prestige.
+### Relarps
+- **POST/DELETE `/api/relarps/{relarp_id}/like`** — Toggle like on relarp
+- **POST/DELETE `/api/relarps/{relarp_id}/love`** — Toggle love on relarp
+- **POST/DELETE `/api/relarps/{relarp_id}/glaze`** — Toggle glaze on relarp
 
-### GET /health — Health Check
-- **Auth**: None
-- **Returns**: `{"status": "larping"}`
+### Jobs
+- **GET `/api/jobs/options`** — Returns 16 satirical job titles
+- **PATCH `/api/jobs/current`** — Update own job; body: `{job}`
+
+### Profile
+- **GET `/api/me`** — Get full current user profile
+- **GET `/api/users/{user_id}`** — Get any public profile
+- **PATCH `/api/me`** — Update profile fields (only non-null fields updated)
+  - Fields: `display_name, bio, avatar_url, cover_photo_url, stats, glazers, larp_status, experience, education, skills, larp_history, glazes_received`
+
+### Connections
+- **POST `/api/connections/request`** — Send request; body: `{addressee_id}`
+- **PATCH `/api/connections/{id}/accept`** — Accept (addressee only)
+- **PATCH `/api/connections/{id}/decline`** — Decline (addressee only)
+- **DELETE `/api/connections/{id}`** — Remove/withdraw (either party)
+- **GET `/api/connections`** — List accepted connections with profiles
+- **GET `/api/connections/pending`** — Incoming pending requests
+- **GET `/api/connections/outgoing`** — Outgoing pending requests
+- **GET `/api/connections/suggestions`** — All non-connected users
+
+### Messages
+- **GET `/api/messages/users`** — Messageable users (connections first, then all)
+- **GET `/api/messages/conversations`** — All 1:1 DMs + groups (latest msg, unread count)
+- **GET `/api/messages/{other_user_id}`** — 1:1 message history (marks read)
+- **POST `/api/messages`** — Send DM; body: `{receiver_id, content}`
+- **POST `/api/messages/conversations`** — Create group; body: `{member_ids, name}`
+- **GET `/api/messages/groups/{conversation_id}`** — Group message history
+- **POST `/api/messages/groups/{conversation_id}`** — Send group message; body: `{content}`
+
+### Notifications
+- **GET `/api/notifications`** — Aggregated (limit=25): pending connections + unread messages + post comments
+
+### Roleplay (LarpMaxxing)
+- **GET `/api/roleplay/characters`** — List 4 characters with metadata
+- **POST `/api/roleplay/chat`** — Chat with character; body: `{session_id?, character_id, message}`
+  - Persists conversation history in `roleplay_sessions`
+  - Returns: `{session_id, character_id, dialogue, emotion}`
+
+### Health
+- **GET `/health`** — Returns `{status: "larping", dev_mode: bool}`
 
 ---
 
@@ -192,69 +340,39 @@ backend/
 |---|---|---|
 | GET /api/feed | **Anon key + user JWT** | **MUST respect Social Blindness RLS** |
 | POST /api/posts | **Service role** | Insert on behalf of user |
-| PATCH /api/jobs/title | **Service role** | Privileged update |
+| PATCH /api/jobs/current | **Service role** | Privileged update |
+| PATCH /api/me | **Service role** | Profile update |
+| Connections/messages | **Service role** | Social graph writes |
 | Scoring worker | **Service role** | Writes buzzword_score, calls update_larp_rating RPC |
+| Roleplay | **Service role** | Session persistence |
 
 ---
 
 ## Gemini Prompts
 
-### 1. Prestige Evaluator (used by scoring worker — `workers/scoring.py`)
+### 1. Prestige Evaluator (scoring worker — `workers/scoring.py`)
 
 ```
 You are the Prestige Evaluator, a merciless AI judge of corporate performativity.
-
-You will receive a social media post from a professional networking platform.
-Evaluate it on two axes:
-
-1. BUZZWORD DENSITY (0-10): How saturated is this with corporate jargon?
-   Synergy, leverage, disrupt, ecosystem, thought leadership, paradigm shift,
-   move the needle, circle back, deep dive, bandwidth, scalable, actionable,
-   north star, value-add, stakeholder alignment -- these are the sacred words.
-   0 = refreshingly human. 10 = could be auto-generated by a LinkedIn bot.
-
-2. PERFORMATIVE ENTHUSIASM (0-10): How aggressively does this signal fake
-   passion for professional clout?
-   0 = genuine and understated. 10 = "I'm THRILLED to announce that after
-   an incredible journey, I've accepted a role as..." energy.
-
-3. RATING DELTA: A number between -2.0 and +5.0 representing how much
-   this post should change the author's LarpRating. High buzzwords + high
-   enthusiasm = big positive delta. Authentic, low-effort posts get negative.
-
-4. ROAST: A single savage sentence roasting the author's corporate theater.
-
-Respond in STRICT JSON only, no markdown:
-{"buzzword_score": <float>, "enthusiasm_score": <float>, "rating_delta": <float>, "roast": "<string>"}
+...
+Respond in STRICT JSON: {"buzzword_score": <float>, "enthusiasm_score": <float>, "rating_delta": <float>, "roast": "<string>"}
 ```
+- `rating_delta` range: -2.0 to +5.0
 
-### 2. Glaze-o-matic 3000 (used by feed endpoint — `routers/feed.py`)
+### 2. Glaze-o-matic 3000 (feed endpoint — `routers/feed.py`)
 
 ```
-You are the Glaze-o-matic 3000, the world's most aggressively sycophantic
-AI compliment generator for a professional networking platform.
-
-For each post below, generate exactly 3 satirical compliments ("glazes").
-Each glaze should be absurdly corporate, performatively enthusiastic, and
-dripping with hollow validation. Channel the energy of a LinkedIn commenter
-who replies "This. So much this." to everything.
-
-Style guide:
-- Use phrases like "This is the content I come to this platform for"
-- Reference "thought leadership" and "adding value" unironically
-- Sprinkle in buzzwords: synergy, disrupt, ecosystem, bandwidth, north star
-- At least one glaze per post should be comically over-the-top
-- One should subtly be a backhanded compliment disguised as praise
-
-Posts to glaze:
-{posts_json}
-
-Respond in STRICT JSON only, no markdown:
-{
-  "<post_id_1>": ["<glaze1>", "<glaze2>", "<glaze3>"],
-  "<post_id_2>": ["<glaze1>", "<glaze2>", "<glaze3>"]
-}
+You are the Glaze-o-matic 3000 ... generate exactly 3 satirical compliments per post
+...
+Respond in STRICT JSON: {"<post_id>": ["<glaze1>", "<glaze2>", "<glaze3>"]}
 ```
+
+### 3. Roleplay Character Chat (`services/gemini.py`)
+- Character system prompts injected from `voice_registry.py`
+- Characters: Gary Vee (Parody), The Corporate Buddha, The Hustle Sensei, The Disruption Diva
+- Returns: `{character_id, dialogue, emotion}`
+
+All Gemini calls use `response_mime_type="application/json"` — mandatory.
 
 ---
 
@@ -267,9 +385,9 @@ Client -> POST /api/posts
   -> Return post immediately
   -> BackgroundTask: score_content()
      -> Gemini "Prestige Evaluator" scores content
-     -> UPDATE posts SET buzzword_score = X
+     -> Meme Lord API generates roast meme
+     -> UPDATE posts SET buzzword_score = X, roast_meme_url = Y
      -> RPC update_larp_rating(user_id, delta)
-     -> User's larp_rating adjusts in real-time
 ```
 
 ### Feed + Social Blindness + Glazes
@@ -277,23 +395,80 @@ Client -> POST /api/posts
 Client -> GET /api/feed (Bearer: user JWT)
   -> Supabase query with user JWT (anon key client)
   -> Postgres RLS: only posts where author.larp_rating <= viewer.larp_rating
-  -> Fetch glazes for visible posts
-  -> Gemini "Glaze-o-matic" generates 3 AI compliments per post
-  -> Return bundled feed to client
+  -> Enrich: comments, reactions, relarp counts per post
+  -> Gemini "Glaze-o-matic" generates 3 AI glazes per post
+  -> Return bundled feed {posts, trending_delusions, buzzwords}
+```
+
+### Roleplay Chat
+```
+Client -> POST /api/roleplay/chat {session_id?, character_id, message}
+  -> Load or create roleplay_session (with conversation_history)
+  -> Build system prompt from voice_registry character definition
+  -> Gemini roleplay_chat(system_prompt, history + new message)
+  -> Append exchange to conversation_history
+  -> Upsert roleplay_session in DB
+  -> Return {session_id, character_id, dialogue, emotion}
 ```
 
 ---
 
-## Teammate Integration: Roleplay / LarpMaxxing / ElevenLabs
+## Frontend File Tree
 
-The following files are **stubs** ready for the teammate to build out:
-
-- `routers/roleplay.py` — currently an empty router. Wire into `main.py` with `app.include_router(roleplay.router, prefix="/api")` when ready.
-- `services/voice_registry.py` — has 4 placeholder characters with ElevenLabs voice IDs and a Gemini roleplay prompt template. Ready to use.
-- `services/elevenlabs.py` — has `chunk_text()` and `stream_tts()` scaffolded for WebSocket TTS streaming.
-- `services/gemini.py` — already has `roleplay_chat()` function and the roleplay prompt template.
-
-The database table `roleplay_sessions` and its RLS policy are already in the migration.
+```
+frontend/src/
+├── main.jsx               # React entry
+├── App.jsx                # BrowserRouter + AuthProvider + routes
+├── index.css              # Global styles
+├── lib/
+│   └── supabase.js        # Supabase client init
+├── context/
+│   ├── AuthContext.jsx    # Supabase auth state (login/logout/token)
+│   └── MockDataContext.jsx # Frontend mock data (for tests)
+├── services/
+│   └── api.js             # authFetch wrapper + all API call functions
+├── components/
+│   ├── TopNav/            # Navigation header
+│   ├── Icon/              # Reusable icon
+│   ├── LarpRatingBadge/   # Displays larp_rating
+│   └── ProfilePopup/      # Hover/modal profile preview
+├── features/
+│   ├── auth/
+│   │   └── AuthPage.jsx   # Login/signup + Google OAuth
+│   ├── home/
+│   │   ├── Home.jsx       # 3-column layout (LeftRail | Feed | RightRail)
+│   │   └── Feed/
+│   │       ├── Feed.jsx           # Main feed (posts + relarps)
+│   │       ├── StartPost/         # Compose post form
+│   │       ├── PostCard/          # Post with reactions, comments, roast meme
+│   │       ├── LockedPostCard/    # Blurred overlay for Social Blindness
+│   │       └── SuggestedGlazes/   # AI glaze display
+│   ├── me/
+│   │   ├── Me.jsx                 # Own profile page (editable)
+│   │   ├── ProfileHero/           # Avatar, name, LARP rating, cover photo
+│   │   ├── AboutSection/
+│   │   ├── ExperienceSection/
+│   │   ├── EducationSection/
+│   │   ├── SkillsSection/
+│   │   ├── GlazesSection/
+│   │   ├── LarpHistorySection/
+│   │   └── LarpStatus/            # Current opportunities/goals
+│   ├── network/
+│   │   ├── Network.jsx            # Connection suggestions + pending requests
+│   │   ├── UserCard/              # Profile snippet card
+│   │   └── ConnectButton/         # Send/manage connection requests
+│   ├── messaging/
+│   │   ├── Messaging.jsx          # Main messaging page
+│   │   ├── ConversationList/      # 1:1 DMs + groups with unread counts
+│   │   ├── ChatWindow/            # Message history
+│   │   ├── ComposeModal/          # Start new conversation
+│   │   └── MessageBubble/         # Individual message
+│   └── profile/
+│       └── PublicProfile.jsx      # View any user's profile (read-only)
+└── pages/
+    ├── JobsPage.jsx               # Pick satirical job title
+    └── NotificationsPage.jsx      # Aggregated notifications
+```
 
 ---
 
@@ -303,15 +478,22 @@ The database table `roleplay_sessions` and its RLS policy are already in the mig
 # Supabase
 npx supabase start                    # start local Supabase
 npx supabase stop                     # stop local Supabase
-npx supabase db reset                 # drop + recreate + apply migrations
+npx supabase db reset                 # drop + recreate + apply all migrations
 npx supabase db diff --local          # see uncommitted schema changes
 npx supabase status                   # show local URLs and keys
 
 # Backend
 cd backend
 source .venv/bin/activate             # activate virtualenv
-uvicorn app.main:app --reload         # start FastAPI dev server
+uvicorn app.main:app --reload         # start FastAPI dev server (port 8000)
 pip install -r requirements.txt       # install dependencies
+
+# Frontend
+cd frontend
+npm install                           # install dependencies
+npm run dev                           # start Vite dev server (port 5173)
+npm test                              # run vitest tests
+npm run build                         # production build
 
 # Testing
 curl http://localhost:8000/docs       # Swagger UI
@@ -336,4 +518,12 @@ curl http://localhost:8000/api/feed -H "Authorization: Bearer <jwt>"
 
 7. **Supabase Python client for user-context**: Use `create_client(url, anon_key)` then `client.postgrest.auth(user_jwt)` to set the Bearer token so PostgREST enforces RLS as that user.
 
-8. **Frontend proxy**: Add `server: { proxy: { '/api': 'http://localhost:8000' } }` to `vite.config.ts` so fetch('/api/feed') hits FastAPI without CORS issues in dev.
+8. **Frontend API proxy**: `vite.config.js` proxies `/api` → `http://localhost:8000`. All frontend API calls use relative paths (e.g., `fetch('/api/feed')`).
+
+9. **`profiles.job` replaced `profiles.title`**: Migration `20260329000004_unify_profile_job.sql` renamed the column. Use `job` everywhere; `title` no longer exists.
+
+10. **DEV_MODE=true** skips JWT verification and uses a hardcoded `DEV_USER_ID` from `dev_state.py`. Never enable in production.
+
+11. **Roast meme URL is async/nullable.** `posts.roast_meme_url` is null until the background task completes. Frontend should handle null gracefully.
+
+12. **Group messaging vs 1:1**: Group chats use `conversations` + `conversation_members` + `group_messages` tables. 1:1 DMs use the `messages` table directly. These are separate systems.

@@ -37,7 +37,7 @@ function getAvatarColor(name) {
 }
 
 export default function PostCard({ post, isOwnPost = false }) {
-  const { author, type, timestamp, content, reactions } = post
+  const { author, type, timestamp, content, reactions, ai_glazes } = post
   const relarpSource = post.isRelarp ? post.relarpOf : null
   const { currentUser, deletePost } = useMockData()
   const [isDeleting, setIsDeleting] = useState(false)
@@ -446,6 +446,17 @@ export default function PostCard({ post, isOwnPost = false }) {
           </article>
         ) : null}
       </div>
+
+      {Array.isArray(ai_glazes) && ai_glazes.length > 0 ? (
+        <div className={styles.aiGlazes}>
+          <p className={styles.aiGlazesLabel}>✨ Glaze-o-matic 3000</p>
+          <ul className={styles.aiGlazeList}>
+            {ai_glazes.map((glaze, i) => (
+              <li key={i} className={styles.aiGlazeItem}>{glaze}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       <div className={styles.reactions}>
         <div className={styles.reactionSummary}>
