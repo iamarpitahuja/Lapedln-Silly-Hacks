@@ -1,35 +1,51 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { fetchConversations, fetchProfile, fetchUserProfile } from '../../services/api'
+import {
+  fetchConversations,
+  fetchProfile,
+  fetchUserProfile,
+  createGroupConversation,
+} from '../../services/api'
 import ConversationList from './ConversationList/ConversationList'
 import ChatWindow from './ChatWindow/ChatWindow'
+import ComposeModal from './ComposeModal/ComposeModal'
 import styles from './Messaging.module.css'
 
 export default function Messaging() {
   const [searchParams] = useSearchParams()
   const [conversations, setConversations] = useState([])
+  const [groups, setGroups] = useState([])
   const [activeUser, setActiveUser] = useState(null)
+  const [activeGroup, setActiveGroup] = useState(null)
   const [currentUserId, setCurrentUserId] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showCompose, setShowCompose] = useState(false)
 
   const initialUserId = searchParams.get('userId')
+
+  function loadConversations() {
+    return fetchConversations().then(data => {
+      setConversations(data.conversations ?? [])
+      setGroups(data.groups ?? [])
+      return data
+    })
+  }
 
   useEffect(() => {
     let cancelled = false
 
-    Promise.all([fetchConversations(), fetchProfile()])
+    Promise.all([loadConversations(), fetchProfile()])
       .then(([conversationsData, profile]) => {
         if (cancelled) return
-        const convs = conversationsData.conversations ?? []
-        setConversations(convs)
         setCurrentUserId(profile?.id ?? null)
         if (initialUserId) {
+          const convs = conversationsData.conversations ?? []
           const existing = convs.find(c => c.other_user?.id === initialUserId)
           if (existing) {
             setActiveUser(existing.other_user)
           } else {
             fetchUserProfile(initialUserId)
-              .then(profile => { if (!cancelled) setActiveUser(profile) })
+              .then(p => { if (!cancelled) setActiveUser(p) })
               .catch(() => { if (!cancelled) setActiveUser({ id: initialUserId, display_name: 'Unknown User' }) })
           }
         }
@@ -39,10 +55,36 @@ export default function Messaging() {
         if (!cancelled) setLoading(false)
       })
 
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [initialUserId])
+
+  const handleSelectUser = (user) => {
+    setActiveUser(user)
+    setActiveGroup(null)
+  }
+
+  const handleSelectGroup = (group) => {
+    setActiveGroup(group)
+    setActiveUser(null)
+  }
+
+  const handleStartDm = (user) => {
+    setShowCompose(false)
+    setActiveUser(user)
+    setActiveGroup(null)
+  }
+
+  const handleCreateGroup = async (memberIds) => {
+    try {
+      const group = await createGroupConversation(memberIds)
+      setShowCompose(false)
+      setActiveGroup(group)
+      setActiveUser(null)
+      loadConversations()
+    } catch (e) {
+      console.error('Failed to create group:', e)
+    }
+  }
 
   return (
     <div className={styles.page}>
@@ -52,17 +94,29 @@ export default function Messaging() {
         <div className={styles.layout}>
           <ConversationList
             conversations={conversations}
+            groups={groups}
             activeUserId={activeUser?.id}
-            onSelect={setActiveUser}
-            onNewMessage={() => setActiveUser(null)}
+            activeGroupId={activeGroup?.id}
+            onSelect={handleSelectUser}
+            onSelectGroup={handleSelectGroup}
+            onNewMessage={() => setShowCompose(true)}
           />
           <div className={styles.chat}>
             <ChatWindow
-              otherUser={activeUser}
+              otherUser={activeGroup ? null : activeUser}
+              group={activeGroup}
               currentUserId={currentUserId}
             />
           </div>
         </div>
+      )}
+
+      {showCompose && (
+        <ComposeModal
+          onClose={() => setShowCompose(false)}
+          onStartDm={handleStartDm}
+          onCreateGroup={handleCreateGroup}
+        />
       )}
     </div>
   )

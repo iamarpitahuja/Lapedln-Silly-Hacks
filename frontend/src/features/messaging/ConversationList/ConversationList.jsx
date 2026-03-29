@@ -10,10 +10,22 @@ function getAvatarColor(name) {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
 }
 
-export default function ConversationList({ conversations, activeUserId, onSelect, onNewMessage }) {
+export default function ConversationList({
+  conversations,
+  groups = [],
+  activeUserId,
+  activeGroupId,
+  onSelect,
+  onSelectGroup,
+  onNewMessage,
+}) {
   const [search, setSearch] = useState('')
-  const filtered = conversations.filter(c =>
+
+  const filteredConvs = conversations.filter(c =>
     (c.other_user?.display_name || '').toLowerCase().includes(search.toLowerCase())
+  )
+  const filteredGroups = groups.filter(g =>
+    (g.name || '').toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -36,43 +48,86 @@ export default function ConversationList({ conversations, activeUserId, onSelect
         />
       </div>
 
-      {filtered.length === 0 && (
-        <p className={styles.empty}>
-          {search ? 'No conversations match your search.' : 'No conversations yet. DM someone from the Network page.'}
-        </p>
-      )}
+      <div className={styles.list}>
+        {/* 1:1 Messages section */}
+        {filteredConvs.length > 0 && (
+          <>
+            <p className={styles.sectionLabel}>Messages</p>
+            <ul className={styles.section}>
+              {filteredConvs.map(conv => {
+                const user = conv.other_user
+                const name = user?.display_name || 'Anonymous Larper'
+                const isActive = !activeGroupId && activeUserId === user?.id
+                return (
+                  <li key={user?.id}>
+                    <button
+                      className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
+                      onClick={() => onSelect(user)}
+                    >
+                      <div className={styles.avatar} style={{ background: getAvatarColor(name) }}>
+                        {user?.avatar_url
+                          ? <img src={user.avatar_url} alt={name} className={styles.avatarImg} />
+                          : getInitials(name)
+                        }
+                      </div>
+                      <div className={styles.info}>
+                        <div className={styles.nameRow}>
+                          <span className={styles.name}>{name}</span>
+                          {conv.unread_count > 0 && (
+                            <span className={styles.unreadBadge}>{conv.unread_count}</span>
+                          )}
+                        </div>
+                        <span className={styles.preview}>{conv.latest_message}</span>
+                      </div>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </>
+        )}
 
-      <ul className={styles.list}>
-        {filtered.map(conv => {
-          const user = conv.other_user
-          const name = user?.display_name || 'Anonymous Larper'
-          const isActive = activeUserId === user?.id
-          return (
-            <li key={user?.id}>
-              <button
-                className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
-                onClick={() => onSelect(user)}
-              >
-                <div className={styles.avatar} style={{ background: getAvatarColor(name) }}>
-                  {user?.avatar_url
-                    ? <img src={user.avatar_url} alt={name} className={styles.avatarImg} />
-                    : getInitials(name)
-                  }
-                </div>
-                <div className={styles.info}>
-                  <div className={styles.nameRow}>
-                    <span className={styles.name}>{name}</span>
-                    {conv.unread_count > 0 && (
-                      <span className={styles.unreadBadge}>{conv.unread_count}</span>
-                    )}
-                  </div>
-                  <span className={styles.preview}>{conv.latest_message}</span>
-                </div>
-              </button>
-            </li>
-          )
-        })}
-      </ul>
+        {/* Groups section */}
+        {filteredGroups.length > 0 && (
+          <>
+            <p className={styles.sectionLabel}>Groups</p>
+            <ul className={styles.section}>
+              {filteredGroups.map(group => {
+                const isActive = activeGroupId === group.id
+                const memberCount = group.members?.length ?? 0
+                return (
+                  <li key={group.id}>
+                    <button
+                      className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
+                      onClick={() => onSelectGroup(group)}
+                    >
+                      <div className={styles.groupAvatar}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                        </svg>
+                      </div>
+                      <div className={styles.info}>
+                        <div className={styles.nameRow}>
+                          <span className={styles.name}>{group.name}</span>
+                        </div>
+                        <span className={styles.preview}>
+                          {group.latest_message || `${memberCount} members`}
+                        </span>
+                      </div>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </>
+        )}
+
+        {filteredConvs.length === 0 && filteredGroups.length === 0 && (
+          <p className={styles.empty}>
+            {search ? 'No conversations match your search.' : 'No conversations yet. Click the pencil to start one.'}
+          </p>
+        )}
+      </div>
     </div>
   )
 }

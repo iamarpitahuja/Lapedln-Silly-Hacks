@@ -13,6 +13,12 @@ import {
   removeLike as apiRemoveLike,
   removeLove as apiRemoveLove,
   removeRelarp as apiRemoveRelarp,
+  createRelarpLike as apiCreateRelarpLike,
+  removeRelarpLike as apiRemoveRelarpLike,
+  createRelarpLove as apiCreateRelarpLove,
+  removeRelarpLove as apiRemoveRelarpLove,
+  createRelarpGlaze as apiCreateRelarpGlaze,
+  removeRelarpGlaze as apiRemoveRelarpGlaze,
 } from '../../../../services/api'
 import { useMockData } from '../../../../context/MockDataContext'
 import { getInitials } from '../../../../utils/strings'
@@ -72,23 +78,49 @@ export default function PostCard({ post, isOwnPost = false }) {
     ? content.slice(0, CONTENT_TRUNCATE_LENGTH).trim() + '...'
     : content
 
-  const handleGlazeClick = () => {
-    if (isOwnPost || isSubmittingGlaze) return
+  const blockReactions = isOwnPost && !post.isRelarp
+
+  const handleGlazeClick = async () => {
+    if (blockReactions || isSubmittingGlaze) return
+
+    if (post.isRelarp) {
+      setIsSubmittingGlaze(true)
+      setReactionError('')
+      try {
+        if (isGlazed) {
+          await apiRemoveRelarpGlaze(post.id)
+          setIsGlazed(false)
+          setGlazeCount(prev => Math.max(0, prev - 1))
+        } else {
+          await apiCreateRelarpGlaze(post.id)
+          setIsGlazed(true)
+          setGlazeCount(prev => prev + 1)
+        }
+      } catch {
+        setReactionError('Unable to update your reaction right now.')
+      } finally {
+        setIsSubmittingGlaze(false)
+      }
+      return
+    }
+
     setIsGlazing(!isGlazing)
   }
 
   const handleLarpClick = async () => {
-    if (isOwnPost || isUpdatingLike) return
+    if (blockReactions || isUpdatingLike) return
 
     setIsUpdatingLike(true)
     setReactionError('')
+    const removeFn = post.isRelarp ? apiRemoveRelarpLike : apiRemoveLike
+    const createFn = post.isRelarp ? apiCreateRelarpLike : apiCreateLike
     try {
       if (isLarped) {
-        await apiRemoveLike(post.id)
+        await removeFn(post.id)
         setIsLarped(false)
         setLarpCount(prev => Math.max(0, prev - 1))
       } else {
-        await apiCreateLike(post.id)
+        await createFn(post.id)
         setIsLarped(true)
         setLarpCount(prev => prev + 1)
       }
@@ -100,17 +132,19 @@ export default function PostCard({ post, isOwnPost = false }) {
   }
 
   const handleLoveClick = async () => {
-    if (isOwnPost || isUpdatingLove) return
+    if (blockReactions || isUpdatingLove) return
 
     setIsUpdatingLove(true)
     setReactionError('')
+    const removeFn = post.isRelarp ? apiRemoveRelarpLove : apiRemoveLove
+    const createFn = post.isRelarp ? apiCreateRelarpLove : apiCreateLove
     try {
       if (isLoved) {
-        await apiRemoveLove(post.id)
+        await removeFn(post.id)
         setIsLoved(false)
         setLoveCount(prev => Math.max(0, prev - 1))
       } else {
-        await apiCreateLove(post.id)
+        await createFn(post.id)
         setIsLoved(true)
         setLoveCount(prev => prev + 1)
       }
@@ -154,7 +188,7 @@ export default function PostCard({ post, isOwnPost = false }) {
   }
 
   const handleSendGlaze = async glazeContent => {
-    if (isGlazed || isSubmittingGlaze || isOwnPost) return
+    if (isGlazed || isSubmittingGlaze || blockReactions) return
 
     setIsSubmittingGlaze(true)
     setReactionError('')
@@ -428,7 +462,7 @@ export default function PostCard({ post, isOwnPost = false }) {
       </div>
 
       <div className={styles.actions}>
-        {!isOwnPost ? (
+        {!blockReactions ? (
           <button
             className={`${styles.action} ${styles.actionLike} ${isLarped ? styles.actionLikeActive : ''}`}
             onClick={handleLarpClick}
@@ -439,7 +473,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             <span>{isLarped ? 'Larped' : 'Larp'}</span>
           </button>
         ) : null}
-        {!isOwnPost ? (
+        {!blockReactions ? (
           <button
             className={`${styles.action} ${styles.actionLove} ${isLoved ? styles.actionLoveActive : ''}`}
             onClick={handleLoveClick}
@@ -450,7 +484,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             <span>{isLoved ? 'Loved' : 'Love'}</span>
           </button>
         ) : null}
-        {!isOwnPost ? (
+        {!blockReactions ? (
           <button
             className={`${styles.action} ${styles.actionGlaze} ${isGlazing ? styles.selected : ''}`}
             onClick={handleGlazeClick}

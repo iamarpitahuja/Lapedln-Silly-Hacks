@@ -202,6 +202,47 @@ async def get_feed(
     # Generate AI glazes (mock when no Gemini key)
     ai_glazes = await generate_glazes(regular_posts)
 
+    # Fetch relarp reactions for relarp feed items
+    relarp_items = [p for p in all_feed_items if p.get("is_relarp")]
+    relarp_ids = [r["id"] for r in relarp_items]
+    relarp_like_counts: dict[str, int] = {}
+    relarp_love_counts: dict[str, int] = {}
+    relarp_glaze_counts: dict[str, int] = {}
+    relarp_user_liked: set[str] = set()
+    relarp_user_loved: set[str] = set()
+    relarp_user_glazed: set[str] = set()
+    if relarp_ids:
+        relarp_reactions_result = (
+            user_client.table("relarp_reactions")
+            .select("relarp_id, user_id, reaction_type")
+            .in_("relarp_id", relarp_ids)
+            .execute()
+        )
+        for rr in (relarp_reactions_result.data or []):
+            rid = rr["relarp_id"]
+            rtype = rr["reaction_type"]
+            ruser = rr["user_id"]
+            if rtype == "like":
+                relarp_like_counts[rid] = relarp_like_counts.get(rid, 0) + 1
+                if ruser == user_id:
+                    relarp_user_liked.add(rid)
+            elif rtype == "love":
+                relarp_love_counts[rid] = relarp_love_counts.get(rid, 0) + 1
+                if ruser == user_id:
+                    relarp_user_loved.add(rid)
+            elif rtype == "glaze":
+                relarp_glaze_counts[rid] = relarp_glaze_counts.get(rid, 0) + 1
+                if ruser == user_id:
+                    relarp_user_glazed.add(rid)
+
+    for item in relarp_items:
+        item["like_count"] = relarp_like_counts.get(item["id"], 0)
+        item["love_count"] = relarp_love_counts.get(item["id"], 0)
+        item["glaze_count"] = relarp_glaze_counts.get(item["id"], 0)
+        item["has_user_liked"] = item["id"] in relarp_user_liked
+        item["has_user_loved"] = item["id"] in relarp_user_loved
+        item["has_user_glazed"] = item["id"] in relarp_user_glazed
+
     for post in regular_posts:
         post_comments = comments_by_post.get(post["id"], [])
         post["glazes"] = glazes_by_post.get(post["id"], [])

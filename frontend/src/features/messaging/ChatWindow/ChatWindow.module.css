@@ -50,6 +50,18 @@
   object-fit: cover;
 }
 
+.groupAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(10, 102, 194, 0.1);
+  color: #0A66C2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .headerName {
   font-size: 14px;
   font-weight: 700;

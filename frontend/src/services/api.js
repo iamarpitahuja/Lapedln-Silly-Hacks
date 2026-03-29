@@ -132,6 +132,30 @@ export async function sendMessage(receiverId, content) {
   })
 }
 
+export async function fetchMessageableUsers() {
+  return authFetch(`${API_BASE}/messages/users`)
+}
+
+export async function createGroupConversation(memberIds, name = '') {
+  return authFetch(`${API_BASE}/messages/conversations`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ member_ids: memberIds, name }),
+  })
+}
+
+export async function fetchGroupMessageHistory(conversationId) {
+  return authFetch(`${API_BASE}/messages/groups/${conversationId}`)
+}
+
+export async function sendGroupMessage(conversationId, content) {
+  return authFetch(`${API_BASE}/messages/groups/${conversationId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  })
+}
+
 // ── Post Interactions ────────────────────────────────────────────────────────
 
 export async function createPostComment(postId, content) {
@@ -206,6 +230,32 @@ export async function removeGlaze(postId) {
   return authFetch(`${API_BASE}/posts/${postId}/glaze`, {
     method: 'DELETE',
   })
+}
+
+// ── Relarp Reactions ─────────────────────────────────────────────────────────
+
+export async function createRelarpLike(relarpId) {
+  return authFetch(`${API_BASE}/relarps/${relarpId}/like`, { method: 'POST' })
+}
+
+export async function removeRelarpLike(relarpId) {
+  return authFetch(`${API_BASE}/relarps/${relarpId}/like`, { method: 'DELETE' })
+}
+
+export async function createRelarpLove(relarpId) {
+  return authFetch(`${API_BASE}/relarps/${relarpId}/love`, { method: 'POST' })
+}
+
+export async function removeRelarpLove(relarpId) {
+  return authFetch(`${API_BASE}/relarps/${relarpId}/love`, { method: 'DELETE' })
+}
+
+export async function createRelarpGlaze(relarpId) {
+  return authFetch(`${API_BASE}/relarps/${relarpId}/glaze`, { method: 'POST' })
+}
+
+export async function removeRelarpGlaze(relarpId) {
+  return authFetch(`${API_BASE}/relarps/${relarpId}/glaze`, { method: 'DELETE' })
 }
 
 // ── Notifications ────────────────────────────────────────────────────────────

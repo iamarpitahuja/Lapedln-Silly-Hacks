@@ -35,7 +35,14 @@ function adaptBackendPost(post) {
       type: 'Re-Larp',
       timestamp: timeAgo(post.created_at),
       content: post.content ?? '',
-      reactions: { count: 0, comments: 0, relarps: 0, likes: 0, loves: 0, glazes: 0 },
+      reactions: {
+        count: 0,
+        comments: 0,
+        relarps: 0,
+        likes: Number(post.like_count ?? 0),
+        loves: Number(post.love_count ?? 0),
+        glazes: Number(post.glaze_count ?? 0),
+      },
       comments: [],
       ai_glazes: [],
       glazes: [],
@@ -56,9 +63,9 @@ function adaptBackendPost(post) {
         buzzword_score: orig.buzzword_score ?? 0,
       },
       has_user_relarped: false,
-      has_user_liked: false,
-      has_user_loved: false,
-      has_user_glazed: false,
+      has_user_liked: Boolean(post.has_user_liked),
+      has_user_loved: Boolean(post.has_user_loved),
+      has_user_glazed: Boolean(post.has_user_glazed),
     }
   }
 
