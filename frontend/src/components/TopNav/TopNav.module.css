@@ -94,9 +94,9 @@
   box-shadow: 0 8px 24px rgba(10, 102, 194, 0.12);
 }
 
-.search:focus + .searchIcon {
+.searchWrap:has(.search:focus) .searchIcon {
   color: #0A66C2;
-  transform: scale(1.1);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .search::placeholder {
