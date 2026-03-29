@@ -45,7 +45,7 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
 
   return (
     <div className={styles.gauge}>
-      <svg width="100" height="100" viewBox="0 0 100 100" style={{ filter: `drop-shadow(0 0 5px ${color}66)` }}>
+      <svg width="100" height="100" viewBox="0 0 100 100">
         <circle
           cx="50" cy="50" r={radius}
           fill="none"
@@ -61,6 +61,7 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
           strokeDasharray={`${progress} ${circumference}`}
           strokeLinecap="round"
           transform="rotate(-90 50 50)"
+          style={{ filter: `drop-shadow(0 0 5px ${color}66)` }}
         />
       </svg>
       <div className={styles.gaugeInner}>
