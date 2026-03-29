@@ -56,13 +56,78 @@ async def get_feed(
         .range(offset, offset + limit - 1)
         .execute()
     )
-    posts = posts_result.data
+    posts = posts_result.data or []
 
-    if not posts:
+    # Fetch relarps with commentary to show as feed items
+    all_relarps_result = (
+        user_client.table("relarps")
+        .select("*, relarper:profiles!user_id(id, display_name, title, avatar_url, larp_rating)")
+        .order("created_at", desc=True)
+        .range(offset, offset + limit - 1)
+        .execute()
+    )
+    all_relarps = all_relarps_result.data or []
+
+    # Build a lookup of original posts by id (for embedding in relarp feed items)
+    posts_by_id = {p["id"]: p for p in posts}
+
+    # For relarps referencing posts not already fetched, fetch them
+    missing_post_ids = [r["post_id"] for r in all_relarps if r["post_id"] not in posts_by_id]
+    if missing_post_ids:
+        extra_posts_result = (
+            user_client.table("posts")
+            .select("*, profiles(id, display_name, title, avatar_url, larp_rating)")
+            .in_("id", list(set(missing_post_ids)))
+            .execute()
+        )
+        for ep in (extra_posts_result.data or []):
+            posts_by_id[ep["id"]] = ep
+
+    # Build relarp feed items
+    relarp_feed_items = []
+    for r in all_relarps:
+        original = posts_by_id.get(r["post_id"])
+        if not original:
+            continue
+        relarper = r.get("relarper") or {}
+        relarp_feed_items.append({
+            "id": r["id"],
+            "author_id": r["user_id"],
+            "content": r.get("commentary", ""),
+            "post_type": "Re-Larp",
+            "created_at": r["created_at"],
+            "buzzword_score": 0,
+            "profiles": relarper,
+            "is_relarp": True,
+            "relarp_of": {
+                "id": original["id"],
+                "content": original.get("content", ""),
+                "post_type": original.get("post_type", "Career Lore"),
+                "created_at": original.get("created_at"),
+                "buzzword_score": original.get("buzzword_score", 0),
+                "profiles": original.get("profiles"),
+            },
+        })
+
+    # Merge regular posts and relarp feed items, sort by created_at descending
+    all_feed_items = posts + relarp_feed_items
+    all_feed_items.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+    all_feed_items = all_feed_items[:limit]
+
+    # Separate out regular posts for reaction/glaze aggregation
+    regular_posts = [p for p in all_feed_items if not p.get("is_relarp")]
+
+    if not all_feed_items:
         return {"posts": []}
 
     # Fetch existing glazes for visible posts
-    post_ids = [p["id"] for p in posts]
+    post_ids = [p["id"] for p in regular_posts]
+    if not post_ids:
+        return {
+            "posts": all_feed_items,
+            "trending_delusions": [],
+            "buzzwords": [],
+        }
     glazes_result = user_client.table("glazes").select("*").in_("post_id", post_ids).execute()
 
     glazes_by_post: dict[str, list] = {}
@@ -135,9 +200,9 @@ async def get_feed(
                 user_loved.add(post_id)
 
     # Generate AI glazes (mock when no Gemini key)
-    ai_glazes = await generate_glazes(posts)
+    ai_glazes = await generate_glazes(regular_posts)
 
-    for post in posts:
+    for post in regular_posts:
         post_comments = comments_by_post.get(post["id"], [])
         post["glazes"] = glazes_by_post.get(post["id"], [])
         post["ai_glazes"] = ai_glazes.get(post["id"], [])
@@ -153,7 +218,7 @@ async def get_feed(
         post["has_user_glazed"] = post["id"] in user_glazed
 
     return {
-        "posts": posts,
-        "trending_delusions": derive_trending_delusions(posts),
-        "buzzwords": derive_buzzwords(posts),
+        "posts": all_feed_items,
+        "trending_delusions": derive_trending_delusions(regular_posts),
+        "buzzwords": derive_buzzwords(regular_posts),
     }

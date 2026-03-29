@@ -16,6 +16,10 @@ class CreateComment(BaseModel):
     content: str
 
 
+class EditComment(BaseModel):
+    content: str
+
+
 class CreateRelarp(BaseModel):
     commentary: str = ""
 
@@ -142,6 +146,89 @@ async def create_comment(
         },
         "isUserComment": True,
     }
+
+
+@router.patch("/posts/{post_id}/comments/{comment_id}")
+async def edit_comment(
+    post_id: str,
+    comment_id: str,
+    body: EditComment,
+    user_id: str = Depends(get_current_user),
+    supabase=Depends(get_service_client),
+):
+    """Edit a comment the current user owns."""
+    content = body.content.strip()
+    if not content:
+        raise HTTPException(status_code=400, detail="Comment cannot be empty")
+
+    existing = (
+        supabase.table("comments")
+        .select("id, author_id")
+        .eq("id", comment_id)
+        .eq("post_id", post_id)
+        .single()
+        .execute()
+    )
+    if not existing.data:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    if existing.data["author_id"] != user_id:
+        raise HTTPException(status_code=403, detail="Not your comment")
+
+    result = (
+        supabase.table("comments")
+        .update({"content": content})
+        .eq("id", comment_id)
+        .execute()
+    )
+    updated = result.data[0]
+
+    author_result = (
+        supabase.table("profiles")
+        .select("display_name, title, avatar_url, larp_rating")
+        .eq("id", user_id)
+        .single()
+        .execute()
+    )
+    author = author_result.data
+
+    return {
+        "id": updated["id"],
+        "timestamp": "Just now",
+        "createdAt": updated["created_at"],
+        "content": updated["content"],
+        "author": {
+            "name": author["display_name"],
+            "headline": author["title"],
+            "avatar": author.get("avatar_url"),
+            "larpRating": author.get("larp_rating", 0),
+        },
+        "isUserComment": True,
+    }
+
+
+@router.delete("/posts/{post_id}/comments/{comment_id}", status_code=204)
+async def delete_comment(
+    post_id: str,
+    comment_id: str,
+    user_id: str = Depends(get_current_user),
+    supabase=Depends(get_service_client),
+):
+    """Delete a comment the current user owns."""
+    existing = (
+        supabase.table("comments")
+        .select("id, author_id")
+        .eq("id", comment_id)
+        .eq("post_id", post_id)
+        .single()
+        .execute()
+    )
+    if not existing.data:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    if existing.data["author_id"] != user_id:
+        raise HTTPException(status_code=403, detail="Not your comment")
+
+    supabase.table("comments").delete().eq("id", comment_id).execute()
+    return None
 
 
 @router.post("/posts/{post_id}/relarp", status_code=201)

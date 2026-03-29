@@ -7,6 +7,8 @@ import {
   createLike as apiCreateLike,
   createLove as apiCreateLove,
   createPostComment,
+  editPostComment as apiEditComment,
+  deletePostComment as apiDeleteComment,
   createRelarp as apiCreateRelarp,
   removeLike as apiRemoveLike,
   removeLove as apiRemoveLove,
@@ -54,6 +56,10 @@ export default function PostCard({ post, isOwnPost = false }) {
   const [totalCommentCount, setTotalCommentCount] = useState(
     Number(reactions?.comments ?? (Array.isArray(post.comments) ? post.comments.length : 0))
   )
+  const [editingCommentId, setEditingCommentId] = useState(null)
+  const [editCommentDraft, setEditCommentDraft] = useState('')
+  const [isEditingComment, setIsEditingComment] = useState(false)
+  const [isDeletingComment, setIsDeletingComment] = useState(null)
   const [glazeCount, setGlazeCount] = useState(Number(reactions?.glazes ?? reactions?.insights ?? 0))
   const [larpCount, setLarpCount] = useState(Number(reactions?.likes ?? 0))
   const [loveCount, setLoveCount] = useState(Number(reactions?.loves ?? 0))
@@ -132,6 +138,7 @@ export default function PostCard({ post, isOwnPost = false }) {
         setRelarpError('')
         setRelarpDraft('')
         setIsRelarpComposerOpen(false)
+        window.dispatchEvent(new Event('feed:refresh'))
       } catch {
         setRelarpError('Unable to undo this Re-Larp right now.')
         setIsUndoingRelarp(false)
@@ -195,6 +202,57 @@ export default function PostCard({ post, isOwnPost = false }) {
     }
   }
 
+  const handleEditCommentStart = (comment) => {
+    setEditingCommentId(comment.id)
+    setEditCommentDraft(comment.content)
+    setCommentError('')
+  }
+
+  const handleEditCommentCancel = () => {
+    setEditingCommentId(null)
+    setEditCommentDraft('')
+  }
+
+  const handleEditCommentSave = async (commentId) => {
+    const trimmed = editCommentDraft.trim()
+    if (!trimmed) return
+    setIsEditingComment(true)
+    try {
+      const updated = await apiEditComment(post.id, commentId, trimmed)
+      setComments(prev => prev.map(c => c.id === commentId ? { ...c, content: updated.content } : c))
+      setEditingCommentId(null)
+      setEditCommentDraft('')
+      setCommentError('')
+    } catch {
+      setCommentError('Unable to edit comment right now.')
+    } finally {
+      setIsEditingComment(false)
+    }
+  }
+
+  const handleDeleteComment = async (commentId) => {
+    setIsDeletingComment(commentId)
+    try {
+      await apiDeleteComment(post.id, commentId)
+      setComments(prev => prev.filter(c => c.id !== commentId))
+      setTotalCommentCount(prev => Math.max(0, prev - 1))
+      setCommentError('')
+    } catch {
+      setCommentError('Unable to delete comment right now.')
+    } finally {
+      setIsDeletingComment(null)
+    }
+  }
+
+  const handleEditCommentKeyDown = (event, commentId) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+      handleEditCommentSave(commentId)
+    }
+    if (event.key === 'Escape') {
+      handleEditCommentCancel()
+    }
+  }
+
   const handleRelarpSubmit = async event => {
     event.preventDefault()
     if (isSubmittingRelarp) return
@@ -208,6 +266,7 @@ export default function PostCard({ post, isOwnPost = false }) {
       setRelarpError('')
       setIsRelarpComposerOpen(false)
       setIsSubmittingRelarp(false)
+      window.dispatchEvent(new Event('feed:refresh'))
       return
     } catch {
       setRelarpError('Unable to Re-Larp right now.')
@@ -371,6 +430,28 @@ export default function PostCard({ post, isOwnPost = false }) {
       <div className={styles.actions}>
         {!isOwnPost ? (
           <button
+            className={`${styles.action} ${styles.actionLike} ${isLarped ? styles.actionLikeActive : ''}`}
+            onClick={handleLarpClick}
+            disabled={isUpdatingLike}
+            aria-label={isLarped ? 'Unlike' : 'Like'}
+          >
+            <Icon name="thumbsUp" size={18} />
+            <span>{isLarped ? 'Larped' : 'Larp'}</span>
+          </button>
+        ) : null}
+        {!isOwnPost ? (
+          <button
+            className={`${styles.action} ${styles.actionLove} ${isLoved ? styles.actionLoveActive : ''}`}
+            onClick={handleLoveClick}
+            disabled={isUpdatingLove}
+            aria-label={isLoved ? 'Unlove' : 'Love'}
+          >
+            <Icon name="heart" size={18} />
+            <span>{isLoved ? 'Loved' : 'Love'}</span>
+          </button>
+        ) : null}
+        {!isOwnPost ? (
+          <button
             className={`${styles.action} ${styles.actionGlaze} ${isGlazing ? styles.selected : ''}`}
             onClick={handleGlazeClick}
             disabled={isSubmittingGlaze}
@@ -481,6 +562,9 @@ export default function PostCard({ post, isOwnPost = false }) {
                   const authorName = commentAuthor.name ?? 'Anonymous Larper'
                   const authorAvatar = commentAuthor.avatar ?? null
                   const commentTimestamp = comment.timestamp ?? 'Just now'
+                  const isOwn = comment.isUserComment
+                  const isEditing = editingCommentId === comment.id
+                  const isDeleting = isDeletingComment === comment.id
                   return (
                     <li key={comment.id} className={styles.commentItem}>
                       <div
@@ -494,11 +578,65 @@ export default function PostCard({ post, isOwnPost = false }) {
                         )}
                       </div>
                       <div className={styles.commentBody}>
-                        <div className={styles.commentBubble}>
-                          <p className={styles.commentAuthor}>{authorName}</p>
-                          <p className={styles.commentContent}>{comment.content}</p>
-                        </div>
-                        <p className={styles.commentTime}>{commentTimestamp}</p>
+                        {isEditing ? (
+                          <div className={styles.commentEditWrap}>
+                            <textarea
+                              className={styles.commentEditInput}
+                              value={editCommentDraft}
+                              onChange={e => setEditCommentDraft(e.target.value)}
+                              onKeyDown={e => handleEditCommentKeyDown(e, comment.id)}
+                              maxLength={MAX_COMMENT_LENGTH}
+                              rows={2}
+                              autoFocus
+                            />
+                            <div className={styles.commentEditActions}>
+                              <button
+                                type="button"
+                                className={styles.commentEditCancel}
+                                onClick={handleEditCommentCancel}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="button"
+                                className={styles.commentEditSave}
+                                onClick={() => handleEditCommentSave(comment.id)}
+                                disabled={isEditingComment || !editCommentDraft.trim()}
+                              >
+                                {isEditingComment ? 'Saving...' : 'Save'}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className={styles.commentBubble}>
+                              <p className={styles.commentAuthor}>{authorName}</p>
+                              <p className={styles.commentContent}>{comment.content}</p>
+                            </div>
+                            <div className={styles.commentFooter}>
+                              <p className={styles.commentTime}>{commentTimestamp}</p>
+                              {isOwn ? (
+                                <div className={styles.commentOwnActions}>
+                                  <button
+                                    className={styles.commentActionBtn}
+                                    onClick={() => handleEditCommentStart(comment)}
+                                    aria-label="Edit comment"
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    className={`${styles.commentActionBtn} ${styles.commentDeleteBtn}`}
+                                    onClick={() => handleDeleteComment(comment.id)}
+                                    disabled={isDeleting}
+                                    aria-label="Delete comment"
+                                  >
+                                    {isDeleting ? 'Deleting...' : 'Delete'}
+                                  </button>
+                                </div>
+                              ) : null}
+                            </div>
+                          </>
+                        )}
                       </div>
                     </li>
                   )

@@ -19,6 +19,49 @@ function timeAgo(isoString) {
 
 function adaptBackendPost(post) {
   const comments = Array.isArray(post.comments) ? post.comments : []
+
+  // Handle relarp feed items
+  if (post.is_relarp && post.relarp_of) {
+    const orig = post.relarp_of
+    return {
+      id: post.id,
+      author: {
+        id: post.profiles?.id ?? post.author_id ?? null,
+        name: post.profiles?.display_name ?? 'Anonymous Larper',
+        headline: post.profiles?.title ?? 'Aspiring Thought Leader',
+        avatar: post.profiles?.avatar_url ?? null,
+        larpRating: post.profiles?.larp_rating ?? 0,
+      },
+      type: 'Re-Larp',
+      timestamp: timeAgo(post.created_at),
+      content: post.content ?? '',
+      reactions: { count: 0, comments: 0, relarps: 0, likes: 0, loves: 0, glazes: 0 },
+      comments: [],
+      ai_glazes: [],
+      glazes: [],
+      buzzword_score: 0,
+      isRelarp: true,
+      relarpOf: {
+        id: orig.id,
+        author: {
+          id: orig.profiles?.id ?? null,
+          name: orig.profiles?.display_name ?? 'Anonymous Larper',
+          headline: orig.profiles?.title ?? 'Aspiring Thought Leader',
+          avatar: orig.profiles?.avatar_url ?? null,
+          larpRating: orig.profiles?.larp_rating ?? 0,
+        },
+        type: orig.post_type ?? 'Career Lore',
+        timestamp: timeAgo(orig.created_at),
+        content: orig.content ?? '',
+        buzzword_score: orig.buzzword_score ?? 0,
+      },
+      has_user_relarped: false,
+      has_user_liked: false,
+      has_user_loved: false,
+      has_user_glazed: false,
+    }
+  }
+
   return {
     id: post.id,
     author: {

@@ -16,7 +16,8 @@ async function authFetch(url, options = {}) {
     const text = await res.text().catch(() => '')
     throw new Error(text || `Request failed: ${res.status}`)
   }
-  // Some endpoints (DELETE) may return no body
+  // 204 No Content — nothing to parse
+  if (res.status === 204) return
   const contentType = res.headers.get('content-type')
   if (contentType && contentType.includes('application/json')) {
     return res.json()
@@ -48,13 +49,11 @@ export async function fetchProfile() {
 }
 
 export async function updateProfilePatch(payload) {
-  const res = await fetch(`${API_BASE}/me`, {
+  return authFetch(`${API_BASE}/me`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
-  if (!res.ok) throw new Error(`Profile patch failed: ${res.status}`)
-  return res.json()
 }
 
 export async function checkHealth() {
@@ -124,83 +123,81 @@ export async function sendMessage(receiverId, content) {
 // ── Post Interactions ────────────────────────────────────────────────────────
 
 export async function createPostComment(postId, content) {
-  const res = await fetch(`${API_BASE}/posts/${postId}/comments`, {
+  return authFetch(`${API_BASE}/posts/${postId}/comments`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ content }),
   })
-  if (!res.ok) throw new Error(`Comment creation failed: ${res.status}`)
-  return res.json()
+}
+
+export async function editPostComment(postId, commentId, content) {
+  return authFetch(`${API_BASE}/posts/${postId}/comments/${commentId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  })
+}
+
+export async function deletePostComment(postId, commentId) {
+  return authFetch(`${API_BASE}/posts/${postId}/comments/${commentId}`, {
+    method: 'DELETE',
+  })
 }
 
 export async function createRelarp(postId, commentary = '') {
-  const res = await fetch(`${API_BASE}/posts/${postId}/relarp`, {
+  return authFetch(`${API_BASE}/posts/${postId}/relarp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ commentary }),
   })
-  if (!res.ok) throw new Error(`Relarp failed: ${res.status}`)
-  return res.json()
 }
 
 export async function removeRelarp(postId) {
-  const res = await fetch(`${API_BASE}/posts/${postId}/relarp`, {
+  return authFetch(`${API_BASE}/posts/${postId}/relarp`, {
     method: 'DELETE',
   })
-  if (!res.ok) throw new Error(`Undo relarp failed: ${res.status}`)
 }
 
 export async function createLike(postId) {
-  const res = await fetch(`${API_BASE}/posts/${postId}/like`, {
+  return authFetch(`${API_BASE}/posts/${postId}/like`, {
     method: 'POST',
   })
-  if (!res.ok) throw new Error(`Like failed: ${res.status}`)
-  return res.json()
 }
 
 export async function removeLike(postId) {
-  const res = await fetch(`${API_BASE}/posts/${postId}/like`, {
+  return authFetch(`${API_BASE}/posts/${postId}/like`, {
     method: 'DELETE',
   })
-  if (!res.ok) throw new Error(`Undo like failed: ${res.status}`)
 }
 
 export async function createLove(postId) {
-  const res = await fetch(`${API_BASE}/posts/${postId}/love`, {
+  return authFetch(`${API_BASE}/posts/${postId}/love`, {
     method: 'POST',
   })
-  if (!res.ok) throw new Error(`Love failed: ${res.status}`)
-  return res.json()
 }
 
 export async function removeLove(postId) {
-  const res = await fetch(`${API_BASE}/posts/${postId}/love`, {
+  return authFetch(`${API_BASE}/posts/${postId}/love`, {
     method: 'DELETE',
   })
-  if (!res.ok) throw new Error(`Undo love failed: ${res.status}`)
 }
 
 export async function createGlaze(postId, content) {
-  const res = await fetch(`${API_BASE}/posts/${postId}/glaze`, {
+  return authFetch(`${API_BASE}/posts/${postId}/glaze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ content }),
   })
-  if (!res.ok) throw new Error(`Glaze failed: ${res.status}`)
-  return res.json()
 }
 
 export async function removeGlaze(postId) {
-  const res = await fetch(`${API_BASE}/posts/${postId}/glaze`, {
+  return authFetch(`${API_BASE}/posts/${postId}/glaze`, {
     method: 'DELETE',
   })
-  if (!res.ok) throw new Error(`Undo glaze failed: ${res.status}`)
 }
 
 // ── Notifications ────────────────────────────────────────────────────────────
 
 export async function fetchNotifications({ limit = 25 } = {}) {
-  const res = await fetch(`${API_BASE}/notifications?limit=${limit}`)
-  if (!res.ok) throw new Error(`Notifications fetch failed: ${res.status}`)
-  return res.json()
+  return authFetch(`${API_BASE}/notifications?limit=${limit}`)
 }
