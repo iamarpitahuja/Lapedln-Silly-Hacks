@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import { AnimatePresence, motion as Motion } from 'framer-motion'
 import { useMockData } from '../../../../context/MockDataContext'
 import Icon from '../../../../components/Icon/Icon'
 import { getInitials } from '../../../../utils/strings'
+import { springBouncy, easeOutQuint } from '../../../../lib/motion'
 import styles from './StartPost.module.css'
 
 const PLACEHOLDERS = [
@@ -73,7 +75,6 @@ export default function StartPost() {
   const [postType, setPostType] = useState(POST_TYPES[0])
   const [draft, setDraft] = useState('')
   const [activeSuggestions, setActiveSuggestions] = useState([])
-  const [activeActionLabel, setActiveActionLabel] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [photo, setPhoto] = useState(null)
@@ -117,19 +118,6 @@ export default function StartPost() {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
-  function handleActionClick(action) {
-    if (activeActionLabel === action.label) {
-      setActiveSuggestions([])
-      setActiveActionLabel('')
-      return
-    }
-    setPostType(action.postType)
-    setActiveSuggestions(action.suggestions)
-    setActiveActionLabel(action.label)
-    setError('')
-    setIsFocused(true)
-  }
-
   function handleDraftChange(event) {
     setDraft(event.target.value)
   }
@@ -137,7 +125,6 @@ export default function StartPost() {
   function handleSuggestionSelect(text) {
     setDraft(text)
     setActiveSuggestions([])
-    setActiveActionLabel('')
     textareaRef.current?.focus()
   }
 
@@ -146,7 +133,6 @@ export default function StartPost() {
     setPhoto(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
     setActiveSuggestions([])
-    setActiveActionLabel('')
     setError('')
     setIsFocused(false)
   }
@@ -168,7 +154,6 @@ export default function StartPost() {
     setPhoto(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
     setActiveSuggestions([])
-    setActiveActionLabel('')
     setError('')
     setIsFocused(false)
     setIsSubmitting(false)
@@ -212,30 +197,50 @@ export default function StartPost() {
         />
       </div>
 
-      {photo && (
-        <div className={styles.photoPreviewWrap}>
-          <img src={photo} alt="Post preview" className={styles.photoPreview} />
-          <button className={styles.removePhotoBtn} onClick={removePhoto} aria-label="Remove photo">
-            <Icon name="x" size={16} />
-          </button>
-        </div>
-      )}
-
-      {activeSuggestions.length > 0 && (
-        <div className={styles.suggestionCards} data-testid="suggestion-cards">
-          {activeSuggestions.map((text, index) => (
-            <button
-              key={index}
-              type="button"
-              className={styles.suggestionCard}
-              data-testid="suggestion-card"
-              onClick={() => handleSuggestionSelect(text)}
-            >
-              {text}
+      <AnimatePresence>
+        {photo && (
+          <Motion.div
+            className={styles.photoPreviewWrap}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={springBouncy}
+          >
+            <img src={photo} alt="Post preview" className={styles.photoPreview} />
+            <button type="button" className={styles.removePhotoBtn} onClick={removePhoto} aria-label="Remove photo">
+              <Icon name="x" size={16} />
             </button>
-          ))}
-        </div>
-      )}
+          </Motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {activeSuggestions.length > 0 && (
+          <Motion.div
+            className={styles.suggestionCards}
+            data-testid="suggestion-cards"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {activeSuggestions.map((text, index) => (
+              <Motion.button
+                key={index}
+                type="button"
+                className={styles.suggestionCard}
+                data-testid="suggestion-card"
+                onClick={() => handleSuggestionSelect(text)}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.18, ease: easeOutQuint, delay: index * 0.05 }}
+              >
+                {text}
+              </Motion.button>
+            ))}
+          </Motion.div>
+        )}
+      </AnimatePresence>
 
       <div className={`${styles.expandable} ${showFooter ? styles.expanded : ''}`}>
         {showFooter ? (
@@ -258,7 +263,6 @@ export default function StartPost() {
               </select>
             </div>
             <div className={styles.composerMeta}>
-              <p className={styles.metaHint}>Press Ctrl/Cmd + Enter to publish</p>
               <span
                 className={`${styles.charCount} ${
                   charactersRemaining < 40 ? styles.charCountWarn : ''
@@ -266,57 +270,45 @@ export default function StartPost() {
               >
                 {charactersRemaining}
               </span>
+              <p className={styles.metaHint}>Press Ctrl/Cmd + Enter to publish</p>
             </div>
             {error ? <p className={styles.error}>{error}</p> : null}
             <div className={styles.composerActions}>
-              <button type="button" className={styles.cancelBtn} onClick={handleCancel}>
-                Cancel
-              </button>
               <button
                 type="button"
-                className={styles.publishBtn}
-                disabled={isPostDisabled}
-                onClick={handleSubmit}
+                className={styles.mediaBtn}
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Add media"
               >
-                {isSubmitting ? 'Posting…' : 'Post'}
+                <Icon name="camera" size={18} />
+                <span>Media</span>
               </button>
+              <div className={styles.composerActionsPrimary}>
+                <button type="button" className={styles.cancelBtn} onClick={handleCancel}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className={styles.publishBtn}
+                  disabled={isPostDisabled}
+                  onClick={handleSubmit}
+                >
+                  {isSubmitting ? 'Posting…' : 'Post'}
+                </button>
+              </div>
             </div>
           </div>
         ) : null}
       </div>
 
-      <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.action}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <span className={`${styles.actionIcon} ${styles.actionIconMedia}`}>
-            <Icon name="camera" size={20} />
-          </span>
-          <span className={styles.actionLabel}>Media</span>
-          <input
-            ref={fileInputRef}
-            type="file"
-            className={styles.hiddenInput}
-            accept="image/*"
-            onChange={handlePhotoUpload}
-          />
-        </button>
-        {ACTIONS.map(action => (
-          <button
-            key={action.label}
-            type="button"
-            className={styles.action}
-            onClick={() => handleActionClick(action)}
-          >
-            <span className={styles.actionIcon}>
-              <Icon name={action.icon} size={20} />
-            </span>
-            <span className={styles.actionLabel}>{action.label}</span>
-          </button>
-        ))}
-      </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        className={styles.hiddenInput}
+        accept="image/*"
+        onChange={handlePhotoUpload}
+      />
     </div>
   )
 }
+

@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
+import { AnimatePresence, motion as Motion } from 'framer-motion'
 import LarpRatingBadge from '../../../../components/LarpRatingBadge/LarpRatingBadge'
-import ProfilePopup from '../../../../components/ProfilePopup/ProfilePopup'
 import SuggestedGlazes from '../SuggestedGlazes/SuggestedGlazes'
 import Icon from '../../../../components/Icon/Icon'
 import {
@@ -25,7 +25,7 @@ import { useMockData } from '../../../../context/MockDataContext'
 import { getInitials } from '../../../../utils/strings'
 import styles from './PostCard.module.css'
 
-const AVATAR_COLORS = ['#0A66C2', '#057642', '#7c3aed', '#b45309', '#be123c', '#0891b2']
+const AVATAR_COLORS = ['#a78bfa', '#7db5ff', '#5ad7c1', '#b39bff', '#f1c75b', '#f289a8']
 const MAX_COMMENT_LENGTH = 280
 const MAX_RELARP_LENGTH = 220
 const CONTENT_TRUNCATE_LENGTH = 300
@@ -37,16 +37,9 @@ function getAvatarColor(name) {
 }
 
 export default function PostCard({ post, isOwnPost = false }) {
-  const { author, type, timestamp, content, reactions, ai_glazes } = post
+  const { author, type, timestamp, content, reactions } = post
   const relarpSource = post.isRelarp ? post.relarpOf : null
-  const { currentUser, deletePost } = useMockData()
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [popupPos, setPopupPos] = useState(null)
-
-  const handleAuthorClick = useCallback((e) => {
-    if (isOwnPost) return
-    setPopupPos({ x: e.clientX, y: e.clientY })
-  }, [isOwnPost])
+  const { currentUser } = useMockData()
 
   const [isGlazing, setIsGlazing] = useState(false)
   const [isGlazed, setIsGlazed] = useState(Boolean(post.has_user_glazed))
@@ -122,17 +115,20 @@ export default function PostCard({ post, isOwnPost = false }) {
     setReactionError('')
     const removeFn = post.isRelarp ? apiRemoveRelarpLike : apiRemoveLike
     const createFn = post.isRelarp ? apiCreateRelarpLike : apiCreateLike
+    const shouldLike = !isLarped
+
+    setIsLarped(shouldLike)
+    setLarpCount(prev => Math.max(0, prev + (shouldLike ? 1 : -1)))
+
     try {
-      if (isLarped) {
-        await removeFn(post.id)
-        setIsLarped(false)
-        setLarpCount(prev => Math.max(0, prev - 1))
-      } else {
+      if (shouldLike) {
         await createFn(post.id)
-        setIsLarped(true)
-        setLarpCount(prev => prev + 1)
+      } else {
+        await removeFn(post.id)
       }
     } catch {
+      setIsLarped(!shouldLike)
+      setLarpCount(prev => Math.max(0, prev + (shouldLike ? -1 : 1)))
       setReactionError('Unable to update your reaction right now.')
     } finally {
       setIsUpdatingLike(false)
@@ -146,17 +142,20 @@ export default function PostCard({ post, isOwnPost = false }) {
     setReactionError('')
     const removeFn = post.isRelarp ? apiRemoveRelarpLove : apiRemoveLove
     const createFn = post.isRelarp ? apiCreateRelarpLove : apiCreateLove
+    const shouldLove = !isLoved
+
+    setIsLoved(shouldLove)
+    setLoveCount(prev => Math.max(0, prev + (shouldLove ? 1 : -1)))
+
     try {
-      if (isLoved) {
-        await removeFn(post.id)
-        setIsLoved(false)
-        setLoveCount(prev => Math.max(0, prev - 1))
-      } else {
+      if (shouldLove) {
         await createFn(post.id)
-        setIsLoved(true)
-        setLoveCount(prev => prev + 1)
+      } else {
+        await removeFn(post.id)
       }
     } catch {
+      setIsLoved(!shouldLove)
+      setLoveCount(prev => Math.max(0, prev + (shouldLove ? -1 : 1)))
       setReactionError('Unable to update your reaction right now.')
     } finally {
       setIsUpdatingLove(false)
@@ -332,6 +331,7 @@ export default function PostCard({ post, isOwnPost = false }) {
   const hasUnloadedComments = totalCommentCount > comments.length
   const remainingCharacters = MAX_COMMENT_LENGTH - commentDraft.length
   const remainingRelarpCharacters = MAX_RELARP_LENGTH - relarpDraft.length
+  const totalReactionCount = larpCount + loveCount + glazeCount + relarpCount
 
   return (
     <div className={`${styles.card} ${isOwnPost ? styles.cardOwn : ''}`}>
@@ -346,9 +346,8 @@ export default function PostCard({ post, isOwnPost = false }) {
 
       <div className={styles.header}>
         <div
-          className={`${styles.avatar} ${!isOwnPost ? styles.clickable : ''}`}
+          className={styles.avatar}
           style={author.avatar ? {} : { background: getAvatarColor(author.name) }}
-          onClick={handleAuthorClick}
         >
           {author.avatar ? (
             <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
@@ -358,12 +357,7 @@ export default function PostCard({ post, isOwnPost = false }) {
         </div>
         <div className={styles.meta}>
           <div className={styles.nameRow}>
-            <span
-              className={`${styles.name} ${!isOwnPost ? styles.clickable : ''}`}
-              onClick={handleAuthorClick}
-            >
-              {author.name}
-            </span>
+            <span className={styles.name}>{author.name}</span>
             {isOwnPost ? <span className={styles.youLabel}>· You</span> : null}
             <LarpRatingBadge rating={author.larpRating} size="small" />
           </div>
@@ -374,30 +368,14 @@ export default function PostCard({ post, isOwnPost = false }) {
           </p>
         </div>
         <div className={styles.headerActions}>
-          {isOwnPost ? (
-            <button
-              className={styles.iconBtn}
-              aria-label="Delete post"
-              disabled={isDeleting}
-              onClick={async () => {
-                if (!confirm('Delete this post and all its comments, reactions, and relarps?')) return
-                setIsDeleting(true)
-                await deletePost(post.id)
-                window.dispatchEvent(new Event('feed:refresh'))
-              }}
-            >
+          <button className={styles.iconBtn} aria-label="More options">
+            <Icon name="more" size={16} />
+          </button>
+          {!isOwnPost ? (
+            <button className={styles.iconBtn} aria-label="Dismiss">
               <Icon name="x" size={16} />
             </button>
-          ) : (
-            <>
-              <button className={styles.iconBtn} aria-label="More options">
-                <Icon name="more" size={16} />
-              </button>
-              <button className={styles.iconBtn} aria-label="Dismiss">
-                <Icon name="x" size={16} />
-              </button>
-            </>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -447,49 +425,35 @@ export default function PostCard({ post, isOwnPost = false }) {
         ) : null}
       </div>
 
-      {Array.isArray(ai_glazes) && ai_glazes.length > 0 ? (
-        <div className={styles.aiGlazes}>
-          <p className={styles.aiGlazesLabel}>✨ Glaze-o-matic 3000</p>
-          <ul className={styles.aiGlazeList}>
-            {ai_glazes.map((glaze, i) => (
-              <li key={i} className={styles.aiGlazeItem}>{glaze}</li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
       <div className={styles.reactions}>
-        <div className={styles.reactionSummary}>
-          <button
-            className={`${styles.reactionGroup} ${isLarped ? styles.activeReaction : ''}`}
-            title="Larps"
-            onClick={handleLarpClick}
-            disabled={isUpdatingLike}
-          >
-            <Icon name="thumbsUp" size={14} className={`${styles.reactionIcon} ${styles.iconLike}`} />
-            <span className={styles.individualCount}>{larpCount}</span>
-          </button>
-          <button
-            className={`${styles.reactionGroup} ${isLoved ? styles.activeReaction : ''}`}
-            title="Loves"
-            onClick={handleLoveClick}
-            disabled={isUpdatingLove}
-          >
-            <Icon name="heart" size={14} className={`${styles.reactionIcon} ${styles.iconLove}`} />
-            <span className={styles.individualCount}>{loveCount}</span>
-          </button>
-          <button
-            className={`${styles.reactionGroup} ${isGlazed ? styles.activeReaction : ''}`}
-            title="Glazes"
-            onClick={handleGlazeClick}
-            disabled={isSubmittingGlaze}
-          >
-            <Icon name="sparkles" size={14} className={`${styles.reactionIcon} ${styles.iconGlaze}`} />
-            <span className={styles.individualCount}>{glazeCount}</span>
-          </button>
-          <span className={styles.reactionStat} title="Re-Larps">
-            <Icon name="repeat" size={14} className={`${styles.reactionIcon} ${styles.iconRelarp}`} />
-            <span className={styles.individualCount}>{relarpCount}</span>
+        <div className={styles.reactionSummary} title="Total reactions">
+          <div className={styles.reactionIconCluster} aria-hidden="true">
+            <span className={styles.reactionChip} title="Likes">
+              <Icon name="thumbsUp" size={12} className={`${styles.reactionIcon} ${styles.iconLike}`} />
+            </span>
+            <span className={styles.reactionChip} title="Loves">
+              <Icon name="heart" size={12} className={`${styles.reactionIcon} ${styles.iconLove}`} />
+            </span>
+            <span className={styles.reactionChip} title="Glazes">
+              <Icon name="sparkles" size={12} className={`${styles.reactionIcon} ${styles.iconGlaze}`} />
+            </span>
+            <span className={styles.reactionChip} title="Re-Larps">
+              <Icon name="repeat" size={12} className={`${styles.reactionIcon} ${styles.iconRelarp}`} />
+            </span>
+          </div>
+          <span className={styles.reactionStat} aria-live="polite">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <Motion.span
+                key={totalReactionCount}
+                className={styles.totalReactionCount}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+              >
+                {totalReactionCount}
+              </Motion.span>
+            </AnimatePresence>
           </span>
         </div>
         <button
@@ -498,56 +462,66 @@ export default function PostCard({ post, isOwnPost = false }) {
           aria-label="View thread"
         >
           <Icon name="message" size={12} className={styles.commentIcon} />
-          <span className={styles.commentCount} aria-hidden="true">{totalCommentCount} comments</span>
+          <span className={styles.commentCount} aria-hidden="true">{totalCommentCount} comment{totalCommentCount === 1 ? '' : 's'}</span>
         </button>
       </div>
 
       <div className={styles.actions}>
         {!blockReactions ? (
-          <button
+          <Motion.button
             className={`${styles.action} ${styles.actionLike} ${isLarped ? styles.actionLikeActive : ''}`}
             onClick={handleLarpClick}
             disabled={isUpdatingLike}
             aria-label={isLarped ? 'Unlike' : 'Like'}
+            whileTap={{ scale: 0.92 }}
+            whileHover={{ y: -1 }}
           >
             <Icon name="thumbsUp" size={18} />
-            <span>{isLarped ? 'Larped' : 'Larp'}</span>
-          </button>
+            <span>{isLarped ? 'Liked' : 'Like'}</span>
+          </Motion.button>
         ) : null}
         {!blockReactions ? (
-          <button
+          <Motion.button
             className={`${styles.action} ${styles.actionLove} ${isLoved ? styles.actionLoveActive : ''}`}
             onClick={handleLoveClick}
             disabled={isUpdatingLove}
             aria-label={isLoved ? 'Unlove' : 'Love'}
+            whileTap={{ scale: 0.92 }}
+            whileHover={{ y: -1 }}
           >
             <Icon name="heart" size={18} />
             <span>{isLoved ? 'Loved' : 'Love'}</span>
-          </button>
+          </Motion.button>
         ) : null}
         {!blockReactions ? (
-          <button
+          <Motion.button
             className={`${styles.action} ${styles.actionGlaze} ${isGlazing ? styles.selected : ''}`}
             onClick={handleGlazeClick}
             disabled={isSubmittingGlaze}
+            whileTap={{ scale: 0.92 }}
+            whileHover={{ y: -1 }}
           >
             <Icon name="sparkles" size={18} /> <span>Glaze</span>
-          </button>
+          </Motion.button>
         ) : null}
-        <button
+        <Motion.button
           className={`${styles.action} ${styles.actionComment}`}
           onClick={handleCommentClick}
           aria-label="Comment"
+          whileTap={{ scale: 0.92 }}
+          whileHover={{ y: -1 }}
         >
           <Icon name="message" size={18} /> <span>Comment</span>
-        </button>
-        <button
+        </Motion.button>
+        <Motion.button
           className={`${styles.action} ${styles.actionRelarp} ${
             isRelarpComposerOpen || userAlreadyRelarped ? styles.actionRelarpActive : ''
           }`}
           onClick={handleRelarpClick}
           disabled={isOwnPost || isSubmittingRelarp || isUndoingRelarp}
           aria-label={userAlreadyRelarped ? 'Undo Re-Larp' : 'Re-Larp'}
+          whileTap={{ scale: 0.92 }}
+          whileHover={{ y: -1 }}
         >
           <Icon name="repeat" size={18} />
           <span>
@@ -557,11 +531,17 @@ export default function PostCard({ post, isOwnPost = false }) {
                 ? 'Undo Re-Larp'
                 : 'Re-Larp'}
           </span>
-        </button>
+        </Motion.button>
         {!isOwnPost ? (
-          <button className={`${styles.action} ${styles.actionDm}`} aria-label="DM" onClick={handleDmClick}>
+          <Motion.button
+            className={`${styles.action} ${styles.actionDm}`}
+            aria-label="DM"
+            onClick={handleDmClick}
+            whileTap={{ scale: 0.92 }}
+            whileHover={{ y: -1 }}
+          >
             <Icon name="mail" size={18} /> <span>DM</span>
-          </button>
+          </Motion.button>
         ) : null}
       </div>
 
@@ -571,217 +551,242 @@ export default function PostCard({ post, isOwnPost = false }) {
 
       <div className={`${styles.expandable} ${isRelarpComposerOpen ? styles.expanded : ''}`}>
         <div className={styles.expandableInner}>
-          <form className={styles.relarpComposer} onSubmit={handleRelarpSubmit}>
-            <p className={styles.relarpTitle}>Re-Larp this post</p>
-            <textarea
-              className={styles.relarpInput}
-              value={relarpDraft}
-              onChange={event => setRelarpDraft(event.target.value)}
-              onKeyDown={handleRelarpKeyDown}
-              maxLength={MAX_RELARP_LENGTH}
-              rows={3}
-              placeholder="Add optional context before you Re-Larp..."
-            />
-            <div className={styles.relarpMeta}>
-              <p className={styles.relarpHint}>Ctrl/Cmd + Enter to publish</p>
-              <span
-                className={`${styles.charCount} ${remainingRelarpCharacters < 30 ? styles.charCountWarn : ''}`}
+          <AnimatePresence>
+            {isRelarpComposerOpen && (
+              <Motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, delay: 0.1 }}
               >
-                {remainingRelarpCharacters}
-              </span>
-            </div>
-            {relarpError ? <p className={styles.relarpError}>{relarpError}</p> : null}
-            <div className={styles.relarpActions}>
-              <button
-                type="button"
-                className={styles.relarpCancel}
-                onClick={() => {
-                  setRelarpDraft('')
-                  setRelarpError('')
-                  setIsRelarpComposerOpen(false)
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className={styles.relarpSubmit}
-                disabled={isSubmittingRelarp || isUndoingRelarp}
-              >
-                {isSubmittingRelarp
-                  ? 'Re-Larping...'
-                  : relarpDraft.trim()
-                    ? 'Publish Re-Larp'
-                    : 'Quick Re-Larp'}
-              </button>
-            </div>
-          </form>
+                <form className={styles.relarpComposer} onSubmit={handleRelarpSubmit}>
+                  <p className={styles.relarpTitle}>Re-Larp this post</p>
+                  <textarea
+                    className={styles.relarpInput}
+                    value={relarpDraft}
+                    onChange={event => setRelarpDraft(event.target.value)}
+                    onKeyDown={handleRelarpKeyDown}
+                    maxLength={MAX_RELARP_LENGTH}
+                    rows={3}
+                    placeholder="Add optional context before you Re-Larp..."
+                  />
+                  <div className={styles.relarpMeta}>
+                    <p className={styles.relarpHint}>Ctrl/Cmd + Enter to publish</p>
+                    <span
+                      className={`${styles.charCount} ${remainingRelarpCharacters < 30 ? styles.charCountWarn : ''}`}
+                    >
+                      {remainingRelarpCharacters}
+                    </span>
+                  </div>
+                  {relarpError ? <p className={styles.relarpError}>{relarpError}</p> : null}
+                  <div className={styles.relarpActions}>
+                    <button
+                      type="button"
+                      className={styles.relarpCancel}
+                      onClick={() => {
+                        setRelarpDraft('')
+                        setRelarpError('')
+                        setIsRelarpComposerOpen(false)
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className={styles.relarpSubmit}
+                      disabled={isSubmittingRelarp || isUndoingRelarp}
+                    >
+                      {isSubmittingRelarp
+                        ? 'Re-Larping...'
+                        : relarpDraft.trim()
+                          ? 'Publish Re-Larp'
+                          : 'Quick Re-Larp'}
+                    </button>
+                  </div>
+                </form>
+              </Motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       <div className={`${styles.expandable} ${isCommentsOpen ? styles.expanded : ''}`}>
         <div className={styles.expandableInner}>
-          <div className={styles.commentsSection}>
-            <div className={styles.commentsHeader}>
-              <h4 className={styles.commentsTitle}>Comments</h4>
-              <span className={styles.commentsMeta}>
-                {comments.length} shown
-                {hasUnloadedComments ? ` • ${totalCommentCount} total` : ''}
-              </span>
-            </div>
-
-            {comments.length ? (
-              <ul className={styles.commentList}>
-                {comments.map(comment => {
-                  const commentAuthor = comment.author ?? {}
-                  const authorName = commentAuthor.name ?? 'Anonymous Larper'
-                  const authorAvatar = commentAuthor.avatar ?? null
-                  const commentTimestamp = comment.timestamp ?? 'Just now'
-                  const isOwn = comment.isUserComment
-                  const isEditing = editingCommentId === comment.id
-                  const isDeleting = isDeletingComment === comment.id
-                  return (
-                    <li key={comment.id} className={styles.commentItem}>
-                      <div
-                        className={styles.commentAvatar}
-                        style={authorAvatar ? {} : { background: getAvatarColor(authorName) }}
-                      >
-                        {authorAvatar ? (
-                          <img src={authorAvatar} alt={authorName} className={styles.avatarImg} />
-                        ) : (
-                          getInitials(authorName)
-                        )}
-                      </div>
-                      <div className={styles.commentBody}>
-                        {isEditing ? (
-                          <div className={styles.commentEditWrap}>
-                            <textarea
-                              className={styles.commentEditInput}
-                              value={editCommentDraft}
-                              onChange={e => setEditCommentDraft(e.target.value)}
-                              onKeyDown={e => handleEditCommentKeyDown(e, comment.id)}
-                              maxLength={MAX_COMMENT_LENGTH}
-                              rows={2}
-                              autoFocus
-                            />
-                            <div className={styles.commentEditActions}>
-                              <button
-                                type="button"
-                                className={styles.commentEditCancel}
-                                onClick={handleEditCommentCancel}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                type="button"
-                                className={styles.commentEditSave}
-                                onClick={() => handleEditCommentSave(comment.id)}
-                                disabled={isEditingComment || !editCommentDraft.trim()}
-                              >
-                                {isEditingComment ? 'Saving...' : 'Save'}
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <div className={styles.commentBubble}>
-                              <p className={styles.commentAuthor}>{authorName}</p>
-                              <p className={styles.commentContent}>{comment.content}</p>
-                            </div>
-                            <div className={styles.commentFooter}>
-                              <p className={styles.commentTime}>{commentTimestamp}</p>
-                              {isOwn ? (
-                                <div className={styles.commentOwnActions}>
-                                  <button
-                                    className={styles.commentActionBtn}
-                                    onClick={() => handleEditCommentStart(comment)}
-                                    aria-label="Edit comment"
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    className={`${styles.commentActionBtn} ${styles.commentDeleteBtn}`}
-                                    onClick={() => handleDeleteComment(comment.id)}
-                                    disabled={isDeleting}
-                                    aria-label="Delete comment"
-                                  >
-                                    {isDeleting ? 'Deleting...' : 'Delete'}
-                                  </button>
-                                </div>
-                              ) : null}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </li>
-                  )
-                })}
-              </ul>
-            ) : (
-              <p className={styles.emptyComments}>No comments yet. Be the first to glaze this post.</p>
-            )}
-
-            <form className={styles.commentComposer} onSubmit={handleCommentSubmit}>
-              <div
-                className={styles.commentAvatar}
-                style={currentUser.avatar ? {} : { background: getAvatarColor(currentUser.name) }}
+          <AnimatePresence>
+            {isCommentsOpen && (
+              <Motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, delay: 0.1 }}
               >
-                {currentUser.avatar ? (
-                  <img src={currentUser.avatar} alt={currentUser.name} className={styles.avatarImg} />
-                ) : (
-                  getInitials(currentUser.name)
-                )}
-              </div>
-              <div className={styles.commentComposerBody}>
-                <textarea
-                  className={styles.commentInput}
-                  value={commentDraft}
-                  onChange={event => setCommentDraft(event.target.value)}
-                  onKeyDown={handleCommentKeyDown}
-                  maxLength={MAX_COMMENT_LENGTH}
-                  rows={2}
-                  placeholder="Add your high-conviction comment..."
-                />
-                <div className={styles.commentComposerMeta}>
-                  <p className={styles.commentHint}>Ctrl/Cmd + Enter to post</p>
-                  <span
-                    className={`${styles.charCount} ${remainingCharacters < 40 ? styles.charCountWarn : ''}`}
-                  >
-                    {remainingCharacters}
-                  </span>
+                <div className={styles.commentsSection}>
+                  <div className={styles.commentsHeader}>
+                    <h4 className={styles.commentsTitle}>Comments</h4>
+                    <span className={styles.commentsMeta}>
+                      {comments.length} shown
+                      {hasUnloadedComments ? ` • ${totalCommentCount} total` : ''}
+                    </span>
+                  </div>
+
+                  {comments.length ? (
+                    <ul className={styles.commentList}>
+                      <AnimatePresence initial={false}>
+                        {comments.map(comment => {
+                          const commentAuthor = comment.author ?? {}
+                          const authorName = commentAuthor.name ?? 'Anonymous Larper'
+                          const authorAvatar = commentAuthor.avatar ?? null
+                          const commentTimestamp = comment.timestamp ?? 'Just now'
+                          const isOwn = comment.isUserComment
+                          const isEditing = editingCommentId === comment.id
+                          const isDeleting = isDeletingComment === comment.id
+                          return (
+                            <Motion.li
+                              key={comment.id}
+                              className={styles.commentItem}
+                              initial={{ opacity: 0, x: -8 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -8 }}
+                              transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+                            >
+                              <div
+                                className={styles.commentAvatar}
+                                style={authorAvatar ? {} : { background: getAvatarColor(authorName) }}
+                              >
+                                {authorAvatar ? (
+                                  <img src={authorAvatar} alt={authorName} className={styles.avatarImg} />
+                                ) : (
+                                  getInitials(authorName)
+                                )}
+                              </div>
+                              <div className={styles.commentBody}>
+                                {isEditing ? (
+                                  <div className={styles.commentEditWrap}>
+                                    <textarea
+                                      className={styles.commentEditInput}
+                                      value={editCommentDraft}
+                                      onChange={e => setEditCommentDraft(e.target.value)}
+                                      onKeyDown={e => handleEditCommentKeyDown(e, comment.id)}
+                                      maxLength={MAX_COMMENT_LENGTH}
+                                      rows={2}
+                                      autoFocus
+                                    />
+                                    <div className={styles.commentEditActions}>
+                                      <button
+                                        type="button"
+                                        className={styles.commentEditCancel}
+                                        onClick={handleEditCommentCancel}
+                                      >
+                                        Cancel
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className={styles.commentEditSave}
+                                        onClick={() => handleEditCommentSave(comment.id)}
+                                        disabled={isEditingComment || !editCommentDraft.trim()}
+                                      >
+                                        {isEditingComment ? 'Saving...' : 'Save'}
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <div className={styles.commentBubble}>
+                                      <p className={styles.commentAuthor}>{authorName}</p>
+                                      <p className={styles.commentContent}>{comment.content}</p>
+                                    </div>
+                                    <div className={styles.commentFooter}>
+                                      <p className={styles.commentTime}>{commentTimestamp}</p>
+                                      {isOwn ? (
+                                        <div className={styles.commentOwnActions}>
+                                          <button
+                                            className={styles.commentActionBtn}
+                                            onClick={() => handleEditCommentStart(comment)}
+                                            aria-label="Edit comment"
+                                          >
+                                            Edit
+                                          </button>
+                                          <button
+                                            className={`${styles.commentActionBtn} ${styles.commentDeleteBtn}`}
+                                            onClick={() => handleDeleteComment(comment.id)}
+                                            disabled={isDeleting}
+                                            aria-label="Delete comment"
+                                          >
+                                            {isDeleting ? 'Deleting...' : 'Delete'}
+                                          </button>
+                                        </div>
+                                      ) : null}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </Motion.li>
+                          )
+                        })}
+                      </AnimatePresence>
+                    </ul>
+                  ) : (
+                    <p className={styles.emptyComments}>No comments yet. Be the first to glaze this post.</p>
+                  )}
+
+                  <form className={styles.commentComposer} onSubmit={handleCommentSubmit}>
+                    <div
+                      className={styles.commentAvatar}
+                      style={currentUser.avatar ? {} : { background: getAvatarColor(currentUser.name) }}
+                    >
+                      {currentUser.avatar ? (
+                        <img src={currentUser.avatar} alt={currentUser.name} className={styles.avatarImg} />
+                      ) : (
+                        getInitials(currentUser.name)
+                      )}
+                    </div>
+                    <div className={styles.commentComposerBody}>
+                      <textarea
+                        className={styles.commentInput}
+                        value={commentDraft}
+                        onChange={event => setCommentDraft(event.target.value)}
+                        onKeyDown={handleCommentKeyDown}
+                        maxLength={MAX_COMMENT_LENGTH}
+                        rows={2}
+                        placeholder="Add your high-conviction comment..."
+                      />
+                      <div className={styles.commentComposerMeta}>
+                        <p className={styles.commentHint}>Ctrl/Cmd + Enter to post</p>
+                        <span
+                          className={`${styles.charCount} ${remainingCharacters < 40 ? styles.charCountWarn : ''}`}
+                        >
+                          {remainingCharacters}
+                        </span>
+                      </div>
+                      {commentError ? <p className={styles.commentError}>{commentError}</p> : null}
+                      <div className={styles.commentComposerActions}>
+                        <button
+                          type="button"
+                          className={styles.commentCancel}
+                          onClick={() => {
+                            setCommentDraft('')
+                            setCommentError('')
+                          }}
+                        >
+                          Clear
+                        </button>
+                        <button
+                          type="submit"
+                          className={styles.commentSubmit}
+                          disabled={!commentDraft.trim() || isSubmittingComment}
+                        >
+                          {isSubmittingComment ? 'Posting...' : 'Post comment'}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
-                {commentError ? <p className={styles.commentError}>{commentError}</p> : null}
-                <div className={styles.commentComposerActions}>
-                  <button
-                    type="button"
-                    className={styles.commentCancel}
-                    onClick={() => {
-                      setCommentDraft('')
-                      setCommentError('')
-                    }}
-                  >
-                    Clear
-                  </button>
-                  <button
-                    type="submit"
-                    className={styles.commentSubmit}
-                    disabled={!commentDraft.trim() || isSubmittingComment}
-                  >
-                    {isSubmittingComment ? 'Posting...' : 'Post comment'}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+              </Motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-      {popupPos && !isOwnPost ? (
-        <ProfilePopup
-          author={author}
-          clickPos={popupPos}
-          onClose={() => setPopupPos(null)}
-        />
-      ) : null}
     </div>
   )
 }
+

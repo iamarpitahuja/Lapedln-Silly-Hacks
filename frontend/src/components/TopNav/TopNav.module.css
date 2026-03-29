@@ -4,12 +4,12 @@
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  background: var(--nav-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
   height: 52px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 30px rgba(167, 139, 250, 0.05), 0 1px 0 rgba(167, 139, 250, 0.1);
 }
 
 .inner {
@@ -50,11 +50,13 @@
 }
 
 .logoText {
-  font-size: 22px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
   font-weight: 800;
-  color: #0A66C2;
-  letter-spacing: -0.5px;
-  text-shadow: 0 0 1px rgba(10, 102, 194, 0.1);
+  color: var(--neon);
+  letter-spacing: 0.05em;
+  text-shadow: none;
+  animation: none;
 }
 
 .searchWrap {
@@ -66,39 +68,42 @@
 .searchIcon {
   position: absolute;
   left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   pointer-events: none;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 .search {
-  background: rgba(10, 102, 194, 0.05);
-  border: 1.5px solid transparent;
+  background: rgba(167, 139, 250, 0.04);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 12px 8px 38px;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.9);
+  font-size: 13px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-primary);
   width: 280px;
   outline: none;
   transition: all var(--transition-normal);
 }
 
 .search:focus {
-  background: #fff;
-  border-color: #0A66C2;
+  background: rgba(167, 139, 250, 0.06);
+  border-color: var(--neon);
   width: 400px;
-  box-shadow: 0 8px 24px rgba(10, 102, 194, 0.12);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.14);
 }
 
-.search:focus + .searchIcon {
-  color: #0A66C2;
-  transform: scale(1.1);
+.searchWrap:has(.search:focus) .searchIcon {
+  color: var(--neon);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .search::placeholder {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   font-weight: 400;
   transition: opacity var(--transition-fast);
 }
@@ -119,18 +124,19 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  padding: 0 12px;
-  color: rgba(0, 0, 0, 0.6);
+  padding: 0 14px;
+  color: var(--text-secondary);
   text-decoration: none;
-  border-bottom: 2.5px solid transparent;
+  border-bottom: 2px solid transparent;
   transition: all var(--transition-fast);
   min-width: 80px;
   position: relative;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .tab:hover {
-  color: rgba(0, 0, 0, 0.9);
-  background: rgba(0, 0, 0, 0.03);
+  color: var(--neon);
+  background: transparent;
 }
 
 .tab:active {
@@ -138,19 +144,20 @@
 }
 
 .tabActive {
-  color: rgba(0, 0, 0, 0.9);
-  border-bottom-color: rgba(0, 0, 0, 0.9);
+  color: var(--neon);
+  border-bottom-color: var(--neon);
+  text-shadow: none;
 }
 
-.tabActive::after {
-  content: '';
+.activeIndicator {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 2.5px;
-  background: currentColor;
+  height: 2px;
+  background: var(--neon);
   border-radius: 2px 2px 0 0;
+  box-shadow: none;
 }
 
 .tabIcon {
@@ -163,28 +170,29 @@
 }
 
 .tab:hover .tabIcon {
-  transform: translateY(-2px);
+  transform: none;
 }
 
 .tabLabel {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   white-space: nowrap;
+  letter-spacing: 0.03em;
 }
 
 .avatarSmall {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #0A66C2;
-  color: #fff;
+  background: var(--neon-dark);
+  color: var(--text-on-accent);
   font-size: 10px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 1px #fff;
-  transition: box-shadow var(--transition-fast);
+  box-shadow: 0 0 0 1px var(--bg-deep);
+  transition: none;
 }
 
 .avatarSmallImg {
@@ -192,16 +200,16 @@
   height: 24px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 0 0 1px #fff;
-  transition: box-shadow var(--transition-fast);
+  box-shadow: 0 0 0 1px var(--bg-deep);
+  transition: none;
 }
 
 .tab:hover .avatarSmallImg {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(10, 102, 194, 0.2);
+  box-shadow: 0 0 0 1px var(--bg-deep);
 }
 
 .tab:hover .avatarSmall {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(10, 102, 194, 0.2);
+  box-shadow: 0 0 0 1px var(--bg-deep);
 }
 
 .iconWrap {
@@ -213,13 +221,14 @@
 
 .unreadDot {
   position: absolute;
-  top: -2px;
-  right: -4px;
-  width: 8px;
-  height: 8px;
-  background: #e53935;
+  top: -1px;
+  right: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--neon);
   border-radius: 50%;
-  border: 1.5px solid #fff;
+  border: 1px solid var(--bg-deep);
+  box-shadow: none;
 }
 
 .signOut {
@@ -228,12 +237,28 @@
   justify-content: center;
   padding: 6px 10px;
   margin-left: 4px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   border-radius: 6px;
   transition: color 0.15s, background 0.15s;
 }
 
+.themeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  margin-left: 4px;
+  color: var(--text-muted);
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.themeToggle:hover {
+  color: var(--accent-connect);
+  background: var(--accent-connect-soft);
+}
+
 .signOut:hover {
-  color: rgba(0, 0, 0, 0.8);
-  background: rgba(0, 0, 0, 0.05);
+  color: var(--neon);
+  background: rgba(167, 139, 250, 0.06);
 }

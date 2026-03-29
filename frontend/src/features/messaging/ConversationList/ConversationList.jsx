@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { motion as Motion } from 'framer-motion'
 import { getInitials } from '../../../utils/strings'
+import { easeOutQuint } from '../../../lib/motion'
 import styles from './ConversationList.module.css'
 
-const AVATAR_COLORS = ['#0A66C2', '#057642', '#7c3aed', '#b45309', '#be123c', '#0891b2']
+const AVATAR_COLORS = ['#a78bfa', '#7db5ff', '#5ad7c1', '#b39bff', '#f1c75b', '#f289a8']
 
 function getAvatarColor(name) {
   let hash = 0
@@ -54,12 +56,17 @@ export default function ConversationList({
           <>
             <p className={styles.sectionLabel}>Messages</p>
             <ul className={styles.section}>
-              {filteredConvs.map(conv => {
+              {filteredConvs.map((conv, index) => {
                 const user = conv.other_user
                 const name = user?.display_name || 'Anonymous Larper'
                 const isActive = !activeGroupId && activeUserId === user?.id
                 return (
-                  <li key={user?.id}>
+                  <Motion.li
+                    key={user?.id}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2, ease: easeOutQuint, delay: index * 0.04 }}
+                  >
                     <button
                       className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
                       onClick={() => onSelect(user)}
@@ -80,7 +87,7 @@ export default function ConversationList({
                         <span className={styles.preview}>{conv.latest_message}</span>
                       </div>
                     </button>
-                  </li>
+                  </Motion.li>
                 )
               })}
             </ul>
@@ -92,11 +99,16 @@ export default function ConversationList({
           <>
             <p className={styles.sectionLabel}>Groups</p>
             <ul className={styles.section}>
-              {filteredGroups.map(group => {
+              {filteredGroups.map((group, index) => {
                 const isActive = activeGroupId === group.id
                 const memberCount = group.members?.length ?? 0
                 return (
-                  <li key={group.id}>
+                  <Motion.li
+                    key={group.id}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2, ease: easeOutQuint, delay: index * 0.04 }}
+                  >
                     <button
                       className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
                       onClick={() => onSelectGroup(group)}
@@ -115,7 +127,7 @@ export default function ConversationList({
                         </span>
                       </div>
                     </button>
-                  </li>
+                  </Motion.li>
                 )
               })}
             </ul>
@@ -131,3 +143,4 @@ export default function ConversationList({
     </div>
   )
 }
+

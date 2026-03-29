@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { AnimatePresence, motion as Motion } from 'framer-motion'
 import { useMockData } from '../../../context/MockDataContext'
 import { fetchFeed } from '../../../services/api'
+import { easeOutQuint } from '../../../lib/motion'
 import StartPost from './StartPost/StartPost'
 import PostCard from './PostCard/PostCard'
 import LockedPostCard from './LockedPostCard/LockedPostCard'
@@ -93,7 +95,6 @@ function adaptBackendPost(post) {
     ai_glazes: post.ai_glazes ?? [],
     glazes: post.glazes ?? [],
     buzzword_score: post.buzzword_score ?? 0,
-    photo: post.roast_meme_url ?? null,
     has_user_relarped: Boolean(post.has_user_relarped),
     has_user_liked: Boolean(post.has_user_liked),
     has_user_loved: Boolean(post.has_user_loved),
@@ -141,25 +142,31 @@ export default function Feed() {
       {loading ? (
         <p className={styles.loadingText}>Recalculating prestige hierarchy…</p>
       ) : (
-        <div className={styles.posts}>
-          {backendPosts.map((post, index) => (
-            <div
-              key={`${post.id}:${post.reactions.comments}:${post.reactions.relarps}:${post.reactions.likes}:${post.reactions.loves}:${post.reactions.glazes}:${post.has_user_relarped ? 1 : 0}:${post.has_user_liked ? 1 : 0}:${post.has_user_loved ? 1 : 0}:${post.has_user_glazed ? 1 : 0}`}
-              className="animate-fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              {(post.author.id === currentUser.id || isAccessible(post.author.larpRating)) ? (
-                <PostCard
-                  post={post}
-                  isOwnPost={post.author.id === currentUser.id}
-                />
-              ) : (
-                <LockedPostCard post={post} />
-              )}
-            </div>
-          ))}
-        </div>
+        <Motion.div className={styles.posts}>
+          <AnimatePresence initial={false}>
+            {backendPosts.map(post => (
+              <Motion.div
+                key={post.id}
+                layout
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.25, ease: easeOutQuint }}
+              >
+                {isAccessible(post.author.larpRating) ? (
+                  <PostCard
+                    post={post}
+                    isOwnPost={post.author.id === currentUser.id}
+                  />
+                ) : (
+                  <LockedPostCard post={post} />
+                )}
+              </Motion.div>
+            ))}
+          </AnimatePresence>
+        </Motion.div>
       )}
     </div>
   )
 }
+

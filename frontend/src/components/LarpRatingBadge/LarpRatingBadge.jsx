@@ -9,11 +9,11 @@ function getTier(rating) {
 }
 
 function getTierColor(rating) {
-  if (rating >= 95) return '#ff6b00'
-  if (rating >= 85) return '#7c3aed'
-  if (rating >= 70) return '#0A66C2'
-  if (rating >= 50) return '#057642'
-  return '#666'
+  if (rating >= 95) return '#a78bfa'
+  if (rating >= 85) return '#7db5ff'
+  if (rating >= 70) return '#5ad7c1'
+  if (rating >= 50) return '#b39bff'
+  return '#f289a8'
 }
 
 export default function LarpRatingBadge({ rating, size = 'large' }) {
@@ -27,7 +27,7 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
         style={{
           color,
           borderColor: color,
-          background: `${color}14`,
+          background: `${color}22`,
           '--tier-color': color,
         }}
         title={`LarpRating: ${rating} — ${tier}`}
@@ -45,11 +45,11 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
 
   return (
     <div className={styles.gauge}>
-      <svg width="100" height="100" viewBox="0 0 100 100" style={{ filter: `drop-shadow(0 0 5px ${color}66)` }}>
+      <svg width="100" height="100" viewBox="0 0 100 100">
         <circle
           cx="50" cy="50" r={radius}
           fill="none"
-          stroke="#e8e8e8"
+          stroke="rgba(167, 139, 250, 0.18)"
           strokeWidth="10"
         />
         <circle
@@ -61,6 +61,7 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
           strokeDasharray={`${progress} ${circumference}`}
           strokeLinecap="round"
           transform="rotate(-90 50 50)"
+          style={{ filter: `drop-shadow(0 0 5px ${color}66)` }}
         />
       </svg>
       <div className={styles.gaugeInner}>

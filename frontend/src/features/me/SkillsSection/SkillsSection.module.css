@@ -1,10 +1,10 @@
 .card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(10, 20, 12, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   padding: 24px;
 }
 
@@ -16,10 +16,12 @@
 }
 
 .title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
-  letter-spacing: -0.01em;
+  color: var(--neon);
+  letter-spacing: 0.02em;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  text-shadow: none;
 }
 
 .headerActions {
@@ -34,21 +36,21 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .iconBtn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(167, 139, 250, 0.08);
+  color: var(--neon);
 }
 
 .editorWrapper {
   animation: fadeIn 0.2s ease-out;
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(167, 139, 250, 0.02);
   padding: 16px;
   border-radius: 12px;
-  border: 1px dashed rgba(0, 0, 0, 0.1);
+  border: 1px dashed rgba(167, 139, 250, 0.2);
   margin-bottom: 24px;
 }
 
@@ -59,19 +61,20 @@
 }
 
 .skillForm input {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-md);
   border-radius: 8px;
   padding: 10px 14px;
-  font-size: 14px;
-  background: rgba(255, 255, 255, 0.8);
-  font-family: inherit;
+  font-size: 13px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .skillForm input:focus {
   outline: none;
-  border-color: #0a66c2;
-  box-shadow: 0 0 0 4px rgba(10, 102, 194, 0.1);
+  border-color: var(--neon);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
 }
 
 .formActions {
@@ -81,22 +84,23 @@
 }
 
 .primaryBtn {
-  background: #0a66c2;
-  color: white;
+  background: var(--neon);
+  color: var(--text-on-accent);
   padding: 8px 20px;
   border-radius: 20px;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .secondaryBtn {
   background: transparent;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   padding: 8px 20px;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 13px;
+  border: 1px solid var(--border-md);
 }
 
 .skills {
@@ -110,7 +114,7 @@
   align-items: center;
   justify-content: space-between;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border);
 }
 
 .skillRow:last-child {
@@ -119,22 +123,22 @@
 }
 
 .skillName {
-  font-size: 15px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .endorseCount {
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
 .sparkleIcon {
-  color: #f59e0b;
+  color: var(--neon-dark);
 }
 
 .skillActions {
@@ -150,17 +154,19 @@
 }
 
 .endorseBtn {
-  border: 1px solid #0a66c2;
-  color: #0a66c2;
+  border: 1px solid var(--neon);
+  color: var(--neon);
   padding: 4px 12px;
   border-radius: 16px;
-  font-size: 13px;
-  font-weight: 600;
-  transition: background-color var(--transition-fast);
+  font-size: 12px;
+  font-weight: 700;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .endorseBtn:hover {
-  background-color: rgba(10, 102, 194, 0.05);
+  background-color: rgba(167, 139, 250, 0.08);
+  box-shadow: var(--glow-sm);
 }
 
 .removeBtn {
@@ -170,18 +176,18 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .removeBtn:hover {
-  color: #d11124;
-  background-color: rgba(209, 17, 36, 0.05);
+  color: var(--neon);
+  background-color: rgba(167, 139, 250, 0.08);
 }
 
 .emptyState {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.35);
+  color: var(--text-muted);
   font-style: italic;
 }
 

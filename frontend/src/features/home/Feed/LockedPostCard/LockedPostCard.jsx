@@ -1,3 +1,4 @@
+import Icon from '../../../../components/Icon/Icon'
 import styles from './LockedPostCard.module.css'
 
 export default function LockedPostCard({ post }) {
@@ -35,7 +36,7 @@ export default function LockedPostCard({ post }) {
         </div>
       </div>
       <div className={styles.overlay}>
-        <span className={styles.lockIcon}>🔒</span>
+        <span className={styles.lockIcon}><Icon name="lock" size={32} /></span>
         <p className={styles.lockMessage}>This content is above your professional aura.</p>
         <p className={styles.lockSub}>Increase your LarpRating to unlock.</p>
       </div>

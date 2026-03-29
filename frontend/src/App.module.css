@@ -1,6 +1,7 @@
 .main {
-  padding-top: 52px; /* offset for fixed TopNav height */
+  padding-top: 52px;
   min-height: 100vh;
+  background: var(--bg-deep);
 }
 
 .loading {
@@ -9,5 +10,12 @@
   justify-content: center;
   min-height: 100vh;
   font-size: 16px;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--text-muted);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.1em;
+  animation: none;
+}
+
+.pageWrap {
+  width: 100%;
 }

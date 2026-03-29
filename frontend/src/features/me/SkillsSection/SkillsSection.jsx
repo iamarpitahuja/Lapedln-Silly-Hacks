@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { AnimatePresence, motion as Motion } from 'framer-motion'
 import { useMockData } from '../../../context/MockDataContext'
 import Icon from '../../../components/Icon/Icon'
+import { easeOutQuint } from '../../../lib/motion'
 import styles from './SkillsSection.module.css'
 
 export default function SkillsSection({ onNotice }) {
@@ -48,34 +50,42 @@ export default function SkillsSection({ onNotice }) {
           </button>
         </div>
       </div>
-      {isAdding && (
-        <div className={styles.editorWrapper}>
-          <form className={styles.skillForm} onSubmit={handleAddSkill}>
-            <input
-              type="text"
-              placeholder="Skill name (e.g. Fireball, Excel)"
-              value={skillDraft}
-              onChange={event => setSkillDraft(event.target.value)}
-              autoFocus
-            />
-            <div className={styles.formActions}>
-              <button type="submit" className={styles.primaryBtn}>
-                Save Skill
-              </button>
-              <button
-                type="button"
-                className={styles.secondaryBtn}
-                onClick={() => {
-                  setIsAdding(false)
-                  setSkillDraft('')
-                }}
-              >
-                Discard
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+      <AnimatePresence>
+        {isAdding && (
+          <Motion.div
+            className={styles.editorWrapper}
+            initial={{ opacity: 0, x: 8 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 8 }}
+            transition={{ duration: 0.18, ease: easeOutQuint }}
+          >
+            <form className={styles.skillForm} onSubmit={handleAddSkill}>
+              <input
+                type="text"
+                placeholder="Skill name (e.g. Fireball, Excel)"
+                value={skillDraft}
+                onChange={event => setSkillDraft(event.target.value)}
+                autoFocus
+              />
+              <div className={styles.formActions}>
+                <button type="submit" className={styles.primaryBtn}>
+                  Save Skill
+                </button>
+                <button
+                  type="button"
+                  className={styles.secondaryBtn}
+                  onClick={() => {
+                    setIsAdding(false)
+                    setSkillDraft('')
+                  }}
+                >
+                  Discard
+                </button>
+              </div>
+            </form>
+          </Motion.div>
+        )}
+      </AnimatePresence>
       <div className={styles.skills}>
         {currentUser.skills.length === 0 && (
           <p className={styles.emptyState}>No skills listed. Add your first endorsable competency.</p>
@@ -112,3 +122,4 @@ export default function SkillsSection({ onNotice }) {
     </section>
   )
 }
+

@@ -1,14 +1,17 @@
 .page {
   height: calc(100vh - 52px);
-  background: #f3f2ef;
+  background: var(--bg-deep);
   display: flex;
   align-items: stretch;
 }
 
 .loading {
   margin: auto;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   font-size: 14px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.08em;
+  animation: none;
 }
 
 .layout {
@@ -16,9 +19,9 @@
   width: 100%;
   max-width: 1128px;
   margin: 0 auto;
-  background: #fff;
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--bg-card);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
   height: 100%;
   overflow: hidden;
 }

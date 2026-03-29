@@ -7,22 +7,25 @@
 .card {
   width: 100%;
   max-width: 760px;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 20px 24px;
 }
 
 .heading {
-  font-size: 22px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.92);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-shadow: none;
 }
 
 .subheading {
   margin-top: 4px;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .state,
@@ -33,16 +36,18 @@
 }
 
 .state {
-  color: rgba(0, 0, 0, 0.62);
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .stateError {
-  color: #be123c;
+  color: var(--neon);
   font-weight: 600;
 }
 
 .empty {
-  color: rgba(0, 0, 0, 0.62);
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .listWrap {
@@ -53,16 +58,17 @@
 }
 
 .section {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--border);
   padding-top: 14px;
 }
 
 .sectionTitle {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.58);
-  letter-spacing: 0.04em;
+  color: var(--neon);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .list {
@@ -75,22 +81,27 @@
 }
 
 .item {
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 12px;
-  background: #fcfdff;
+  background: var(--bg-elevated);
+  transition: border-color var(--transition-fast);
+}
+
+.item:hover {
+  border-color: var(--border-md);
 }
 
 .itemTitle {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.86);
+  color: var(--text-primary);
 }
 
 .itemBody {
   margin-top: 3px;
-  font-size: 13px;
-  color: rgba(0, 0, 0, 0.72);
+  font-size: 12px;
+  color: var(--text-secondary);
   line-height: 1.45;
 }
 
@@ -99,15 +110,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.52);
+  font-size: 11px;
+  color: var(--text-muted);
 }
 
 .openLink {
-  color: #0A66C2;
-  font-weight: 600;
+  color: var(--neon);
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: text-shadow var(--transition-fast);
 }
 
 .openLink:hover {
   text-decoration: underline;
+  text-shadow: none;
 }
