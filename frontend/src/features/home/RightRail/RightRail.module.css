@@ -58,6 +58,7 @@
   padding: 4px 10px;
   background: rgba(0, 0, 0, 0.06);
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 .seeMore {
