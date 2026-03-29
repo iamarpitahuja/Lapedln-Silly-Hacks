@@ -93,6 +93,7 @@ function adaptBackendPost(post) {
     ai_glazes: post.ai_glazes ?? [],
     glazes: post.glazes ?? [],
     buzzword_score: post.buzzword_score ?? 0,
+    photo: post.roast_meme_url ?? null,
     has_user_relarped: Boolean(post.has_user_relarped),
     has_user_liked: Boolean(post.has_user_liked),
     has_user_loved: Boolean(post.has_user_loved),
@@ -147,7 +148,7 @@ export default function Feed() {
               className="animate-fade-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {isAccessible(post.author.larpRating) ? (
+              {(post.author.id === currentUser.id || isAccessible(post.author.larpRating)) ? (
                 <PostCard
                   post={post}
                   isOwnPost={post.author.id === currentUser.id}

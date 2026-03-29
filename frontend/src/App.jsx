@@ -8,6 +8,7 @@ import Network from './features/network/Network'
 import Messaging from './features/messaging/Messaging'
 import JobsPage from './pages/JobsPage'
 import NotificationsPage from './pages/NotificationsPage'
+import PublicProfile from './features/profile/PublicProfile'
 import AuthPage from './features/auth/AuthPage'
 import styles from './App.module.css'
 
@@ -33,6 +34,7 @@ function AppRoutes() {
           <Route path="/messaging" element={<Messaging />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/me" element={<Me />} />
+          <Route path="/profile/:userId" element={<PublicProfile />} />
         </Routes>
       </main>
     </MockDataProvider>

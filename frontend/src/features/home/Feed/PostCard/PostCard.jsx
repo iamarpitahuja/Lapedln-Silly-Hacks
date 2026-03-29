@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import LarpRatingBadge from '../../../../components/LarpRatingBadge/LarpRatingBadge'
+import ProfilePopup from '../../../../components/ProfilePopup/ProfilePopup'
 import SuggestedGlazes from '../SuggestedGlazes/SuggestedGlazes'
 import Icon from '../../../../components/Icon/Icon'
 import {
@@ -38,7 +39,14 @@ function getAvatarColor(name) {
 export default function PostCard({ post, isOwnPost = false }) {
   const { author, type, timestamp, content, reactions } = post
   const relarpSource = post.isRelarp ? post.relarpOf : null
-  const { currentUser } = useMockData()
+  const { currentUser, deletePost } = useMockData()
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [popupPos, setPopupPos] = useState(null)
+
+  const handleAuthorClick = useCallback((e) => {
+    if (isOwnPost) return
+    setPopupPos({ x: e.clientX, y: e.clientY })
+  }, [isOwnPost])
 
   const [isGlazing, setIsGlazing] = useState(false)
   const [isGlazed, setIsGlazed] = useState(Boolean(post.has_user_glazed))
@@ -338,8 +346,9 @@ export default function PostCard({ post, isOwnPost = false }) {
 
       <div className={styles.header}>
         <div
-          className={styles.avatar}
+          className={`${styles.avatar} ${!isOwnPost ? styles.clickable : ''}`}
           style={author.avatar ? {} : { background: getAvatarColor(author.name) }}
+          onClick={handleAuthorClick}
         >
           {author.avatar ? (
             <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
@@ -349,7 +358,12 @@ export default function PostCard({ post, isOwnPost = false }) {
         </div>
         <div className={styles.meta}>
           <div className={styles.nameRow}>
-            <span className={styles.name}>{author.name}</span>
+            <span
+              className={`${styles.name} ${!isOwnPost ? styles.clickable : ''}`}
+              onClick={handleAuthorClick}
+            >
+              {author.name}
+            </span>
             {isOwnPost ? <span className={styles.youLabel}>· You</span> : null}
             <LarpRatingBadge rating={author.larpRating} size="small" />
           </div>
@@ -360,14 +374,30 @@ export default function PostCard({ post, isOwnPost = false }) {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <button className={styles.iconBtn} aria-label="More options">
-            <Icon name="more" size={16} />
-          </button>
-          {!isOwnPost ? (
-            <button className={styles.iconBtn} aria-label="Dismiss">
+          {isOwnPost ? (
+            <button
+              className={styles.iconBtn}
+              aria-label="Delete post"
+              disabled={isDeleting}
+              onClick={async () => {
+                if (!confirm('Delete this post and all its comments, reactions, and relarps?')) return
+                setIsDeleting(true)
+                await deletePost(post.id)
+                window.dispatchEvent(new Event('feed:refresh'))
+              }}
+            >
               <Icon name="x" size={16} />
             </button>
-          ) : null}
+          ) : (
+            <>
+              <button className={styles.iconBtn} aria-label="More options">
+                <Icon name="more" size={16} />
+              </button>
+              <button className={styles.iconBtn} aria-label="Dismiss">
+                <Icon name="x" size={16} />
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -734,6 +764,13 @@ export default function PostCard({ post, isOwnPost = false }) {
           </div>
         </div>
       </div>
+      {popupPos && !isOwnPost ? (
+        <ProfilePopup
+          author={author}
+          clickPos={popupPos}
+          onClose={() => setPopupPos(null)}
+        />
+      ) : null}
     </div>
   )
 }

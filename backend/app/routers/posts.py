@@ -103,6 +103,29 @@ async def create_post(
     return post
 
 
+@router.delete("/posts/{post_id}", status_code=204)
+async def delete_post(
+    post_id: str,
+    user_id: str = Depends(get_current_user),
+    supabase=Depends(get_service_client),
+):
+    """Delete a post the current user owns. Cascades to comments, reactions, glazes, relarps."""
+    existing = (
+        supabase.table("posts")
+        .select("id, author_id")
+        .eq("id", post_id)
+        .single()
+        .execute()
+    )
+    if not existing.data:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if existing.data["author_id"] != user_id:
+        raise HTTPException(status_code=403, detail="Not your post")
+
+    supabase.table("posts").delete().eq("id", post_id).execute()
+    return None
+
+
 @router.post("/posts/{post_id}/comments", status_code=201)
 async def create_comment(
     post_id: str,

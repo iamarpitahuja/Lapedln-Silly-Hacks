@@ -36,6 +36,10 @@ export async function createPost({ content, postType = 'thought_leadership' }) {
   })
 }
 
+export async function deletePost(postId) {
+  return authFetch(`${API_BASE}/posts/${postId}`, { method: 'DELETE' })
+}
+
 export async function fetchJobOptions() {
   return authFetch(`${API_BASE}/jobs/options`)
 }

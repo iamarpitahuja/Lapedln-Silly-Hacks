@@ -1,0 +1,313 @@
+.page {
+  background: #f3f2ef;
+  min-height: calc(100vh - 52px);
+  padding: 24px 16px;
+}
+
+.content {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 48px 0;
+}
+
+/* Hero */
+.heroCard {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.coverPhoto {
+  height: 180px;
+  background: linear-gradient(135deg, #0a66c2, #004182);
+  background-size: cover;
+  background-position: center;
+}
+
+.heroBody {
+  padding: 0 24px 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.avatarWrap {
+  margin-top: -40px;
+  margin-bottom: 12px;
+}
+
+.avatar,
+.avatarImg {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.avatar {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarImg {
+  object-fit: cover;
+}
+
+.profileInfo {
+  margin-bottom: 16px;
+}
+
+.heroName {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.9);
+  margin-bottom: 4px;
+}
+
+.heroHeadline {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 8px;
+}
+
+.badgeRow {
+  margin-bottom: 8px;
+}
+
+.recruiterStat {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.4);
+  font-style: italic;
+}
+
+.dmBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  background: #0a66c2;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  align-self: flex-start;
+}
+
+.dmBtn:hover {
+  background: #004182;
+}
+
+/* Sections */
+.section {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  padding: 24px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.85);
+  margin-bottom: 16px;
+}
+
+.emptyState {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.35);
+  font-style: italic;
+}
+
+.bio {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* Experience / Education lists */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.listItem {
+  display: flex;
+  gap: 16px;
+}
+
+.logoPlaceholder {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.itemSub {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.itemDates {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.itemDesc {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin-top: 6px;
+}
+
+/* Skills */
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skillChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(10, 102, 194, 0.06);
+  border: 1px solid rgba(10, 102, 194, 0.15);
+  border-radius: 20px;
+  padding: 6px 14px;
+}
+
+.skillName {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.endorsements {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* Larp History timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-left: 16px;
+  border-left: 2px solid rgba(10, 102, 194, 0.2);
+}
+
+.timelineItem {
+  display: flex;
+  gap: 12px;
+  position: relative;
+}
+
+.timelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0a66c2;
+  flex-shrink: 0;
+  margin-top: 4px;
+  margin-left: -21px;
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timelineDate {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.timelineText {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.timelineNote {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  font-style: italic;
+}
+
+/* Glazes */
+.glazesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.glazeCard {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px 14px;
+  background: rgba(10, 102, 194, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(10, 102, 194, 0.1);
+}
+
+.glazeIcon {
+  color: #0a66c2;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.glazeText {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.5;
+}

@@ -28,10 +28,10 @@ async def get_user_profile(
     user_id: str,
     supabase=Depends(get_service_client),
 ):
-    """Return any user's public profile."""
+    """Return any user's full public profile."""
     result = (
         supabase.table("profiles")
-        .select("id, display_name, title, bio, avatar_url, larp_rating")
+        .select("*")
         .eq("id", user_id)
         .single()
         .execute()

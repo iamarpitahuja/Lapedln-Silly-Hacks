@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     supabase_jwt_secret: str = ""
     gemini_api_key: str = ""
     elevenlabs_api_key: str = ""
+    memelord_api_key: str = ""
 
     # Defaults
     gemini_model: str = "gemini-2.0-flash"

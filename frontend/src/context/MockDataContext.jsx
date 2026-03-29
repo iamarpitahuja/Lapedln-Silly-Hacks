@@ -5,6 +5,7 @@ import {
   createPost as apiCreatePost,
   createPostComment,
   createRelarp as apiCreateRelarp,
+  deletePost as apiDeletePost,
   fetchFeed,
   fetchJobOptions,
   fetchProfile,
@@ -217,6 +218,7 @@ function adaptBackendPost(post) {
     ai_glazes: post.ai_glazes ?? [],
     glazes: post.glazes ?? [],
     buzzword_score: post.buzzword_score ?? 0,
+    photo: post.roast_meme_url ?? null,
     has_user_relarped: Boolean(post.has_user_relarped),
     has_user_liked: Boolean(post.has_user_liked),
     has_user_loved: Boolean(post.has_user_loved),
@@ -303,19 +305,22 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     }
   }
 
-  // Seed profile name & avatar from Supabase auth user
+  // Seed profile name & avatar from Supabase auth user only if profile hasn't been loaded from backend
   useEffect(() => {
     if (!user) return
-    const meta = user.user_metadata ?? {}
-    const authName = meta.full_name || meta.name || user.email?.split('@')[0] || ''
-    const authAvatar = meta.avatar_url || null
-    if (authName) {
-      setProfile(prev => ({
+    setProfile(prev => {
+      // If the profile already has a name from the backend, don't overwrite it
+      if (prev.name && prev.id) return prev
+      const meta = user.user_metadata ?? {}
+      const authName = meta.full_name || meta.name || user.email?.split('@')[0] || ''
+      const authAvatar = meta.avatar_url || null
+      if (!authName) return prev
+      return {
         ...prev,
         name: authName,
         ...(authAvatar ? { avatar: authAvatar } : {}),
-      }))
-    }
+      }
+    })
   }, [user])
 
   function isAccessible(targetRating) {
@@ -621,9 +626,30 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('feed:refresh'))
       }
+      // Re-fetch after a delay so the background scoring + meme generation has time to complete
+      setTimeout(() => {
+        loadFeedData()
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('feed:refresh'))
+        }
+      }, 5000)
       return { ok: true, post: created }
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : 'Post creation failed.' }
+    }
+  }
+
+  async function deletePost(postId) {
+    if (testMode) {
+      setAllPosts(prev => prev.filter(p => p.id !== postId))
+      return { ok: true }
+    }
+    try {
+      await apiDeletePost(postId)
+      setAllPosts(prev => prev.filter(p => p.id !== postId))
+      return { ok: true }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : 'Delete failed.' }
     }
   }
 
@@ -781,8 +807,8 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
   }
 
   const feedPosts = useMemo(() => (
-    allPosts.filter(post => Number(post.author?.larpRating ?? 0) <= profile.larpRating)
-  ), [allPosts, profile.larpRating])
+    allPosts.filter(post => post.author?.id === profile.id || Number(post.author?.larpRating ?? 0) <= profile.larpRating)
+  ), [allPosts, profile.id, profile.larpRating])
 
   const value = {
     currentUser: profile,
@@ -807,6 +833,7 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     removeSkill,
     endorseSkill,
     createPost,
+    deletePost,
     createComment,
     hasUserRelarped,
     createRelarp,
