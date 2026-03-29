@@ -86,7 +86,6 @@ export default function LeftRail() {
         <div className={styles.auraRow}>
           <div>
             <p className={styles.auraLabel}>Weekly aura growth</p>
-            <p className={styles.auraLabel}>aura growth</p>
           </div>
           <div className={styles.auraValues}>
             <span className={styles.auraNumber}>{stats.weeklyAuraGrowth}</span>
