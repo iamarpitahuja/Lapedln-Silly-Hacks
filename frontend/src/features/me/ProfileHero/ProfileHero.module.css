@@ -1,5 +1,5 @@
 .card {
-  background: rgba(10, 20, 12, 0.85);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
@@ -15,7 +15,7 @@
 
 .coverPhoto {
   height: 160px;
-  background: linear-gradient(135deg, #001a08 0%, #002d10 50%, #004a1a 100%);
+  background: linear-gradient(135deg, #0d0a1a 0%, #150e28 50%, #1e1040 100%);
   background-size: cover;
   background-position: center;
   position: relative;
