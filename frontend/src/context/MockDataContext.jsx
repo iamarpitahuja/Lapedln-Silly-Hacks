@@ -1,299 +1,153 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { createPost as apiCreatePost } from '../services/api'
+import { createContext, useContext, useMemo, useState, useEffect } from 'react'
+import {
+  createPost as apiCreatePost,
+  createPostComment,
+  createRelarp as apiCreateRelarp,
+  fetchFeed,
+  fetchProfile,
+  removeRelarp as apiRemoveRelarp,
+  updateProfilePatch,
+} from '../services/api'
 
-const PROFILE_STORAGE_KEY = 'larpedin.profile.v1'
-const POSTS_STORAGE_KEY = 'larpedin.posts.v1'
+const MockDataContext = createContext(null)
+const IS_TEST_MODE = import.meta.env.MODE === 'test'
+const DEV_USER_ID = '00000000-0000-0000-0000-000000000000'
 
-const DEFAULT_OPPORTUNITY_TYPES = [
-  'Fractional Visionary',
-  'Keynote Speaker at Events I Have Not Been Invited To',
-  "Angel Investor in Ideas I Haven't Had Yet",
-  'Interim Thought Leader',
-]
+const EMPTY_PROFILE = {
+  id: '',
+  name: '',
+  headline: '',
+  avatar: null,
+  coverPhoto: null,
+  larpRating: 0,
+  persona: '',
+  about: '',
+  stats: {
+    recruiterViews: 0,
+    impressionVelocity: 'Unknown',
+    weeklyAuraGrowth: 0,
+    weeklyAuraGrowthPct: '+0%',
+  },
+  glazers: [],
+  larpStatus: {
+    opportunities: [],
+  },
+  experience: [],
+  education: [],
+  skills: [],
+  larpHistory: [],
+  glazesReceived: [],
+}
 
-const DEFAULT_PROFILE = {
+const TEST_PROFILE = {
+  id: DEV_USER_ID,
   name: 'Arjun Malhotra',
   headline: 'Incoming Quant VC Product Strategist',
   avatar: null,
   coverPhoto: null,
   larpRating: 67.2,
   persona: 'Stealth Founder / Ex-McKinsey Adjacent',
-  about:
-    "I build at the intersection of ambiguity and momentum. My superpower is turning vague intuitions into decks. I've been described as a systems thinker, a narrative architect, and someone who 'gets it.' I don't know what it is. But I get it.",
+  about: 'Building at the intersection of ambiguity and momentum.',
   stats: {
     recruiterViews: 413,
-    impressionVelocity: 'Elite',
-    weeklyAuraGrowth: 87.3,
-    weeklyAuraGrowthPct: '+10.91%',
+    impressionVelocity: 'High',
+    weeklyAuraGrowth: 3.8,
+    weeklyAuraGrowthPct: '+9%',
   },
-  glazers: [
-    { name: 'Arjun Arjun', headline: 'You! glazing you.', avatar: null },
-    { name: 'Arjun Malhotra', headline: 'Incoming Quant VC Product Strategist', avatar: null },
-  ],
+  glazers: [],
   larpStatus: {
-    opportunities: DEFAULT_OPPORTUNITY_TYPES,
+    opportunities: [
+      'Stealth Founder / Ex-McKinsey Adjacent',
+      'Fractional Visionary',
+      'Regional Hustler',
+    ],
   },
   experience: [
     {
       id: 'exp-1',
       title: 'Interim Global Strategy Vision Lead',
-      company: 'Myself Inc.',
-      dates: 'Jan 2023-Present',
-      description:
-        "Leading cross-functional alignment across a team of one toward a vision I'm still workshopping.",
-    },
-    {
-      id: 'exp-2',
-      title: 'Fractional Brand Philosopher',
-      company: 'Narrative Leverage Co.',
-      dates: 'Jun 2021-Dec 2022',
-      description: 'Delivered transformational ambiguity at scale.',
-    },
-    {
-      id: 'exp-3',
-      title: 'Incoming Summer Analyst',
-      company: 'PrestigeBank',
-      dates: 'Jun 2020-Aug 2020',
-      description: 'Attended orientation. Sent follow-up emails. Left before the trauma set in.',
+      company: 'Nimbus Partners',
+      dates: '2024 - Present',
+      description: 'Synthesizing signal into prestige.',
     },
   ],
   education: [
     {
       id: 'edu-1',
       school: 'University of Networking',
-      degree: 'B.S. in Perceived Expertise',
-      dates: '2017-2021',
-      activities: 'Coffee Chat Club, LinkedIn Optimization Society',
-    },
-    {
-      id: 'edu-2',
-      school: 'The School of Hard Knocks (Self-Reported)',
-      degree: 'Certificate in Resilience Narrative',
-      dates: 'Ongoing',
-      activities: '',
+      degree: 'B.S. in Prestige Signaling',
+      dates: '2017 - 2021',
+      activities: 'Debate Club',
     },
   ],
   skills: [
     { id: 'skill-1', name: 'Strategic Ambiguity', endorsements: 47 },
-    { id: 'skill-2', name: 'Narrative Leverage', endorsements: 38 },
-    { id: 'skill-3', name: 'Founder Energy', endorsements: 91 },
-    { id: 'skill-4', name: 'Deck Architecture', endorsements: 22 },
-    { id: 'skill-5', name: 'Vague Optimism', endorsements: 64 },
+    { id: 'skill-2', name: 'Executive Presence', endorsements: 31 },
   ],
   larpHistory: [
     {
       id: 'hist-1',
-      date: 'Mar 2026',
+      date: 'Jan 2026',
       from: 'Regional Hustler',
-      to: 'Aspirational Visionary',
-      note: 'Attended 3 webinars and updated LinkedIn banner.',
-      createdAt: '2026-03-01T12:00:00.000Z',
-    },
-    {
-      id: 'hist-2',
-      date: 'Nov 2025',
-      from: 'Incoming Analyst',
-      to: 'Regional Hustler',
-      note: 'Got a business card. Changed everything.',
-      createdAt: '2025-11-01T12:00:00.000Z',
-    },
-    {
-      id: 'hist-3',
-      date: 'Aug 2024',
-      from: 'Student',
-      to: 'Incoming Analyst',
-      note: 'Accepted offer. Announced on LinkedIn before telling family.',
-      createdAt: '2024-08-01T12:00:00.000Z',
+      to: 'Stealth Founder / Ex-McKinsey Adjacent',
+      note: 'Leveled up market narrative.',
+      createdAt: '2026-01-10T00:00:00.000Z',
     },
   ],
   glazesReceived: [
     {
-      id: 'glaze-1',
+      id: 'gr-1',
       name: 'Arjun Arjun',
-      relationship: 'glazed you 2h ago',
-      text: "Arjun doesn't just think outside the box - he has transcended the concept of boxes entirely.",
-    },
-    {
-      id: 'glaze-2',
-      name: 'Priya Krishnamurthy',
-      relationship: 'glazed you 1d ago',
-      text: 'Working adjacent to Arjun changed my relationship with ambiguity. I am a different person.',
-    },
-    {
-      id: 'glaze-3',
-      name: 'Marcus Vanderbilt III',
-      relationship: 'glazed you 3d ago',
-      text: 'Rare. Generational. Inevitable.',
+      relationship: '2nd degree',
+      text: 'Generational execution energy.',
     },
   ],
 }
 
-const SEED_POSTS = [
-  {
-    id: 1,
-    author: {
-      name: 'Priya Krishnamurthy',
-      headline: 'Fractional Brand Philosopher | Narrative Leverage Practitioner',
-      avatar: null,
-      larpRating: 54.1,
-    },
-    type: 'Career Lore',
-    timestamp: '1h',
-    content:
-      "After a lot of reflection, I'm excited to announce that I've accepted a new role as Interim Global Strategy Vision Lead at a company I deeply admire: myself.",
-    reactions: { count: 247, likes: 182, loves: 42, insights: 23, comments: 31 },
+const TEST_SOURCE_POST = {
+  id: '1',
+  author: {
+    id: 'priya-1',
+    name: 'Priya Krishnamurthy',
+    headline: 'Fractional Brand Philosopher',
+    avatar: null,
+    larpRating: 54.1,
   },
-  {
-    id: 2,
-    author: {
-      name: 'Marcus Vanderbilt III',
-      headline: 'Stealth Founder | Ex-McKinsey Adjacent | Angel Investor in Myself',
-      avatar: null,
-      larpRating: 61.8,
-    },
-    type: 'Humblebrag',
-    timestamp: '2h',
-    content:
-      "Three years ago I had nothing but a dream, a Notion doc, and a 14-tab coffee chat spreadsheet. Today I'm proud to say the grind continues.",
-    reactions: { count: 892, likes: 612, loves: 194, insights: 86, comments: 114 },
+  type: 'Career Lore',
+  timestamp: '1h',
+  content: 'Excited to announce that I have accepted a role at myself.',
+  reactions: {
+    count: 0,
+    comments: 0,
+    relarps: 0,
+    likes: 0,
+    loves: 0,
+    glazes: 0,
   },
-  {
-    id: 3,
-    author: {
-      name: 'Xiao Wei Zhang',
-      headline: 'AI-Native Systems Thinker | Independent Macro Observer',
-      avatar: null,
-      larpRating: 45.3,
-    },
-    type: 'Thought Leadership Incident',
-    timestamp: '3h',
-    content:
-      'Hot take: execution is overrated. What separates elite operators from the rest is their ability to synthesize frameworks across disciplines and communicate them in a way that makes investors feel something.',
-    reactions: { count: 1203, likes: 845, loves: 212, insights: 146, comments: 287 },
-  },
-  {
-    id: 6,
-    author: {
-      name: 'Thaddeus Worthington',
-      headline: 'Post-Exit Founder | Limited Partner | Thought Ecosystem Builder',
-      avatar: null,
-      larpRating: 91.4,
-    },
-    type: 'Stealth Build Update',
-    timestamp: '30m',
-    content: 'This post is invisible to most of you. And that is by design.',
-    reactions: { count: 9999, likes: 7241, loves: 1842, insights: 916, comments: 999 },
-  },
-  {
-    id: 4,
-    author: {
-      name: 'Bella Hartsworth',
-      headline: 'Venture Scout | VC Intern With Delusions of Permanence',
-      avatar: null,
-      larpRating: 58.9,
-    },
-    type: 'Aura Farming',
-    timestamp: '4h',
-    content:
-      "I don't talk about it much, but I passed on a $200k offer last year to pursue something more aligned with my values. The check from my parents helped. But still.",
-    reactions: { count: 445, likes: 312, loves: 84, insights: 49, comments: 62 },
-  },
-  {
-    id: 5,
-    author: {
-      name: 'Dev Patel',
-      headline: 'Incoming Summer Analyst | CS Major with Big Dreams',
-      avatar: null,
-      larpRating: 33.7,
-    },
-    type: 'Corporate Trauma Dump',
-    timestamp: '6h',
-    content:
-      "My first internship taught me three things: 1) Jira tickets are someone's feelings. 2) The real deliverable was always the relationships we made along the way. 3) Free snacks are a form of compensation.",
-    reactions: { count: 2891, likes: 2104, loves: 482, insights: 305, comments: 401 },
-  },
-]
-
-const SEED_COMMENTS_BY_POST_ID = {
-  1: [
-    {
-      id: '1-c1',
-      author: {
-        name: 'Daria Chen',
-        headline: 'Ex-Operator Turned Narrative Architect',
-        avatar: null,
-        larpRating: 52.4,
-      },
-      timestamp: '37m',
-      content: 'This is the most honest promotion post I have seen all quarter.',
-      createdAt: '2026-03-28T15:02:00.000Z',
-    },
-    {
-      id: '1-c2',
-      author: {
-        name: 'Imran Voss',
-        headline: 'Community-Led GTM Evangelist',
-        avatar: null,
-        larpRating: 48.9,
-      },
-      timestamp: '12m',
-      content: 'Massive congrats. The market needed this energy.',
-      createdAt: '2026-03-28T15:27:00.000Z',
-    },
-  ],
-  2: [
-    {
-      id: '2-c1',
-      author: {
-        name: 'Lina Torres',
-        headline: 'Founder Whisperer | Pre-Seed Scout',
-        avatar: null,
-        larpRating: 57.2,
-      },
-      timestamp: '18m',
-      content: 'The 14-tab coffee chat spreadsheet is painfully relatable.',
-      createdAt: '2026-03-28T15:21:00.000Z',
-    },
-  ],
+  comments: [],
+  ai_glazes: [],
+  glazes: [],
+  buzzword_score: 0,
+  has_user_relarped: false,
+  has_user_liked: false,
+  has_user_loved: false,
+  has_user_glazed: false,
 }
 
-const TRENDING_DELUSIONS = ['Career Loring', 'Conivroation', 'Prestige signaling', 'Usw emmied']
+const TEST_TRENDING_DELUSIONS = ['Career Lore · 1 posts']
+const TEST_BUZZWORDS = ['Synergy', 'Velocity', 'Alignment']
 
-const BUZZWORDS = ['Hyperscale', 'Narrative leverage', 'Operator mindset', 'Aura velocity']
-
-async function downscaleImage(dataUrl, maxWidth = 800, maxHeight = 800, quality = 0.7) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      let width = img.width;
-      let height = img.height;
-
-      if (width > height) {
-        if (width > maxWidth) {
-          height *= maxWidth / width;
-          width = maxWidth;
-        }
-      } else {
-        if (height > maxHeight) {
-          width *= maxHeight / height;
-          height = maxHeight;
-        }
-      }
-
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL('image/jpeg', quality));
-    };
-    img.onerror = () => resolve(dataUrl); // Fallback
-    img.src = dataUrl;
-  });
+function timeAgo(isoString) {
+  if (!isoString) return 'recently'
+  const diffMs = Date.now() - new Date(isoString).getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  if (diffMins < 1) return 'just now'
+  if (diffMins < 60) return `${diffMins}m`
+  const diffHours = Math.floor(diffMins / 60)
+  if (diffHours < 24) return `${diffHours}h`
+  return `${Math.floor(diffHours / 24)}d`
 }
-
-const MockDataContext = createContext(null)
 
 function makeEntityId() {
   return typeof crypto !== 'undefined' && crypto.randomUUID
@@ -301,455 +155,191 @@ function makeEntityId() {
     : `${Date.now()}-${Math.floor(Math.random() * 10000)}`
 }
 
-function normalizeText(value, fallback = '') {
-  const nextValue = String(value ?? '')
-  const trimmedValue = nextValue.trim()
-  return trimmedValue || fallback
+function toArray(value) {
+  return Array.isArray(value) ? value : []
 }
 
-function normalizeNumber(value, fallback = 0) {
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : fallback
-}
-
-function formatMonthYear(date = new Date()) {
-  return date.toLocaleString('en-US', { month: 'short', year: 'numeric' })
-}
-
-function cloneDefaultProfile() {
-  return {
-    ...DEFAULT_PROFILE,
-    stats: { ...DEFAULT_PROFILE.stats },
-    glazers: DEFAULT_PROFILE.glazers.map(glazer => ({ ...glazer })),
-    larpStatus: {
-      ...DEFAULT_PROFILE.larpStatus,
-      opportunities: [...DEFAULT_PROFILE.larpStatus.opportunities],
-    },
-    experience: DEFAULT_PROFILE.experience.map(entry => ({ ...entry })),
-    education: DEFAULT_PROFILE.education.map(entry => ({ ...entry })),
-    skills: DEFAULT_PROFILE.skills.map(skill => ({ ...skill })),
-    larpHistory: DEFAULT_PROFILE.larpHistory.map(entry => ({ ...entry })),
-    glazesReceived: DEFAULT_PROFILE.glazesReceived.map(glaze => ({ ...glaze })),
-  }
-}
-
-function normalizeStringList(values, fallbackValues) {
-  if (!Array.isArray(values)) {
-    return [...fallbackValues]
-  }
-
-  const nextValues = values
-    .map(value => String(value ?? '').trim())
-    .filter(Boolean)
-
-  return nextValues.length ? nextValues : [...fallbackValues]
-}
-
-function normalizeExperienceEntry(entry) {
-  if (!entry || typeof entry !== 'object') return null
-  const title = String(entry.title ?? '').trim()
-  const company = String(entry.company ?? '').trim()
-
-  if (!title || !company) return null
+function adaptProfile(row) {
+  if (!row || typeof row !== 'object') return { ...EMPTY_PROFILE }
+  const stats = row.stats ?? {}
+  const larpStatus = row.larp_status ?? {}
 
   return {
-    id: entry.id ?? makeEntityId(),
-    title,
-    company,
-    dates: normalizeText(entry.dates, 'Dates not set'),
-    description: normalizeText(entry.description, 'No description yet.'),
-  }
-}
-
-function normalizeEducationEntry(entry) {
-  if (!entry || typeof entry !== 'object') return null
-  const school = String(entry.school ?? '').trim()
-  const degree = String(entry.degree ?? '').trim()
-  if (!school || !degree) return null
-
-  return {
-    id: entry.id ?? makeEntityId(),
-    school,
-    degree,
-    dates: normalizeText(entry.dates, 'Dates not set'),
-    activities: String(entry.activities ?? '').trim(),
-  }
-}
-
-function normalizeSkillEntry(entry) {
-  if (!entry || typeof entry !== 'object') return null
-  const name = String(entry.name ?? '').trim()
-  if (!name) return null
-
-  return {
-    id: entry.id ?? makeEntityId(),
-    name,
-    endorsements: Math.max(0, Math.round(normalizeNumber(entry.endorsements, 0))),
-  }
-}
-
-function normalizeHistoryEntry(entry) {
-  if (!entry || typeof entry !== 'object') return null
-  const from = String(entry.from ?? '').trim()
-  const to = String(entry.to ?? '').trim()
-  if (!from || !to) return null
-
-  return {
-    id: entry.id ?? makeEntityId(),
-    date: normalizeText(entry.date, formatMonthYear()),
-    from,
-    to,
-    note: normalizeText(entry.note, 'Persona update recorded.'),
-    createdAt: entry.createdAt ?? new Date().toISOString(),
-  }
-}
-
-function normalizeGlazeEntry(entry) {
-  if (!entry || typeof entry !== 'object') return null
-  const name = String(entry.name ?? '').trim()
-  const text = String(entry.text ?? '').trim()
-  if (!name || !text) return null
-
-  return {
-    id: entry.id ?? makeEntityId(),
-    name,
-    relationship: normalizeText(entry.relationship, 'glazed you recently'),
-    text,
-  }
-}
-
-function normalizeGlazerEntry(entry) {
-  if (!entry || typeof entry !== 'object') return null
-  const name = String(entry.name ?? '').trim()
-  if (!name) return null
-
-  return {
-    name,
-    headline: normalizeText(entry.headline, 'Mysterious ecosystem participant'),
-    avatar: entry.avatar ?? null,
-  }
-}
-
-function normalizeProfile(profile) {
-  const fallbackProfile = cloneDefaultProfile()
-  if (!profile || typeof profile !== 'object') {
-    return fallbackProfile
-  }
-
-  const stats = profile.stats ?? {}
-  const larpStatus = profile.larpStatus ?? {}
-
-  const experience = Array.isArray(profile.experience)
-    ? profile.experience.map(normalizeExperienceEntry).filter(Boolean)
-    : []
-  const education = Array.isArray(profile.education)
-    ? profile.education.map(normalizeEducationEntry).filter(Boolean)
-    : []
-  const skills = Array.isArray(profile.skills)
-    ? profile.skills.map(normalizeSkillEntry).filter(Boolean)
-    : []
-  const larpHistory = Array.isArray(profile.larpHistory)
-    ? profile.larpHistory.map(normalizeHistoryEntry).filter(Boolean)
-    : []
-  const glazesReceived = Array.isArray(profile.glazesReceived)
-    ? profile.glazesReceived.map(normalizeGlazeEntry).filter(Boolean)
-    : []
-  const glazers = Array.isArray(profile.glazers)
-    ? profile.glazers.map(normalizeGlazerEntry).filter(Boolean)
-    : []
-
-  return {
-    ...fallbackProfile,
-    name: normalizeText(profile.name, fallbackProfile.name),
-    headline: normalizeText(profile.headline, fallbackProfile.headline),
-    avatar: profile.avatar ?? fallbackProfile.avatar,
-    coverPhoto: profile.coverPhoto ?? fallbackProfile.coverPhoto,
-    larpRating: normalizeNumber(profile.larpRating, fallbackProfile.larpRating),
-    persona: normalizeText(profile.persona, fallbackProfile.persona),
-    about: normalizeText(profile.about, fallbackProfile.about),
+    id: row.id ?? '',
+    name: row.display_name ?? '',
+    headline: row.title ?? '',
+    avatar: row.avatar_url ?? null,
+    coverPhoto: row.cover_photo_url ?? null,
+    larpRating: Number(row.larp_rating ?? 0),
+    persona: row.persona ?? '',
+    about: row.bio ?? '',
     stats: {
-      recruiterViews: normalizeNumber(stats.recruiterViews, fallbackProfile.stats.recruiterViews),
-      impressionVelocity: normalizeText(
-        stats.impressionVelocity,
-        fallbackProfile.stats.impressionVelocity
-      ),
-      weeklyAuraGrowth: normalizeNumber(
-        stats.weeklyAuraGrowth,
-        fallbackProfile.stats.weeklyAuraGrowth
-      ),
-      weeklyAuraGrowthPct: normalizeText(
-        stats.weeklyAuraGrowthPct,
-        fallbackProfile.stats.weeklyAuraGrowthPct
-      ),
+      recruiterViews: Number(stats.recruiterViews ?? 0),
+      impressionVelocity: String(stats.impressionVelocity ?? 'Unknown'),
+      weeklyAuraGrowth: Number(stats.weeklyAuraGrowth ?? 0),
+      weeklyAuraGrowthPct: String(stats.weeklyAuraGrowthPct ?? '+0%'),
     },
-    glazers: glazers.length ? glazers : fallbackProfile.glazers,
+    glazers: toArray(row.glazers),
     larpStatus: {
-      opportunities: normalizeStringList(
-        larpStatus.opportunities,
-        fallbackProfile.larpStatus.opportunities
-      ),
+      opportunities: toArray(larpStatus.opportunities).map(v => String(v)),
     },
-    experience: experience.length ? experience : fallbackProfile.experience,
-    education: education.length ? education : fallbackProfile.education,
-    skills: skills.length ? skills : fallbackProfile.skills,
-    larpHistory: larpHistory.length ? larpHistory : fallbackProfile.larpHistory,
-    glazesReceived: glazesReceived.length ? glazesReceived : fallbackProfile.glazesReceived,
+    experience: toArray(row.experience),
+    education: toArray(row.education),
+    skills: toArray(row.skills),
+    larpHistory: toArray(row.larp_history),
+    glazesReceived: toArray(row.glazes_received),
   }
 }
 
-function makeLarpHistoryEntry({ from, to, note }) {
+function adaptBackendPost(post) {
+  const comments = Array.isArray(post.comments) ? post.comments : []
   return {
-    id: makeEntityId(),
-    date: formatMonthYear(),
-    from,
-    to,
-    note: normalizeText(note, `Shifted narrative from ${from} to ${to}.`),
-    createdAt: new Date().toISOString(),
+    id: post.id,
+    author: {
+      id: post.profiles?.id ?? post.author_id ?? null,
+      name: post.profiles?.display_name ?? 'Anonymous Larper',
+      headline: post.profiles?.title ?? 'Aspiring Thought Leader',
+      avatar: post.profiles?.avatar_url ?? null,
+      larpRating: post.profiles?.larp_rating ?? 0,
+    },
+    type: post.post_type ?? 'Career Lore',
+    timestamp: timeAgo(post.created_at),
+    content: post.content ?? '',
+    reactions: {
+      count: 0,
+      comments: Number(post.comment_count ?? comments.length),
+      relarps: Number(post.relarp_count ?? 0),
+      likes: Number(post.like_count ?? 0),
+      loves: Number(post.love_count ?? 0),
+      glazes: Number(post.glaze_count ?? 0),
+    },
+    comments,
+    ai_glazes: post.ai_glazes ?? [],
+    glazes: post.glazes ?? [],
+    buzzword_score: post.buzzword_score ?? 0,
+    has_user_relarped: Boolean(post.has_user_relarped),
+    has_user_liked: Boolean(post.has_user_liked),
+    has_user_loved: Boolean(post.has_user_loved),
+    has_user_glazed: Boolean(post.has_user_glazed),
   }
 }
 
-function applyPersonaUpdate(profile, nextPersona, note) {
-  const normalizedPersona = String(nextPersona ?? '').trim()
-  if (!normalizedPersona || normalizedPersona === profile.persona) {
-    return profile
-  }
-
+function toProfilePatch(profile) {
   return {
-    ...profile,
-    persona: normalizedPersona,
-    larpHistory: [
-      makeLarpHistoryEntry({
-        from: profile.persona,
-        to: normalizedPersona,
-        note,
-      }),
-      ...profile.larpHistory,
-    ],
+    display_name: profile.name,
+    title: profile.headline,
+    avatar_url: profile.avatar,
+    cover_photo_url: profile.coverPhoto,
+    persona: profile.persona,
+    bio: profile.about,
+    stats: profile.stats,
+    glazers: profile.glazers,
+    larp_status: profile.larpStatus,
+    experience: profile.experience,
+    education: profile.education,
+    skills: profile.skills,
+    larp_history: profile.larpHistory,
+    glazes_received: profile.glazesReceived,
   }
 }
 
-function loadInitialProfile() {
-  const fallbackProfile = cloneDefaultProfile()
-  if (typeof window === 'undefined') {
-    return fallbackProfile
+export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
+  const [profile, setProfile] = useState(testMode ? { ...TEST_PROFILE } : { ...EMPTY_PROFILE })
+  const [allPosts, setAllPosts] = useState(
+    testMode ? [{ ...TEST_SOURCE_POST, author: { ...TEST_SOURCE_POST.author } }] : []
+  )
+  const [trendingDelusions, setTrendingDelusions] = useState(
+    testMode ? [...TEST_TRENDING_DELUSIONS] : []
+  )
+  const [buzzwords, setBuzzwords] = useState(testMode ? [...TEST_BUZZWORDS] : [])
+
+  async function loadFeedData() {
+    try {
+      const data = await fetchFeed({ limit: 50, offset: 0 })
+      setAllPosts((data.posts ?? []).map(adaptBackendPost))
+      setTrendingDelusions(data.trending_delusions ?? [])
+      setBuzzwords(data.buzzwords ?? [])
+    } catch {
+      setAllPosts([])
+      setTrendingDelusions([])
+      setBuzzwords([])
+    }
   }
 
-  try {
-    const rawProfile = window.localStorage.getItem(PROFILE_STORAGE_KEY)
-    if (!rawProfile) {
-      return fallbackProfile
+  useEffect(() => {
+    if (testMode) return
+
+    fetchProfile()
+      .then(data => setProfile(adaptProfile(data)))
+      .catch(() => setProfile({ ...EMPTY_PROFILE }))
+    fetchFeed({ limit: 50, offset: 0 })
+      .then(data => {
+        setAllPosts((data.posts ?? []).map(adaptBackendPost))
+        setTrendingDelusions(data.trending_delusions ?? [])
+        setBuzzwords(data.buzzwords ?? [])
+      })
+      .catch(() => {
+        setAllPosts([])
+        setTrendingDelusions([])
+        setBuzzwords([])
+      })
+  }, [testMode])
+
+  async function persistProfile(nextProfile) {
+    if (testMode) {
+      setProfile(nextProfile)
+      return { ok: true }
     }
 
-    const parsedProfile = JSON.parse(rawProfile)
-    return normalizeProfile(parsedProfile)
-  } catch {
-    return fallbackProfile
+    try {
+      const saved = await updateProfilePatch(toProfilePatch(nextProfile))
+      setProfile(adaptProfile(saved))
+      return { ok: true }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : 'Profile update failed.' }
+    }
   }
-}
-
-function normalizeComment(comment) {
-  if (!comment || typeof comment !== 'object') return null
-
-  const author = comment.author ?? {}
-
-  return {
-    id: comment.id ?? makeEntityId(),
-    author: {
-      name: author.name ?? 'Unknown User',
-      headline: author.headline ?? 'Mysterious ecosystem participant',
-      avatar: author.avatar ?? null,
-      larpRating: author.larpRating ?? 0,
-    },
-    timestamp: comment.timestamp ?? 'Just now',
-    content: String(comment.content ?? '').trim(),
-    createdAt: comment.createdAt ?? new Date().toISOString(),
-    isUserComment: Boolean(comment.isUserComment),
-  }
-}
-
-function normalizePost(post) {
-  const normalizedComments = Array.isArray(post.comments)
-    ? post.comments.map(normalizeComment).filter(comment => comment && comment.content)
-    : []
-
-  const normalizedReactions = {
-    ...(post.reactions ?? {}),
-  }
-
-  const relarpOf =
-    post.relarpOf && typeof post.relarpOf === 'object'
-      ? {
-          id: post.relarpOf.id ?? null,
-          type: post.relarpOf.type ?? 'Post',
-          timestamp: post.relarpOf.timestamp ?? 'Earlier',
-          content: String(post.relarpOf.content ?? '').trim(),
-          author: {
-            name: post.relarpOf.author?.name ?? 'Unknown User',
-            headline: post.relarpOf.author?.headline ?? 'Mysterious ecosystem participant',
-            avatar: post.relarpOf.author?.avatar ?? null,
-            larpRating: post.relarpOf.author?.larpRating ?? 0,
-          },
-        }
-      : null
-
-  const baselineCommentCount =
-    typeof normalizedReactions.comments === 'number'
-      ? normalizedReactions.comments
-      : normalizedComments.length
-
-  normalizedReactions.comments = Math.max(baselineCommentCount, normalizedComments.length)
-  normalizedReactions.relarps =
-    typeof normalizedReactions.relarps === 'number' ? normalizedReactions.relarps : 0
-
-  return {
-    ...post,
-    reactions: normalizedReactions,
-    comments: normalizedComments,
-    isRelarp: Boolean(post.isRelarp && relarpOf),
-    relarpOf,
-  }
-}
-
-function toRelarpSnapshot(post) {
-  return {
-    id: post.id ?? null,
-    type: post.type ?? 'Post',
-    timestamp: post.timestamp ?? 'Earlier',
-    content: String(post.content ?? '').trim(),
-    author: {
-      name: post.author?.name ?? 'Unknown User',
-      headline: post.author?.headline ?? 'Mysterious ecosystem participant',
-      avatar: post.author?.avatar ?? null,
-      larpRating: post.author?.larpRating ?? 0,
-    },
-  }
-}
-
-function getSeedComments(postId) {
-  const seededComments = SEED_COMMENTS_BY_POST_ID[postId]
-  if (!Array.isArray(seededComments)) return []
-
-  return seededComments.map(comment => ({
-    ...comment,
-    author: { ...comment.author },
-  }))
-}
-
-function loadInitialPosts() {
-  const fallbackPosts = SEED_POSTS.map(post =>
-    normalizePost({
-      ...post,
-      comments: getSeedComments(post.id),
-    })
-  )
-
-  if (typeof window === 'undefined') return fallbackPosts
-
-  try {
-    const rawPosts = window.localStorage.getItem(POSTS_STORAGE_KEY)
-    if (!rawPosts) return fallbackPosts
-
-    const parsedPosts = JSON.parse(rawPosts)
-    if (!Array.isArray(parsedPosts)) return fallbackPosts
-
-    return parsedPosts.map(normalizePost)
-  } catch {
-    return fallbackPosts
-  }
-}
-
-export function MockDataProvider({ children }) {
-  const [profile, setProfile] = useState(loadInitialProfile)
-  const [allPosts, setAllPosts] = useState(loadInitialPosts)
 
   function isAccessible(targetRating) {
-    return targetRating <= profile.larpRating
+    return Number(targetRating ?? 0) <= profile.larpRating
   }
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    try {
-      window.localStorage.setItem(POSTS_STORAGE_KEY, JSON.stringify(allPosts))
-    } catch (e) {
-      if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
-        // Evict oldest user posts if quota hit
-        setAllPosts(prev => {
-          const userPosts = prev.filter(p => p.isUserPost)
-          if (userPosts.length > 5) {
-            const keepCount = Math.floor(userPosts.length / 2)
-            const toKeep = userPosts.slice(0, keepCount)
-            const seeds = prev.filter(p => !p.isUserPost)
-            return [...toKeep, ...seeds]
-          }
-          return prev
-        })
-      }
-    }
-  }, [allPosts])
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    try {
-      window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile))
-    } catch (e) {
-      console.error('Failed to save profile to localStorage:', e)
-    }
-  }, [profile])
 
   async function updateProfile({ name, headline, persona, avatar, coverPhoto, note } = {}) {
     if (name !== undefined && !String(name ?? '').trim()) {
       return { ok: false, error: 'Name cannot be empty.' }
     }
-
     if (headline !== undefined && !String(headline ?? '').trim()) {
       return { ok: false, error: 'Headline cannot be empty.' }
     }
-
     if (persona !== undefined && !String(persona ?? '').trim()) {
       return { ok: false, error: 'Persona cannot be empty.' }
     }
 
-    let processedAvatar = avatar
-    if (avatar && avatar.startsWith('data:image')) {
-      processedAvatar = await downscaleImage(avatar, 400, 400, 0.6)
+    const nextProfile = {
+      ...profile,
+      ...(name !== undefined ? { name: String(name).trim() } : {}),
+      ...(headline !== undefined ? { headline: String(headline).trim() } : {}),
+      ...(persona !== undefined ? { persona: String(persona).trim() } : {}),
+      ...(avatar !== undefined ? { avatar: avatar || null } : {}),
+      ...(coverPhoto !== undefined ? { coverPhoto: coverPhoto || null } : {}),
     }
 
-    let processedCover = coverPhoto
-    if (coverPhoto && coverPhoto.startsWith('data:image')) {
-      processedCover = await downscaleImage(coverPhoto, 1200, 400, 0.6)
+    if (persona !== undefined && nextProfile.persona !== profile.persona) {
+      nextProfile.larpHistory = [
+        {
+          id: makeEntityId(),
+          date: new Date().toLocaleString('en-US', { month: 'short', year: 'numeric' }),
+          from: profile.persona || 'Unknown Persona',
+          to: nextProfile.persona,
+          note: note || 'Persona updated.',
+          createdAt: new Date().toISOString(),
+        },
+        ...profile.larpHistory,
+      ]
     }
 
-    setProfile(existingProfile => {
-      let nextProfile = { ...existingProfile }
-
-      if (name !== undefined) {
-        nextProfile.name = String(name).trim()
-      }
-
-      if (headline !== undefined) {
-        nextProfile.headline = String(headline).trim()
-      }
-
-      if (avatar !== undefined) {
-        nextProfile.avatar = processedAvatar ? String(processedAvatar).trim() : null
-      }
-
-      if (coverPhoto !== undefined) {
-        nextProfile.coverPhoto = processedCover ? String(processedCover).trim() : null
-      }
-
-      if (persona !== undefined) {
-        nextProfile = applyPersonaUpdate(
-          nextProfile,
-          persona,
-          note ?? 'Updated persona from profile settings.'
-        )
-      }
-
-      return nextProfile
-    })
-
-    return { ok: true }
+    setProfile(nextProfile)
+    return persistProfile(nextProfile)
   }
 
   function updateAbout(about) {
@@ -757,558 +347,457 @@ export function MockDataProvider({ children }) {
     if (!nextAbout) {
       return { ok: false, error: 'About section cannot be empty.' }
     }
-
-    setProfile(existingProfile => ({
-      ...existingProfile,
-      about: nextAbout,
-    }))
-
+    const nextProfile = { ...profile, about: nextAbout }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
     return { ok: true }
   }
 
   function cyclePersona() {
-    let mutationResult = { ok: false, error: 'Unable to switch persona.' }
+    const opportunities = toArray(profile.larpStatus?.opportunities)
+    if (!opportunities.length) {
+      return { ok: false, error: 'No personas available to switch.' }
+    }
 
-    setProfile(existingProfile => {
-      const opportunities = existingProfile.larpStatus.opportunities
-      if (!opportunities.length) {
-        mutationResult = { ok: false, error: 'No personas available to switch.' }
-        return existingProfile
-      }
+    const currentIndex = opportunities.indexOf(profile.persona)
+    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % opportunities.length
+    const nextPersona = opportunities[nextIndex]
+    if (!nextPersona) return { ok: false, error: 'No personas available to switch.' }
 
-      const currentIndex = opportunities.indexOf(existingProfile.persona)
-      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % opportunities.length
-      const nextPersona = opportunities[nextIndex]
+    const nextProfile = {
+      ...profile,
+      persona: nextPersona,
+      larpHistory: [
+        {
+          id: makeEntityId(),
+          date: new Date().toLocaleString('en-US', { month: 'short', year: 'numeric' }),
+          from: profile.persona || 'Unknown Persona',
+          to: nextPersona,
+          note: 'Switched persona from Open to Larping.',
+          createdAt: new Date().toISOString(),
+        },
+        ...profile.larpHistory,
+      ],
+    }
 
-      if (!nextPersona || nextPersona === existingProfile.persona) {
-        mutationResult = { ok: false, error: 'Add more persona options before switching.' }
-        return existingProfile
-      }
-
-      mutationResult = { ok: true, persona: nextPersona }
-      return applyPersonaUpdate(existingProfile, nextPersona, 'Switched persona from Open to Larping.')
-    })
-
-    return mutationResult
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
+    return { ok: true, persona: nextPersona }
   }
 
   function updateLarpStatus({ persona, opportunities } = {}) {
-    const hasPersonaUpdate = persona !== undefined
-    const hasOpportunityUpdate = opportunities !== undefined
+    const hasPersona = persona !== undefined
+    const hasOpportunities = opportunities !== undefined
 
-    if (hasPersonaUpdate && !String(persona ?? '').trim()) {
+    if (hasPersona && !String(persona ?? '').trim()) {
       return { ok: false, error: 'Persona cannot be empty.' }
     }
 
-    const normalizedOpportunities = hasOpportunityUpdate
-      ? normalizeStringList(opportunities, profile.larpStatus.opportunities)
-      : null
+    const nextOpportunities = hasOpportunities
+      ? toArray(opportunities).map(v => String(v).trim()).filter(Boolean)
+      : profile.larpStatus.opportunities
 
-    if (hasOpportunityUpdate && !normalizedOpportunities.length) {
+    if (hasOpportunities && !nextOpportunities.length) {
       return { ok: false, error: 'At least one opportunity type is required.' }
     }
 
-    setProfile(existingProfile => {
-      let nextProfile = { ...existingProfile }
+    let nextPersona = hasPersona ? String(persona).trim() : profile.persona
+    if (!nextOpportunities.includes(nextPersona)) {
+      nextPersona = nextOpportunities[0] || nextPersona
+    }
 
-      if (hasOpportunityUpdate) {
-        nextProfile = {
-          ...nextProfile,
-          larpStatus: {
-            ...nextProfile.larpStatus,
-            opportunities: normalizedOpportunities,
-          },
-        }
-      }
+    const nextProfile = {
+      ...profile,
+      persona: nextPersona,
+      larpStatus: { opportunities: nextOpportunities },
+    }
 
-      if (hasPersonaUpdate) {
-        nextProfile = applyPersonaUpdate(
-          nextProfile,
-          persona,
-          'Updated persona from Open to Larping settings.'
-        )
-      } else if (hasOpportunityUpdate && !normalizedOpportunities.includes(nextProfile.persona)) {
-        nextProfile = applyPersonaUpdate(
-          nextProfile,
-          normalizedOpportunities[0],
-          'Adjusted persona to match available opportunities.'
-        )
-      }
-
-      return nextProfile
-    })
-
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
     return { ok: true }
   }
 
   function addExperience(entry) {
     const title = String(entry?.title ?? '').trim()
     const company = String(entry?.company ?? '').trim()
-
     if (!title || !company) {
       return { ok: false, error: 'Experience needs both title and company.' }
     }
 
-    const nextExperience = {
+    const nextEntry = {
       id: makeEntityId(),
       title,
       company,
-      dates: normalizeText(entry?.dates, 'Dates not set'),
-      description: normalizeText(entry?.description, 'No description yet.'),
+      dates: String(entry?.dates ?? '').trim() || 'Dates not set',
+      description: String(entry?.description ?? '').trim() || 'No description yet.',
     }
 
-    setProfile(existingProfile => ({
-      ...existingProfile,
-      experience: [nextExperience, ...existingProfile.experience],
-    }))
-
-    return { ok: true, entry: nextExperience }
+    const nextProfile = { ...profile, experience: [nextEntry, ...profile.experience] }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
+    return { ok: true, entry: nextEntry }
   }
 
   function updateExperience({ id, updates } = {}) {
-    if (!id) {
-      return { ok: false, error: 'Experience entry not found.' }
-    }
-
-    if (updates?.title !== undefined && !String(updates.title ?? '').trim()) {
-      return { ok: false, error: 'Experience title cannot be empty.' }
-    }
-
-    if (updates?.company !== undefined && !String(updates.company ?? '').trim()) {
-      return { ok: false, error: 'Experience company cannot be empty.' }
-    }
+    if (!id) return { ok: false, error: 'Experience entry not found.' }
 
     let didUpdate = false
+    const nextExperience = profile.experience.map(entry => {
+      if (String(entry.id) !== String(id)) return entry
+      didUpdate = true
+      return {
+        ...entry,
+        ...(updates?.title !== undefined ? { title: String(updates.title).trim() } : {}),
+        ...(updates?.company !== undefined ? { company: String(updates.company).trim() } : {}),
+        ...(updates?.dates !== undefined ? { dates: String(updates.dates ?? '').trim() } : {}),
+        ...(updates?.description !== undefined
+          ? { description: String(updates.description ?? '').trim() }
+          : {}),
+      }
+    })
 
-    setProfile(existingProfile => ({
-      ...existingProfile,
-      experience: existingProfile.experience.map(entry => {
-        if (String(entry.id) !== String(id)) return entry
+    if (!didUpdate) return { ok: false, error: 'Experience entry not found.' }
 
-        didUpdate = true
-        return {
-          ...entry,
-          ...(updates?.title !== undefined ? { title: String(updates.title).trim() } : {}),
-          ...(updates?.company !== undefined ? { company: String(updates.company).trim() } : {}),
-          ...(updates?.dates !== undefined ? { dates: normalizeText(updates.dates, entry.dates) } : {}),
-          ...(updates?.description !== undefined
-            ? { description: normalizeText(updates.description, entry.description) }
-            : {}),
-        }
-      }),
-    }))
-
-    if (!didUpdate) {
-      return { ok: false, error: 'Experience entry not found.' }
-    }
-
+    const nextProfile = { ...profile, experience: nextExperience }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
     return { ok: true }
   }
 
   function removeExperience(id) {
-    if (!id) {
+    if (!id) return { ok: false, error: 'Experience entry not found.' }
+
+    const nextExperience = profile.experience.filter(entry => String(entry.id) !== String(id))
+    if (nextExperience.length === profile.experience.length) {
       return { ok: false, error: 'Experience entry not found.' }
     }
 
-    let didDelete = false
-
-    setProfile(existingProfile => {
-      const remainingExperience = existingProfile.experience.filter(entry => {
-        const shouldDelete = String(entry.id) === String(id)
-        if (shouldDelete) didDelete = true
-        return !shouldDelete
-      })
-
-      return {
-        ...existingProfile,
-        experience: remainingExperience,
-      }
-    })
-
-    if (!didDelete) {
-      return { ok: false, error: 'Experience entry not found.' }
-    }
-
+    const nextProfile = { ...profile, experience: nextExperience }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
     return { ok: true }
   }
 
   function addEducation(entry) {
     const school = String(entry?.school ?? '').trim()
     const degree = String(entry?.degree ?? '').trim()
-
     if (!school || !degree) {
       return { ok: false, error: 'Education needs both school and degree.' }
     }
 
-    const nextEducation = {
+    const nextEntry = {
       id: makeEntityId(),
       school,
       degree,
-      dates: normalizeText(entry?.dates, 'Dates not set'),
+      dates: String(entry?.dates ?? '').trim() || 'Dates not set',
       activities: String(entry?.activities ?? '').trim(),
     }
 
-    setProfile(existingProfile => ({
-      ...existingProfile,
-      education: [nextEducation, ...existingProfile.education],
-    }))
-
-    return { ok: true, entry: nextEducation }
+    const nextProfile = { ...profile, education: [nextEntry, ...profile.education] }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
+    return { ok: true, entry: nextEntry }
   }
 
   function updateEducation({ id, updates } = {}) {
-    if (!id) {
-      return { ok: false, error: 'Education entry not found.' }
-    }
-
-    if (updates?.school !== undefined && !String(updates.school ?? '').trim()) {
-      return { ok: false, error: 'School cannot be empty.' }
-    }
-
-    if (updates?.degree !== undefined && !String(updates.degree ?? '').trim()) {
-      return { ok: false, error: 'Degree cannot be empty.' }
-    }
+    if (!id) return { ok: false, error: 'Education entry not found.' }
 
     let didUpdate = false
+    const nextEducation = profile.education.map(entry => {
+      if (String(entry.id) !== String(id)) return entry
+      didUpdate = true
+      return {
+        ...entry,
+        ...(updates?.school !== undefined ? { school: String(updates.school).trim() } : {}),
+        ...(updates?.degree !== undefined ? { degree: String(updates.degree).trim() } : {}),
+        ...(updates?.dates !== undefined ? { dates: String(updates.dates ?? '').trim() } : {}),
+        ...(updates?.activities !== undefined
+          ? { activities: String(updates.activities ?? '').trim() }
+          : {}),
+      }
+    })
 
-    setProfile(existingProfile => ({
-      ...existingProfile,
-      education: existingProfile.education.map(entry => {
-        if (String(entry.id) !== String(id)) return entry
+    if (!didUpdate) return { ok: false, error: 'Education entry not found.' }
 
-        didUpdate = true
-        return {
-          ...entry,
-          ...(updates?.school !== undefined ? { school: String(updates.school).trim() } : {}),
-          ...(updates?.degree !== undefined ? { degree: String(updates.degree).trim() } : {}),
-          ...(updates?.dates !== undefined ? { dates: normalizeText(updates.dates, entry.dates) } : {}),
-          ...(updates?.activities !== undefined
-            ? { activities: String(updates.activities ?? '').trim() }
-            : {}),
-        }
-      }),
-    }))
-
-    if (!didUpdate) {
-      return { ok: false, error: 'Education entry not found.' }
-    }
-
+    const nextProfile = { ...profile, education: nextEducation }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
     return { ok: true }
   }
 
   function removeEducation(id) {
-    if (!id) {
+    if (!id) return { ok: false, error: 'Education entry not found.' }
+
+    const nextEducation = profile.education.filter(entry => String(entry.id) !== String(id))
+    if (nextEducation.length === profile.education.length) {
       return { ok: false, error: 'Education entry not found.' }
     }
 
-    let didDelete = false
-
-    setProfile(existingProfile => {
-      const remainingEducation = existingProfile.education.filter(entry => {
-        const shouldDelete = String(entry.id) === String(id)
-        if (shouldDelete) didDelete = true
-        return !shouldDelete
-      })
-
-      return {
-        ...existingProfile,
-        education: remainingEducation,
-      }
-    })
-
-    if (!didDelete) {
-      return { ok: false, error: 'Education entry not found.' }
-    }
-
+    const nextProfile = { ...profile, education: nextEducation }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
     return { ok: true }
   }
 
   function addSkill({ name } = {}) {
-    const normalizedName = String(name ?? '').trim()
-    if (!normalizedName) {
-      return { ok: false, error: 'Skill name cannot be empty.' }
+    const skillName = String(name ?? '').trim()
+    if (!skillName) return { ok: false, error: 'Skill name cannot be empty.' }
+
+    const exists = profile.skills.some(s => String(s.name).toLowerCase() === skillName.toLowerCase())
+    if (exists) return { ok: false, error: 'That skill already exists.' }
+
+    const nextProfile = {
+      ...profile,
+      skills: [{ id: makeEntityId(), name: skillName, endorsements: 0 }, ...profile.skills],
     }
 
-    let result = { ok: true }
-
-    setProfile(existingProfile => {
-      const hasDuplicate = existingProfile.skills.some(
-        skill => skill.name.toLowerCase() === normalizedName.toLowerCase()
-      )
-
-      if (hasDuplicate) {
-        result = { ok: false, error: 'That skill already exists.' }
-        return existingProfile
-      }
-
-      return {
-        ...existingProfile,
-        skills: [
-          { id: makeEntityId(), name: normalizedName, endorsements: 0 },
-          ...existingProfile.skills,
-        ],
-      }
-    })
-
-    return result
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
+    return { ok: true }
   }
 
   function removeSkill(skillId) {
-    if (!skillId) {
-      return { ok: false, error: 'Skill not found.' }
-    }
+    if (!skillId) return { ok: false, error: 'Skill not found.' }
 
-    let didDelete = false
+    const nextSkills = profile.skills.filter(skill => String(skill.id) !== String(skillId))
+    if (nextSkills.length === profile.skills.length) return { ok: false, error: 'Skill not found.' }
 
-    setProfile(existingProfile => {
-      const remainingSkills = existingProfile.skills.filter(skill => {
-        const shouldDelete = String(skill.id) === String(skillId)
-        if (shouldDelete) didDelete = true
-        return !shouldDelete
-      })
-
-      return {
-        ...existingProfile,
-        skills: remainingSkills,
-      }
-    })
-
-    if (!didDelete) {
-      return { ok: false, error: 'Skill not found.' }
-    }
-
+    const nextProfile = { ...profile, skills: nextSkills }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
     return { ok: true }
   }
 
   function endorseSkill(skillId) {
-    if (!skillId) {
-      return { ok: false, error: 'Skill not found.' }
-    }
+    if (!skillId) return { ok: false, error: 'Skill not found.' }
 
-    const skillExists = profile.skills.some(skill => String(skill.id) === String(skillId))
-    if (!skillExists) {
-      return { ok: false, error: 'Skill not found.' }
-    }
+    let found = false
+    const nextSkills = profile.skills.map(skill => {
+      if (String(skill.id) !== String(skillId)) return skill
+      found = true
+      return { ...skill, endorsements: Number(skill.endorsements ?? 0) + 1 }
+    })
 
-    setProfile(existingProfile => ({
-      ...existingProfile,
-      skills: existingProfile.skills.map(skill => {
-        if (String(skill.id) !== String(skillId)) return skill
-        return {
-          ...skill,
-          endorsements: skill.endorsements + 1,
-        }
-      }),
-    }))
+    if (!found) return { ok: false, error: 'Skill not found.' }
 
+    const nextProfile = { ...profile, skills: nextSkills }
+    setProfile(nextProfile)
+    void persistProfile(nextProfile)
     return { ok: true }
   }
 
   async function createPost({ content, type, photo }) {
-    const trimmedContent = (content ?? '').trim()
-
+    const trimmedContent = String(content ?? '').trim()
     if (!trimmedContent && !photo) {
       return { ok: false, error: 'Post must have content or a photo.' }
     }
 
-    let processedPhoto = photo
-    if (photo && photo.startsWith('data:image')) {
-      processedPhoto = await downscaleImage(photo, 1000, 1000, 0.7)
+    if (testMode) {
+      const nextPost = {
+        id: makeEntityId(),
+        author: {
+          id: profile.id,
+          name: profile.name,
+          headline: profile.headline,
+          avatar: profile.avatar,
+          larpRating: profile.larpRating,
+        },
+        type: String(type ?? '').trim() || 'Career Lore',
+        timestamp: 'just now',
+        content: trimmedContent,
+        reactions: { count: 0, comments: 0, relarps: 0, likes: 0, loves: 0, glazes: 0 },
+        comments: [],
+        ai_glazes: [],
+        glazes: [],
+        buzzword_score: 0,
+        has_user_relarped: false,
+        has_user_liked: false,
+        has_user_loved: false,
+        has_user_glazed: false,
+      }
+      setAllPosts(prev => [nextPost, ...prev])
+      return { ok: true, post: nextPost }
     }
 
-    const postId = makeEntityId()
-
-    const nextPost = {
-      id: postId,
-      author: {
-        name: profile.name,
-        headline: profile.headline,
-        avatar: profile.avatar,
-        larpRating: profile.larpRating,
-      },
-      type: type?.trim() || 'Personal Update',
-      timestamp: 'Just now',
-      content: trimmedContent,
-      photo: processedPhoto ?? null,
-      reactions: { count: 0, comments: 0 },
-      comments: [],
-      createdAt: new Date().toISOString(),
-      isUserPost: true,
+    try {
+      const created = await apiCreatePost({
+        content: trimmedContent,
+        postType: String(type ?? '').trim() || 'Career Lore',
+      })
+      await loadFeedData()
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('feed:refresh'))
+      }
+      return { ok: true, post: created }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : 'Post creation failed.' }
     }
-
-    setAllPosts(existingPosts => [nextPost, ...existingPosts])
-
-    // Persist to backend (fire-and-forget — optimistic UI already updated above)
-    apiCreatePost({ content: trimmedContent, postType: type?.trim() || 'Career Lore' }).catch(() => {})
-
-    return { ok: true }
   }
 
-  function createComment({ postId, content }) {
-    const trimmedContent = (content ?? '').trim()
+  async function createComment({ postId, content }) {
+    const text = String(content ?? '').trim()
+    if (!text) return { ok: false, error: 'Comment cannot be empty.' }
 
-    if (!trimmedContent) {
-      return { ok: false, error: 'Comment cannot be empty.' }
+    if (testMode) {
+      const comment = {
+        id: makeEntityId(),
+        timestamp: 'just now',
+        content: text,
+        author: {
+          name: profile.name,
+          headline: profile.headline,
+          avatar: profile.avatar,
+          larpRating: profile.larpRating,
+        },
+      }
+      setAllPosts(prev =>
+        prev.map(post =>
+          String(post.id) !== String(postId)
+            ? post
+            : {
+              ...post,
+              comments: [comment, ...(post.comments ?? [])],
+              reactions: {
+                ...post.reactions,
+                comments: Number(post.reactions?.comments ?? 0) + 1,
+              },
+            }
+        )
+      )
+      return { ok: true, comment }
     }
 
-    const postExists = allPosts.some(post => post.id === postId)
-    if (!postExists) {
-      return { ok: false, error: 'This post could not be found.' }
+    try {
+      const comment = await createPostComment(postId, text)
+      setAllPosts(prev =>
+        prev.map(post =>
+          String(post.id) !== String(postId)
+            ? post
+            : {
+              ...post,
+              comments: [comment, ...(post.comments ?? [])],
+              reactions: {
+                ...post.reactions,
+                comments: Number(post.reactions?.comments ?? 0) + 1,
+              },
+            }
+        )
+      )
+      return { ok: true, comment }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : 'Comment failed.' }
     }
-
-    const nextComment = {
-      id: makeEntityId(),
-      author: {
-        name: profile.name,
-        headline: profile.headline,
-        avatar: profile.avatar,
-        larpRating: profile.larpRating,
-      },
-      timestamp: 'Just now',
-      content: trimmedContent,
-      createdAt: new Date().toISOString(),
-      isUserComment: true,
-    }
-
-    setAllPosts(existingPosts =>
-      existingPosts.map(post => {
-        if (post.id !== postId) return post
-
-        const previousComments = Array.isArray(post.comments) ? post.comments : []
-        const currentCommentCount =
-          typeof post.reactions?.comments === 'number'
-            ? post.reactions.comments
-            : previousComments.length
-
-        return {
-          ...post,
-          comments: [nextComment, ...previousComments],
-          reactions: {
-            ...(post.reactions ?? {}),
-            comments: currentCommentCount + 1,
-          },
-        }
-      })
-    )
-
-    return { ok: true, comment: nextComment }
   }
 
   function hasUserRelarped(postId) {
     if (!postId) return false
-    return allPosts.some(
-      post => post.isRelarp && post.isUserPost && String(post.relarpOf?.id) === String(postId)
-    )
+    const source = allPosts.find(post => String(post.id) === String(postId))
+    return Boolean(source?.has_user_relarped)
   }
 
-  function createRelarp({ postId, commentary }) {
-    const sourcePost = allPosts.find(post => String(post.id) === String(postId))
-    if (!sourcePost) {
-      return { ok: false, error: 'This post could not be found.' }
-    }
+  async function createRelarp({ postId, commentary }) {
+    if (!postId) return { ok: false, error: 'Post not found.' }
 
-    const isOwnSourcePost =
-      sourcePost.isUserPost || String(sourcePost.author?.name) === String(profile.name)
+    if (testMode) {
+      const sourcePost = allPosts.find(post => String(post.id) === String(postId))
+      if (!sourcePost) return { ok: false, error: 'Post not found.' }
+      if (sourcePost.author.id === profile.id) return { ok: false, error: 'Cannot relarp your own post.' }
+      if (sourcePost.has_user_relarped) return { ok: false, error: 'Already relarped.' }
 
-    if (isOwnSourcePost) {
-      return { ok: false, error: 'You cannot Re-Larp your own post.' }
-    }
-
-    if (hasUserRelarped(postId)) {
-      return { ok: false, error: 'You already Re-Larped this post.' }
-    }
-
-    const relarpSource =
-      sourcePost.isRelarp && sourcePost.relarpOf
-        ? sourcePost.relarpOf
-        : toRelarpSnapshot(sourcePost)
-
-    const nextRelarpPost = normalizePost({
-      id: makeEntityId(),
-      author: {
-        name: profile.name,
-        headline: profile.headline,
-        avatar: profile.avatar,
-        larpRating: profile.larpRating,
-      },
-      type: 'Re-Larp',
-      timestamp: 'Just now',
-      content: String(commentary ?? '').trim(),
-      reactions: { count: 0, likes: 0, loves: 0, insights: 0, comments: 0, relarps: 0 },
-      comments: [],
-      createdAt: new Date().toISOString(),
-      isUserPost: true,
-      isRelarp: true,
-      relarpOf: relarpSource,
-    })
-
-    setAllPosts(existingPosts => {
-      const updatedPosts = existingPosts.map(post => {
-        if (String(post.id) !== String(postId)) return post
-
-        const relarpCount =
-          typeof post.reactions?.relarps === 'number' ? post.reactions.relarps : 0
-
-        return {
-          ...post,
-          reactions: {
-            ...(post.reactions ?? {}),
-            relarps: relarpCount + 1,
-          },
-        }
+      const relarpPost = {
+        id: makeEntityId(),
+        author: {
+          id: profile.id,
+          name: profile.name,
+          headline: profile.headline,
+          avatar: profile.avatar,
+          larpRating: profile.larpRating,
+        },
+        type: 'Re-Larp',
+        timestamp: 'just now',
+        content: String(commentary ?? '').trim(),
+        reactions: { count: 0, comments: 0, relarps: 0, likes: 0, loves: 0, glazes: 0 },
+        comments: [],
+        isRelarp: true,
+        relarpOf: sourcePost,
+      }
+      setAllPosts(prev => {
+        const next = prev.map(post =>
+          String(post.id) !== String(postId)
+            ? post
+            : {
+              ...post,
+              has_user_relarped: true,
+              reactions: {
+                ...post.reactions,
+                relarps: Number(post.reactions?.relarps ?? 0) + 1,
+              },
+            }
+        )
+        return [relarpPost, ...next]
       })
-
-      return [nextRelarpPost, ...updatedPosts]
-    })
-
-    return { ok: true, relarpPost: nextRelarpPost }
-  }
-
-  function undoRelarp({ postId }) {
-    const userRelarpPost = allPosts.find(
-      post => post.isRelarp && post.isUserPost && String(post.relarpOf?.id) === String(postId)
-    )
-
-    if (!userRelarpPost) {
-      return { ok: false, error: 'You have not Re-Larped this post yet.' }
+      return { ok: true }
     }
 
-    setAllPosts(existingPosts => {
-      const remainingPosts = existingPosts.filter(
-        post => String(post.id) !== String(userRelarpPost.id)
-      )
-
-      return remainingPosts.map(post => {
-        if (String(post.id) !== String(postId)) return post
-
-        const relarpCount =
-          typeof post.reactions?.relarps === 'number' ? post.reactions.relarps : 0
-
-        return {
-          ...post,
-          reactions: {
-            ...(post.reactions ?? {}),
-            relarps: Math.max(0, relarpCount - 1),
-          },
-        }
-      })
-    })
-
-    return { ok: true }
+    try {
+      await apiCreateRelarp(postId, String(commentary ?? ''))
+      await loadFeedData()
+      return { ok: true }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : 'Relarp failed.' }
+    }
   }
 
-  const feedPosts = useMemo(
-    () => allPosts.filter(post => post.author.larpRating <= profile.larpRating),
-    [allPosts, profile.larpRating]
-  )
+  async function undoRelarp({ postId }) {
+    if (!postId) return { ok: false, error: 'Post not found.' }
+
+    if (testMode) {
+      setAllPosts(prev => {
+        let removed = false
+        const withoutRelarp = prev.filter(post => {
+          const shouldRemove = post.isRelarp && String(post.relarpOf?.id) === String(postId)
+          if (shouldRemove) removed = true
+          return !shouldRemove
+        })
+
+        if (!removed) return prev
+
+        return withoutRelarp.map(post =>
+          String(post.id) !== String(postId)
+            ? post
+            : {
+              ...post,
+              has_user_relarped: false,
+              reactions: {
+                ...post.reactions,
+                relarps: Math.max(0, Number(post.reactions?.relarps ?? 0) - 1),
+              },
+            }
+        )
+      })
+      return { ok: true }
+    }
+
+    try {
+      await apiRemoveRelarp(postId)
+      await loadFeedData()
+      return { ok: true }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : 'Undo relarp failed.' }
+    }
+  }
+
+  const feedPosts = useMemo(() => (
+    allPosts.filter(post => Number(post.author?.larpRating ?? 0) <= profile.larpRating)
+  ), [allPosts, profile.larpRating])
 
   const value = {
     currentUser: profile,
     meProfile: profile,
     feedPosts,
     allPosts,
-    trendingDelusions: TRENDING_DELUSIONS,
-    buzzwords: BUZZWORDS,
+    trendingDelusions,
+    buzzwords,
     isAccessible,
     updateProfile,
     updateAbout,

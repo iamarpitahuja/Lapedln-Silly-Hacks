@@ -19,21 +19,22 @@ export default function ChatWindow({ otherUser, currentUserId }) {
   const [sending, setSending] = useState(false)
   const [loading, setLoading] = useState(true)
   const bottomRef = useRef(null)
+  const otherUserId = otherUser?.id ?? null
 
   // Load history on conversation change
   useEffect(() => {
-    if (!otherUser) return
+    if (!otherUserId) return
     setLoading(true)
     setMessages([])
-    fetchMessageHistory(otherUser.id)
+    fetchMessageHistory(otherUserId)
       .then(data => setMessages(data.messages ?? []))
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [otherUser?.id])
+  }, [otherUserId])
 
   // Supabase Realtime: subscribe to incoming messages for current user
   useEffect(() => {
-    if (!otherUser || !currentUserId) return
+    if (!otherUserId || !currentUserId) return
 
     const channel = supabase
       .channel(`messages-${currentUserId}`)
@@ -47,7 +48,7 @@ export default function ChatWindow({ otherUser, currentUserId }) {
         },
         (payload) => {
           // Only append if it's from the active conversation partner
-          if (payload.new.sender_id === otherUser.id) {
+          if (payload.new.sender_id === otherUserId) {
             setMessages(prev => [...prev, payload.new])
           }
         }
@@ -57,7 +58,7 @@ export default function ChatWindow({ otherUser, currentUserId }) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [otherUser?.id, currentUserId])
+  }, [otherUserId, currentUserId])
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function ChatWindow({ otherUser, currentUserId }) {
 
   async function handleSend() {
     const content = draft.trim()
-    if (!content || sending) return
+    if (!content || sending || !otherUserId || !currentUserId) return
     setSending(true)
     setDraft('')
 
@@ -74,14 +75,14 @@ export default function ChatWindow({ otherUser, currentUserId }) {
     const optimistic = {
       id: `opt-${Date.now()}`,
       sender_id: currentUserId,
-      receiver_id: otherUser.id,
+      receiver_id: otherUserId,
       content,
       created_at: new Date().toISOString(),
     }
     setMessages(prev => [...prev, optimistic])
 
     try {
-      const saved = await sendMessage(otherUser.id, content)
+      const saved = await sendMessage(otherUserId, content)
       setMessages(prev => prev.map(m => m.id === optimistic.id ? saved : m))
     } catch (e) {
       console.error(e)
@@ -152,7 +153,7 @@ export default function ChatWindow({ otherUser, currentUserId }) {
         <button
           className={styles.sendBtn}
           onClick={handleSend}
-          disabled={!draft.trim() || sending}
+          disabled={!draft.trim() || sending || !otherUserId || !currentUserId}
         >
           Send
         </button>

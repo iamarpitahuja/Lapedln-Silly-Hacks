@@ -1,26 +1,28 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { fetchConversations } from '../../services/api'
+import { fetchConversations, fetchProfile } from '../../services/api'
 import ConversationList from './ConversationList/ConversationList'
 import ChatWindow from './ChatWindow/ChatWindow'
 import styles from './Messaging.module.css'
-
-// In dev mode (skip_auth=True), backend uses this as the current user
-const DEV_USER_ID = '00000000-0000-0000-0000-000000000000'
 
 export default function Messaging() {
   const [searchParams] = useSearchParams()
   const [conversations, setConversations] = useState([])
   const [activeUser, setActiveUser] = useState(null)
+  const [currentUserId, setCurrentUserId] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const initialUserId = searchParams.get('userId')
 
   useEffect(() => {
-    fetchConversations()
-      .then(data => {
-        const convs = data.conversations ?? []
+    let cancelled = false
+
+    Promise.all([fetchConversations(), fetchProfile()])
+      .then(([conversationsData, profile]) => {
+        if (cancelled) return
+        const convs = conversationsData.conversations ?? []
         setConversations(convs)
+        setCurrentUserId(profile?.id ?? null)
         if (initialUserId) {
           const existing = convs.find(c => c.other_user?.id === initialUserId)
           if (existing) {
@@ -31,7 +33,13 @@ export default function Messaging() {
         }
       })
       .catch(console.error)
-      .finally(() => setLoading(false))
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
   }, [initialUserId])
 
   return (
@@ -49,7 +57,7 @@ export default function Messaging() {
           <div className={styles.chat}>
             <ChatWindow
               otherUser={activeUser}
-              currentUserId={DEV_USER_ID}
+              currentUserId={currentUserId}
             />
           </div>
         </div>

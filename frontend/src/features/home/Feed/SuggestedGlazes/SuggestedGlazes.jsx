@@ -45,8 +45,9 @@ export default function SuggestedGlazes({ onGlaze, isGlazed }) {
   function handleSend() {
     if (!customGlaze.trim() || isGlazed) return
 
-    setSubmitted(customGlaze)
-    if (onGlaze) onGlaze()
+    const selected = customGlaze.trim()
+    setSubmitted(selected)
+    if (onGlaze) onGlaze(selected)
     setCustomGlaze('')
     setTimeout(() => setSubmitted(null), 3000)
   }

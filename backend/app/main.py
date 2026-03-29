@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import feed, posts, jobs, profile, connections, messages
+from app.routers import feed, posts, jobs, profile, connections, messages, notifications
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +36,7 @@ app.include_router(jobs.router, prefix="/api")
 app.include_router(profile.router, prefix="/api")
 app.include_router(connections.router, prefix="/api")
 app.include_router(messages.router, prefix="/api")
+app.include_router(notifications.router, prefix="/api")
 
 
 @app.get("/health")

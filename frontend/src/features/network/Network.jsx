@@ -30,7 +30,7 @@ export default function Network() {
         setSuggestions(s.suggestions ?? [])
         setPending(p.pending ?? [])
         setConnections(c.connections ?? [])
-      } catch (e) {
+      } catch {
         setError('Failed to load network data. Is the backend running?')
       } finally {
         setLoading(false)

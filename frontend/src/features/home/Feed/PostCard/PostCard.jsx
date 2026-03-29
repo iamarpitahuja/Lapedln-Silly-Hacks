@@ -2,6 +2,16 @@ import { useState } from 'react'
 import LarpRatingBadge from '../../../../components/LarpRatingBadge/LarpRatingBadge'
 import SuggestedGlazes from '../SuggestedGlazes/SuggestedGlazes'
 import Icon from '../../../../components/Icon/Icon'
+import {
+  createGlaze as apiCreateGlaze,
+  createLike as apiCreateLike,
+  createLove as apiCreateLove,
+  createPostComment,
+  createRelarp as apiCreateRelarp,
+  removeLike as apiRemoveLike,
+  removeLove as apiRemoveLove,
+  removeRelarp as apiRemoveRelarp,
+} from '../../../../services/api'
 import { useMockData } from '../../../../context/MockDataContext'
 import { getInitials } from '../../../../utils/strings'
 import styles from './PostCard.module.css'
@@ -20,12 +30,16 @@ function getAvatarColor(name) {
 export default function PostCard({ post, isOwnPost = false }) {
   const { author, type, timestamp, content, reactions } = post
   const relarpSource = post.isRelarp ? post.relarpOf : null
-  const { currentUser, createComment, createRelarp, undoRelarp, hasUserRelarped } = useMockData()
+  const { currentUser } = useMockData()
 
   const [isGlazing, setIsGlazing] = useState(false)
-  const [isGlazed, setIsGlazed] = useState(false)
-  const [isLarped, setIsLarped] = useState(false)
-  const [isLoved, setIsLoved] = useState(false)
+  const [isGlazed, setIsGlazed] = useState(Boolean(post.has_user_glazed))
+  const [isLarped, setIsLarped] = useState(Boolean(post.has_user_liked))
+  const [isLoved, setIsLoved] = useState(Boolean(post.has_user_loved))
+  const [isUpdatingLike, setIsUpdatingLike] = useState(false)
+  const [isUpdatingLove, setIsUpdatingLove] = useState(false)
+  const [isSubmittingGlaze, setIsSubmittingGlaze] = useState(false)
+  const [reactionError, setReactionError] = useState('')
   const [isCommentsOpen, setIsCommentsOpen] = useState(false)
   const [isContentExpanded, setIsContentExpanded] = useState(false)
   const [commentDraft, setCommentDraft] = useState('')
@@ -36,8 +50,15 @@ export default function PostCard({ post, isOwnPost = false }) {
   const [relarpError, setRelarpError] = useState('')
   const [isSubmittingRelarp, setIsSubmittingRelarp] = useState(false)
   const [isUndoingRelarp, setIsUndoingRelarp] = useState(false)
-
-  const userAlreadyRelarped = hasUserRelarped(post.id)
+  const [comments, setComments] = useState(Array.isArray(post.comments) ? post.comments : [])
+  const [totalCommentCount, setTotalCommentCount] = useState(
+    Number(reactions?.comments ?? (Array.isArray(post.comments) ? post.comments.length : 0))
+  )
+  const [glazeCount, setGlazeCount] = useState(Number(reactions?.glazes ?? reactions?.insights ?? 0))
+  const [larpCount, setLarpCount] = useState(Number(reactions?.likes ?? 0))
+  const [loveCount, setLoveCount] = useState(Number(reactions?.loves ?? 0))
+  const [relarpCount, setRelarpCount] = useState(Number(reactions?.relarps ?? 0))
+  const [userAlreadyRelarped, setUserAlreadyRelarped] = useState(Boolean(post.has_user_relarped))
   const canRelarp = !isOwnPost && !userAlreadyRelarped
 
   const shouldTruncateContent = content && content.length > CONTENT_TRUNCATE_LENGTH
@@ -46,32 +67,76 @@ export default function PostCard({ post, isOwnPost = false }) {
     : content
 
   const handleGlazeClick = () => {
+    if (isOwnPost || isSubmittingGlaze) return
     setIsGlazing(!isGlazing)
   }
 
-  const handleLarpClick = () => setIsLarped(!isLarped)
-  const handleLoveClick = () => setIsLoved(!isLoved)
+  const handleLarpClick = async () => {
+    if (isOwnPost || isUpdatingLike) return
+
+    setIsUpdatingLike(true)
+    setReactionError('')
+    try {
+      if (isLarped) {
+        await apiRemoveLike(post.id)
+        setIsLarped(false)
+        setLarpCount(prev => Math.max(0, prev - 1))
+      } else {
+        await apiCreateLike(post.id)
+        setIsLarped(true)
+        setLarpCount(prev => prev + 1)
+      }
+    } catch {
+      setReactionError('Unable to update your reaction right now.')
+    } finally {
+      setIsUpdatingLike(false)
+    }
+  }
+
+  const handleLoveClick = async () => {
+    if (isOwnPost || isUpdatingLove) return
+
+    setIsUpdatingLove(true)
+    setReactionError('')
+    try {
+      if (isLoved) {
+        await apiRemoveLove(post.id)
+        setIsLoved(false)
+        setLoveCount(prev => Math.max(0, prev - 1))
+      } else {
+        await apiCreateLove(post.id)
+        setIsLoved(true)
+        setLoveCount(prev => prev + 1)
+      }
+    } catch {
+      setReactionError('Unable to update your reaction right now.')
+    } finally {
+      setIsUpdatingLove(false)
+    }
+  }
+
   const handleCommentClick = () => {
     setCommentError('')
     setIsCommentsOpen(isOpen => !isOpen)
   }
 
-  const handleRelarpClick = () => {
+  const handleRelarpClick = async () => {
     if (isOwnPost || isSubmittingRelarp || isUndoingRelarp) return
 
     if (userAlreadyRelarped) {
       setIsUndoingRelarp(true)
-      const result = undoRelarp({ postId: post.id })
-
-      if (!result.ok) {
-        setRelarpError(result.error ?? 'Unable to undo this Re-Larp right now.')
+      try {
+        await apiRemoveRelarp(post.id)
+        setUserAlreadyRelarped(false)
+        setRelarpCount(prev => Math.max(0, prev - 1))
+        setRelarpError('')
+        setRelarpDraft('')
+        setIsRelarpComposerOpen(false)
+      } catch {
+        setRelarpError('Unable to undo this Re-Larp right now.')
         setIsUndoingRelarp(false)
         return
       }
-
-      setRelarpError('')
-      setRelarpDraft('')
-      setIsRelarpComposerOpen(false)
       setIsUndoingRelarp(false)
       return
     }
@@ -81,46 +146,74 @@ export default function PostCard({ post, isOwnPost = false }) {
     setIsRelarpComposerOpen(isOpen => !isOpen)
   }
 
-  const handleSendGlaze = () => {
-    if (!isGlazed) setIsGlazed(true)
+  const handleSendGlaze = async glazeContent => {
+    if (isGlazed || isSubmittingGlaze || isOwnPost) return
+
+    setIsSubmittingGlaze(true)
+    setReactionError('')
+    try {
+      await apiCreateGlaze(post.id, glazeContent)
+      setIsGlazed(true)
+      setGlazeCount(prev => prev + 1)
+      setIsGlazing(false)
+    } catch {
+      setReactionError('Unable to send glaze right now.')
+    } finally {
+      setIsSubmittingGlaze(false)
+    }
   }
 
-  const handleCommentSubmit = event => {
+  const handleDmClick = () => {
+    if (typeof window !== 'undefined') {
+      const destination = author?.id
+        ? `/messaging?userId=${encodeURIComponent(author.id)}`
+        : '/messaging'
+      window.location.assign(destination)
+    }
+  }
+
+  const handleCommentSubmit = async event => {
     event.preventDefault()
     if (isSubmittingComment) return
+    const trimmed = commentDraft.trim()
+    if (!trimmed) return
 
     setIsSubmittingComment(true)
-    const result = createComment({ postId: post.id, content: commentDraft })
-
-    if (!result.ok) {
-      setCommentError(result.error ?? 'Unable to add comment right now.')
+    try {
+      const created = await createPostComment(post.id, trimmed)
+      setComments(prev => [created, ...prev])
+      setTotalCommentCount(prev => prev + 1)
+      setCommentDraft('')
+      setCommentError('')
+      setIsCommentsOpen(true)
+      setIsSubmittingComment(false)
+      return
+    } catch {
+      setCommentError('Unable to add comment right now.')
       setIsSubmittingComment(false)
       return
     }
-
-    setCommentDraft('')
-    setCommentError('')
-    setIsCommentsOpen(true)
-    setIsSubmittingComment(false)
   }
 
-  const handleRelarpSubmit = event => {
+  const handleRelarpSubmit = async event => {
     event.preventDefault()
     if (isSubmittingRelarp) return
 
     setIsSubmittingRelarp(true)
-    const result = createRelarp({ postId: post.id, commentary: relarpDraft })
-
-    if (!result.ok) {
-      setRelarpError(result.error ?? 'Unable to Re-Larp right now.')
+    try {
+      await apiCreateRelarp(post.id, relarpDraft)
+      setUserAlreadyRelarped(true)
+      setRelarpCount(prev => prev + 1)
+      setRelarpDraft('')
+      setRelarpError('')
+      setIsRelarpComposerOpen(false)
+      setIsSubmittingRelarp(false)
+      return
+    } catch {
+      setRelarpError('Unable to Re-Larp right now.')
       setIsSubmittingRelarp(false)
       return
     }
-
-    setRelarpDraft('')
-    setRelarpError('')
-    setIsRelarpComposerOpen(false)
-    setIsSubmittingRelarp(false)
   }
 
   const handleCommentKeyDown = event => {
@@ -135,16 +228,9 @@ export default function PostCard({ post, isOwnPost = false }) {
     }
   }
 
-  const comments = Array.isArray(post.comments) ? post.comments : []
-  const totalCommentCount = reactions.comments || 0
   const hasUnloadedComments = totalCommentCount > comments.length
   const remainingCharacters = MAX_COMMENT_LENGTH - commentDraft.length
   const remainingRelarpCharacters = MAX_RELARP_LENGTH - relarpDraft.length
-
-  const glazeCount = (reactions.insights || reactions.glazes || 0) + (isGlazed ? 1 : 0)
-  const larpCount = (reactions.likes || 0) + (isLarped ? 1 : 0)
-  const loveCount = (reactions.loves || 0) + (isLoved ? 1 : 0)
-  const relarpCount = reactions.relarps || 0
 
   return (
     <div className={`${styles.card} ${isOwnPost ? styles.cardOwn : ''}`}>
@@ -244,6 +330,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             className={`${styles.reactionGroup} ${isLarped ? styles.activeReaction : ''}`}
             title="Larps"
             onClick={handleLarpClick}
+            disabled={isUpdatingLike}
           >
             <Icon name="thumbsUp" size={14} className={`${styles.reactionIcon} ${styles.iconLike}`} />
             <span className={styles.individualCount}>{larpCount}</span>
@@ -252,6 +339,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             className={`${styles.reactionGroup} ${isLoved ? styles.activeReaction : ''}`}
             title="Loves"
             onClick={handleLoveClick}
+            disabled={isUpdatingLove}
           >
             <Icon name="heart" size={14} className={`${styles.reactionIcon} ${styles.iconLove}`} />
             <span className={styles.individualCount}>{loveCount}</span>
@@ -260,6 +348,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             className={`${styles.reactionGroup} ${isGlazed ? styles.activeReaction : ''}`}
             title="Glazes"
             onClick={handleGlazeClick}
+            disabled={isSubmittingGlaze}
           >
             <Icon name="sparkles" size={14} className={`${styles.reactionIcon} ${styles.iconGlaze}`} />
             <span className={styles.individualCount}>{glazeCount}</span>
@@ -284,6 +373,7 @@ export default function PostCard({ post, isOwnPost = false }) {
           <button
             className={`${styles.action} ${styles.actionGlaze} ${isGlazing ? styles.selected : ''}`}
             onClick={handleGlazeClick}
+            disabled={isSubmittingGlaze}
           >
             <Icon name="sparkles" size={18} /> <span>Glaze</span>
           </button>
@@ -313,11 +403,13 @@ export default function PostCard({ post, isOwnPost = false }) {
           </span>
         </button>
         {!isOwnPost ? (
-          <button className={`${styles.action} ${styles.actionDm}`} aria-label="DM">
+          <button className={`${styles.action} ${styles.actionDm}`} aria-label="DM" onClick={handleDmClick}>
             <Icon name="mail" size={18} /> <span>DM</span>
           </button>
         ) : null}
       </div>
+
+      {reactionError ? <p className={styles.relarpError}>{reactionError}</p> : null}
 
       {isGlazing && !isOwnPost ? <SuggestedGlazes onGlaze={handleSendGlaze} isGlazed={isGlazed} /> : null}
 
@@ -384,27 +476,33 @@ export default function PostCard({ post, isOwnPost = false }) {
 
             {comments.length ? (
               <ul className={styles.commentList}>
-                {comments.map(comment => (
-                  <li key={comment.id} className={styles.commentItem}>
-                    <div
-                      className={styles.commentAvatar}
-                      style={comment.author.avatar ? {} : { background: getAvatarColor(comment.author.name) }}
-                    >
-                      {comment.author.avatar ? (
-                        <img src={comment.author.avatar} alt={comment.author.name} className={styles.avatarImg} />
-                      ) : (
-                        getInitials(comment.author.name)
-                      )}
-                    </div>
-                    <div className={styles.commentBody}>
-                      <div className={styles.commentBubble}>
-                        <p className={styles.commentAuthor}>{comment.author.name}</p>
-                        <p className={styles.commentContent}>{comment.content}</p>
+                {comments.map(comment => {
+                  const commentAuthor = comment.author ?? {}
+                  const authorName = commentAuthor.name ?? 'Anonymous Larper'
+                  const authorAvatar = commentAuthor.avatar ?? null
+                  const commentTimestamp = comment.timestamp ?? 'Just now'
+                  return (
+                    <li key={comment.id} className={styles.commentItem}>
+                      <div
+                        className={styles.commentAvatar}
+                        style={authorAvatar ? {} : { background: getAvatarColor(authorName) }}
+                      >
+                        {authorAvatar ? (
+                          <img src={authorAvatar} alt={authorName} className={styles.avatarImg} />
+                        ) : (
+                          getInitials(authorName)
+                        )}
                       </div>
-                      <p className={styles.commentTime}>{comment.timestamp}</p>
-                    </div>
-                  </li>
-                ))}
+                      <div className={styles.commentBody}>
+                        <div className={styles.commentBubble}>
+                          <p className={styles.commentAuthor}>{authorName}</p>
+                          <p className={styles.commentContent}>{comment.content}</p>
+                        </div>
+                        <p className={styles.commentTime}>{commentTimestamp}</p>
+                      </div>
+                    </li>
+                  )
+                })}
               </ul>
             ) : (
               <p className={styles.emptyComments}>No comments yet. Be the first to glaze this post.</p>

@@ -1,7 +1,23 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import PostCard from './PostCard'
 import { MockDataProvider } from '../../../../context/MockDataContext'
+
+vi.mock('../../../../services/api', () => ({
+  createPostComment: vi.fn(async (_postId, content) => ({
+    id: `comment-${Date.now()}`,
+    content,
+    timestamp: 'just now',
+    author: { name: 'Arjun Malhotra', avatar: null },
+  })),
+  createRelarp: vi.fn(async () => ({ id: 'relarp-1' })),
+  removeRelarp: vi.fn(async () => undefined),
+  createLike: vi.fn(async () => ({ id: 'like-1' })),
+  removeLike: vi.fn(async () => undefined),
+  createLove: vi.fn(async () => ({ id: 'love-1' })),
+  removeLove: vi.fn(async () => undefined),
+  createGlaze: vi.fn(async () => ({ id: 'glaze-1' })),
+}))
 
 const basePost = {
   id: 1,
@@ -51,7 +67,7 @@ describe('PostCard', () => {
     expect(screen.queryByRole('button', { name: /^DM$/i })).not.toBeInTheDocument()
   })
 
-  it('supports quick re-larp and allows undoing it', () => {
+  it('supports quick re-larp and allows undoing it', async () => {
     renderCard(basePost, false)
 
     fireEvent.click(screen.getByRole('button', { name: /^Re-Larp$/i }))
@@ -59,12 +75,14 @@ describe('PostCard', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Quick Re-Larp/i }))
 
-    const undoButton = screen.getByRole('button', { name: /Undo Re-Larp/i })
+    const undoButton = await screen.findByRole('button', { name: /Undo Re-Larp/i })
     expect(undoButton).toBeInTheDocument()
     expect(undoButton).not.toBeDisabled()
 
     fireEvent.click(undoButton)
-    expect(screen.getByRole('button', { name: /^Re-Larp$/i })).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /^Re-Larp$/i })).toBeInTheDocument()
+    })
   })
 
   it('renders embedded source data on relarp posts', () => {

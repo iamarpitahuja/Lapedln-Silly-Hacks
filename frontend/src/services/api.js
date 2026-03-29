@@ -6,7 +6,7 @@ export async function fetchFeed({ limit = 20, offset = 0 } = {}) {
   return res.json()
 }
 
-export async function createPost({ content, postType = 'thought_leadership' }) {
+export async function createPost({ content, postType = 'Career Lore' }) {
   const res = await fetch(`${API_BASE}/posts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -29,6 +29,16 @@ export async function updateTitle(title) {
 export async function fetchProfile() {
   const res = await fetch(`${API_BASE}/me`)
   if (!res.ok) throw new Error(`Profile fetch failed: ${res.status}`)
+  return res.json()
+}
+
+export async function updateProfilePatch(payload) {
+  const res = await fetch(`${API_BASE}/me`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error(`Profile patch failed: ${res.status}`)
   return res.json()
 }
 
@@ -112,5 +122,89 @@ export async function sendMessage(receiverId, content) {
     body: JSON.stringify({ receiver_id: receiverId, content }),
   })
   if (!res.ok) throw new Error(`Send message failed: ${res.status}`)
+  return res.json()
+}
+
+// ── Post Interactions ────────────────────────────────────────────────────────
+
+export async function createPostComment(postId, content) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/comments`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  })
+  if (!res.ok) throw new Error(`Comment creation failed: ${res.status}`)
+  return res.json()
+}
+
+export async function createRelarp(postId, commentary = '') {
+  const res = await fetch(`${API_BASE}/posts/${postId}/relarp`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ commentary }),
+  })
+  if (!res.ok) throw new Error(`Relarp failed: ${res.status}`)
+  return res.json()
+}
+
+export async function removeRelarp(postId) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/relarp`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) throw new Error(`Undo relarp failed: ${res.status}`)
+}
+
+export async function createLike(postId) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/like`, {
+    method: 'POST',
+  })
+  if (!res.ok) throw new Error(`Like failed: ${res.status}`)
+  return res.json()
+}
+
+export async function removeLike(postId) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/like`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) throw new Error(`Undo like failed: ${res.status}`)
+}
+
+export async function createLove(postId) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/love`, {
+    method: 'POST',
+  })
+  if (!res.ok) throw new Error(`Love failed: ${res.status}`)
+  return res.json()
+}
+
+export async function removeLove(postId) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/love`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) throw new Error(`Undo love failed: ${res.status}`)
+}
+
+export async function createGlaze(postId, content) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/glaze`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  })
+  if (!res.ok) throw new Error(`Glaze failed: ${res.status}`)
+  return res.json()
+}
+
+export async function removeGlaze(postId) {
+  const res = await fetch(`${API_BASE}/posts/${postId}/glaze`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) throw new Error(`Undo glaze failed: ${res.status}`)
+}
+
+// ── Notifications ────────────────────────────────────────────────────────────
+
+export async function fetchNotifications({ limit = 25 } = {}) {
+  const res = await fetch(`${API_BASE}/notifications?limit=${limit}`)
+  if (!res.ok) throw new Error(`Notifications fetch failed: ${res.status}`)
   return res.json()
 }

@@ -12,7 +12,7 @@ describe('LarpStatus', () => {
 
   it('renders active persona', () => {
     render(<MockDataProvider><LarpStatus /></MockDataProvider>)
-    expect(screen.getByText('Stealth Founder / Ex-McKinsey Adjacent')).toBeTruthy()
+    expect(screen.getAllByText('Stealth Founder / Ex-McKinsey Adjacent').length).toBeGreaterThan(0)
   })
 
   it('renders Cycle Persona button', () => {
