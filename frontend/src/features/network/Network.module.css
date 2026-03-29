@@ -1,6 +1,6 @@
 .page {
   min-height: calc(100vh - 52px);
-  background: #f3f2ef;
+  background: var(--bg-deep);
   padding: 24px 16px;
 }
 
@@ -10,24 +10,27 @@
 }
 
 .heading {
-  font-size: 24px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.9);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--neon);
   margin: 0 0 20px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-shadow: none;
 }
 
 .tabs {
   display: flex;
   gap: 4px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid var(--border);
   margin-bottom: 24px;
 }
 
 .tab {
   padding: 10px 20px;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
   background: none;
   border: none;
   border-bottom: 2.5px solid transparent;
@@ -37,29 +40,46 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  position: relative;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.03em;
 }
 
 .tab:hover {
-  color: rgba(0, 0, 0, 0.9);
-  background: rgba(0, 0, 0, 0.03);
+  color: var(--neon);
+  background: rgba(167, 139, 250, 0.04);
   border-radius: 6px 6px 0 0;
 }
 
 .tabActive {
-  color: rgba(0, 0, 0, 0.9);
-  border-bottom-color: rgba(0, 0, 0, 0.9);
-  font-weight: 600;
+  color: var(--neon);
+  border-bottom-color: transparent;
+  font-weight: 700;
+  text-shadow: none;
+}
+
+.tabActive::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 20px;
+  right: 20px;
+  height: 2.5px;
+  background: var(--neon);
+  border-radius: 1px 1px 0 0;
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.28);
 }
 
 .badge {
-  background: #0A66C2;
-  color: #fff;
+  background: var(--neon);
+  color: var(--text-on-accent);
   border-radius: 10px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   padding: 1px 6px;
   min-width: 18px;
   text-align: center;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .grid {
@@ -69,19 +89,22 @@
 }
 
 .state {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   text-align: center;
   padding: 40px;
+  font-style: italic;
 }
 
 .stateError {
-  color: #c0392b;
+  color: var(--neon);
   text-align: center;
   padding: 40px;
+  font-weight: 600;
 }
 
 .empty {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   font-size: 14px;
   padding: 24px 0;
+  font-style: italic;
 }

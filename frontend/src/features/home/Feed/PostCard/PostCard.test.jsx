@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import PostCard from './PostCard'
 import { MockDataProvider } from '../../../../context/MockDataContext'
+import * as api from '../../../../services/api'
 
 vi.mock('../../../../services/api', () => ({
   createPostComment: vi.fn(async (_postId, content) => ({
@@ -41,8 +42,19 @@ function renderCard(post = basePost, isOwnPost = false) {
   )
 }
 
+function createDeferred() {
+  let resolve
+  let reject
+  const promise = new Promise((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+  return { promise, resolve, reject }
+}
+
 describe('PostCard', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     window.localStorage.clear()
   })
 
@@ -137,5 +149,37 @@ describe('PostCard', () => {
     }
     renderCard(multiCommentPost)
     expect(screen.getByText('3 comments')).toBeInTheDocument()
+  })
+
+  it('optimistically updates Like state before API response completes', async () => {
+    const deferred = createDeferred()
+    api.createLike.mockImplementationOnce(() => deferred.promise)
+    renderCard(basePost, false)
+
+    fireEvent.click(screen.getByRole('button', { name: /^Like$/i }))
+
+    expect(screen.getByRole('button', { name: /Unlike/i })).toBeDisabled()
+    expect(screen.getByText('Liked')).toBeInTheDocument()
+
+    deferred.resolve({ id: 'like-async' })
+    await waitFor(() => {
+      expect(api.createLike).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  it('optimistically updates Love state before API response completes', async () => {
+    const deferred = createDeferred()
+    api.createLove.mockImplementationOnce(() => deferred.promise)
+    renderCard(basePost, false)
+
+    fireEvent.click(screen.getByRole('button', { name: /^Love$/i }))
+
+    expect(screen.getByRole('button', { name: /Unlove/i })).toBeDisabled()
+    expect(screen.getByText('Loved')).toBeInTheDocument()
+
+    deferred.resolve({ id: 'love-async' })
+    await waitFor(() => {
+      expect(api.createLove).toHaveBeenCalledTimes(1)
+    })
   })
 })

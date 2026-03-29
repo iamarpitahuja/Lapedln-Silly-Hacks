@@ -1,16 +1,17 @@
 .card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(10, 20, 12, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   padding: 24px;
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .card:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border-color: var(--border-md);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(167, 139, 250, 0.05);
 }
 
 .header {
@@ -21,10 +22,12 @@
 }
 
 .title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
-  letter-spacing: -0.01em;
+  color: var(--neon);
+  letter-spacing: 0.02em;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  text-shadow: none;
 }
 
 .editBtn {
@@ -34,19 +37,19 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .editBtn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(167, 139, 250, 0.08);
+  color: var(--neon);
 }
 
 .bio {
-  font-size: 15px;
-  line-height: 1.6;
-  color: rgba(0, 0, 0, 0.75);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-primary);
   white-space: pre-wrap;
 }
 
@@ -64,21 +67,21 @@
   width: 100%;
   min-height: 120px;
   padding: 12px;
-  border: 2px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-md);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.5);
-  font-family: inherit;
-  font-size: 15px;
+  background: var(--bg-elevated);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
   line-height: 1.6;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--text-primary);
   resize: vertical;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .textarea:focus {
   outline: none;
-  border-color: #0a66c2;
-  box-shadow: 0 0 0 4px rgba(10, 102, 194, 0.1);
+  border-color: var(--neon);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1), var(--glow-sm);
 }
 
 .actions {
@@ -88,31 +91,37 @@
 }
 
 .saveBtn {
-  background: #0a66c2;
-  color: white;
+  background: var(--neon);
+  color: var(--text-on-accent);
   padding: 8px 20px;
   border-radius: 20px;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .saveBtn:hover {
-  background: #004182;
+  background: var(--neon-dark);
+  box-shadow: var(--glow-md);
 }
 
 .cancelBtn {
   background: transparent;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   padding: 8px 20px;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 13px;
+  border: 1px solid var(--border-md);
+  transition: all var(--transition-fast);
 }
 
 .cancelBtn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.9);
+  background: rgba(167, 139, 250, 0.04);
+  border-color: var(--border-strong);
+  color: var(--neon);
 }
 
 .editorHint {
@@ -121,13 +130,13 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   font-style: italic;
 }
 
 .emptyState {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.35);
+  color: var(--text-muted);
   font-style: italic;
 }
 

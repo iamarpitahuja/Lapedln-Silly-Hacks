@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
+import { motion as Motion } from 'framer-motion'
 import { fetchMessageableUsers } from '../../../services/api'
 import { getInitials } from '../../../utils/strings'
+import { springSnap } from '../../../lib/motion'
 import styles from './ComposeModal.module.css'
 
-const AVATAR_COLORS = ['#0A66C2', '#057642', '#7c3aed', '#b45309', '#be123c', '#0891b2']
+const AVATAR_COLORS = ['#a78bfa', '#7db5ff', '#5ad7c1', '#b39bff', '#f1c75b', '#f289a8']
 
 function getAvatarColor(name) {
   let hash = 0
@@ -73,8 +75,22 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
   }
 
   return (
-    <div className={styles.backdrop} onClick={handleBackdropClick} onKeyDown={handleKeyDown}>
-      <div className={styles.modal}>
+    <Motion.div
+      className={styles.backdrop}
+      onClick={handleBackdropClick}
+      onKeyDown={handleKeyDown}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15 }}
+    >
+      <Motion.div
+        className={styles.modal}
+        initial={{ opacity: 0, scale: 0.95, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 8 }}
+        transition={springSnap}
+      >
         <div className={styles.header}>
           <h3 className={styles.title}>New message</h3>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
@@ -181,7 +197,8 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
             {selected.length <= 1 ? 'Start conversation' : 'Create group'}
           </button>
         </div>
-      </div>
-    </div>
+      </Motion.div>
+    </Motion.div>
   )
 }
+

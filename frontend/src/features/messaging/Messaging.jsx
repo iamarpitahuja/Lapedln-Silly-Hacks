@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { AnimatePresence, motion as Motion } from 'framer-motion'
 import {
   fetchConversations,
   fetchProfile,
   fetchUserProfile,
   createGroupConversation,
 } from '../../services/api'
+import { easeOutQuint } from '../../lib/motion'
 import ConversationList from './ConversationList/ConversationList'
 import ChatWindow from './ChatWindow/ChatWindow'
 import ComposeModal from './ComposeModal/ComposeModal'
@@ -102,22 +104,36 @@ export default function Messaging() {
             onNewMessage={() => setShowCompose(true)}
           />
           <div className={styles.chat}>
-            <ChatWindow
-              otherUser={activeGroup ? null : activeUser}
-              group={activeGroup}
-              currentUserId={currentUserId}
-            />
+            <AnimatePresence mode="wait">
+              <Motion.div
+                key={activeGroup?.id ?? activeUser?.id ?? 'empty'}
+                style={{ height: '100%' }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2, ease: easeOutQuint }}
+              >
+                <ChatWindow
+                  otherUser={activeGroup ? null : activeUser}
+                  group={activeGroup}
+                  currentUserId={currentUserId}
+                />
+              </Motion.div>
+            </AnimatePresence>
           </div>
         </div>
       )}
 
-      {showCompose && (
-        <ComposeModal
-          onClose={() => setShowCompose(false)}
-          onStartDm={handleStartDm}
-          onCreateGroup={handleCreateGroup}
-        />
-      )}
+      <AnimatePresence>
+        {showCompose && (
+          <ComposeModal
+            onClose={() => setShowCompose(false)}
+            onStartDm={handleStartDm}
+            onCreateGroup={handleCreateGroup}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
+

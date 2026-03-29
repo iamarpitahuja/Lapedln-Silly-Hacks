@@ -5,7 +5,7 @@ import ConnectButton from '../ConnectButton/ConnectButton'
 import { getInitials } from '../../../utils/strings'
 import styles from './UserCard.module.css'
 
-const AVATAR_COLORS = ['#0A66C2', '#057642', '#7c3aed', '#b45309', '#be123c', '#0891b2']
+const AVATAR_COLORS = ['#a78bfa', '#7db5ff', '#5ad7c1', '#b39bff', '#f1c75b', '#f289a8']
 
 function getAvatarColor(name) {
   let hash = 0

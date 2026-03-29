@@ -14,21 +14,23 @@
 }
 
 .card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
   overflow: hidden;
   margin-bottom: 8px;
-  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+  transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: var(--border-md);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(167, 139, 250, 0.06);
 }
 
 .cardOwn {
-  border-left: 3px solid #0A66C2;
-  background: rgba(10, 102, 194, 0.03);
+  border-left: 2px solid var(--neon);
+  background: rgba(167, 139, 250, 0.02);
+  box-shadow: inset 2px 0 0 rgba(167, 139, 250, 0.14);
 }
 
 .relarpBanner {
@@ -36,17 +38,17 @@
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: #f3f8f5;
-  border-bottom: 1px solid rgba(5, 118, 66, 0.15);
+  background: rgba(167, 139, 250, 0.04);
+  border-bottom: 1px solid rgba(167, 139, 250, 0.1);
 }
 
 .relarpBannerIcon {
-  color: #057642;
+  color: var(--neon);
 }
 
 .relarpBannerText {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--text-secondary);
 }
 
 .header {
@@ -60,7 +62,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  color: #fff;
+  color: var(--text-on-accent);
   font-size: 16px;
   font-weight: 700;
   display: flex;
@@ -69,6 +71,7 @@
   flex-shrink: 0;
   transition: transform var(--transition-fast);
   overflow: hidden;
+  border: 1px solid var(--border);
 }
 
 .avatarImg {
@@ -79,6 +82,7 @@
 
 .avatar:hover {
   transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
 }
 
 .meta {
@@ -100,8 +104,11 @@
 
 .name {
   font-size: 14px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.9);
+  font-weight: 700;
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  text-shadow: none;
 }
 
 .name.clickable:hover {
@@ -110,14 +117,19 @@
 }
 
 .youLabel {
-  font-size: 12px;
-  font-weight: 600;
-  color: #0A66C2;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon);
+  background: rgba(167, 139, 250, 0.1);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
 }
 
 .headline {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -125,13 +137,14 @@
 }
 
 .timestamp {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
+  font-size: 11px;
+  color: var(--text-muted);
 }
 
 .postType {
   font-style: italic;
-  color: #0A66C2;
+  color: var(--neon);
+  opacity: 0.7;
 }
 
 .headerActions {
@@ -141,7 +154,7 @@
 }
 
 .iconBtn {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   font-size: 18px;
   padding: 4px 6px;
   border-radius: 50%;
@@ -150,8 +163,8 @@
 }
 
 .iconBtn:hover {
-  background: rgba(0, 0, 0, 0.06);
-  color: rgba(0, 0, 0, 0.9);
+  background: rgba(167, 139, 250, 0.08);
+  color: var(--neon);
   transform: rotate(90deg);
 }
 
@@ -161,7 +174,7 @@
 
 .content {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.9);
+  color: var(--text-primary);
   line-height: 1.6;
 }
 
@@ -174,16 +187,17 @@
   margin-top: 4px;
   background: transparent;
   border: none;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   padding: 0;
   transition: color var(--transition-fast);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .readMoreBtn:hover {
-  color: #0A66C2;
+  color: var(--neon);
   text-decoration: underline;
 }
 
@@ -191,9 +205,9 @@
   margin-top: 12px;
   border-radius: 4px;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
   max-height: 512px;
-  background: #f3f2ef;
+  background: var(--bg-elevated);
 }
 
 .postPhoto {
@@ -206,16 +220,16 @@
 
 .relarpEmbed {
   margin-top: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-md);
   border-radius: 10px;
   padding: 10px 11px;
-  background: #fbfcfd;
+  background: rgba(167, 139, 250, 0.02);
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .relarpEmbed:hover {
-  background: #f8fafc;
-  border-color: rgba(0, 0, 0, 0.25);
+  background: rgba(167, 139, 250, 0.04);
+  border-color: var(--border-strong);
 }
 
 .relarpEmbedHeader {
@@ -228,37 +242,40 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  color: #fff;
+  color: var(--text-on-accent);
   font-size: 11px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
 }
 
 .relarpEmbedAuthor {
   font-size: 13px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.82);
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
 }
 
 .relarpEmbedHeadline {
   margin-top: 1px;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
 }
 
 .relarpEmbedMeta {
   margin-top: 2px;
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.48);
+  color: var(--text-muted);
 }
 
 .relarpEmbedContent {
   margin-top: 8px;
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.82);
+  color: var(--text-primary);
   line-height: 1.45;
   white-space: pre-wrap;
 }
@@ -268,72 +285,59 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--border);
 }
 
 .reactionSummary {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
+  pointer-events: none;
 }
 
-.reactionGroup {
+.reactionIconCluster {
   display: flex;
   align-items: center;
-  gap: 3px;
-  background: none;
-  border: none;
-  padding: 4px 6px;
-  margin: -4px -4px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  isolation: isolate;
 }
 
-.reactionGroup:hover {
-  background: rgba(0, 0, 0, 0.05);
-  transform: translateY(-1px);
+.reactionChip {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  margin-left: -4px;
 }
 
-.reactionGroup:active {
-  transform: scale(var(--active-scale));
+.reactionChip:first-child {
+  margin-left: 0;
 }
 
 .reactionStat {
+  min-width: 18px;
   display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 4px 6px;
-}
-
-.activeReaction {
-  background: rgba(10, 102, 194, 0.08);
-}
-
-.activeReaction .individualCount {
-  color: #0A66C2;
-  font-weight: 700;
+  justify-content: flex-start;
 }
 
 .reactionIcon {
   flex-shrink: 0;
-  transition: transform var(--transition-fast);
 }
 
-.reactionGroup:hover .reactionIcon {
-  transform: scale(1.15);
-}
-
-.individualCount {
+.totalReactionCount {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.6);
-  font-weight: 500;
+  color: var(--text-secondary);
+  font-weight: 700;
 }
 
-.iconLike { color: #0A66C2; fill: #0A66C2; }
-.iconLove { color: #df3333; fill: #df3333; }
-.iconGlaze { color: #f59e0b; fill: #f59e0b; }
-.iconRelarp { color: #057642; fill: #057642; }
+.iconLike { color: var(--accent-like); fill: var(--accent-like); }
+.iconLove { color: var(--accent-love); fill: var(--accent-love); }
+.iconGlaze { color: var(--accent-glaze); fill: var(--accent-glaze); }
+.iconRelarp { color: var(--accent-relarp); fill: var(--accent-relarp); }
 
 .commentSummary {
   display: flex;
@@ -341,15 +345,15 @@
   gap: 4px;
   border: none;
   background: transparent;
-  padding: 2px 4px;
-  margin: -2px -4px;
-  border-radius: 4px;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .commentSummary:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: transparent;
 }
 
 .commentSummary:active {
@@ -357,28 +361,26 @@
 }
 
 .commentIcon {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-secondary);
   transition: transform var(--transition-fast);
 }
 
 .commentSummary:hover .commentIcon {
   transform: rotate(-10deg) scale(1.1);
+  color: var(--neon);
 }
 
 .commentCount {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .actions {
   display: flex;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  background-image: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.08) 50%, transparent);
-  background-size: 100% 1px;
-  background-repeat: no-repeat;
-  background-position: top;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background-image: none;
 }
 
 .action {
@@ -388,15 +390,13 @@
   justify-content: center;
   gap: 6px;
   padding: 10px 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.6);
-  border-top: 2.5px solid transparent;
+  color: var(--text-secondary);
+  border-top: 1px solid transparent;
   transition: all var(--transition-fast);
-}
-
-.action:active {
-  transform: scale(var(--active-scale));
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.02em;
 }
 
 .action svg {
@@ -408,94 +408,99 @@
 }
 
 .action:disabled {
-  background: #f7f8fa;
-  color: rgba(0, 0, 0, 0.35);
+  background: rgba(167, 139, 250, 0.02);
+  color: var(--text-muted);
   border-top-color: transparent;
   cursor: not-allowed;
 }
 
 .actionGlaze:hover,
 .actionGlaze.selected {
-  background: rgba(251, 191, 36, 0.12);
-  color: #b45309;
-  border-top-color: #fbbf24;
+  background: var(--accent-glaze-soft);
+  color: var(--accent-glaze);
+  border-top-color: var(--accent-glaze);
 }
 
 .actionComment:hover {
-  background: rgba(10, 102, 194, 0.08);
-  color: #0A66C2;
-  border-top-color: #0A66C2;
+  background: rgba(167, 139, 250, 0.06);
+  color: var(--neon);
+  border-top-color: var(--neon);
 }
 
 .actionRelarp:hover {
-  background: rgba(5, 118, 66, 0.08);
-  color: #057642;
-  border-top-color: #057642;
+  background: var(--accent-relarp-soft);
+  color: var(--accent-relarp);
+  border-top-color: var(--accent-relarp);
 }
 
 .actionRelarpActive {
-  background: rgba(5, 118, 66, 0.12);
-  color: #057642;
-  border-top-color: #057642;
+  background: var(--accent-relarp-soft);
+  color: var(--accent-relarp);
+  border-top-color: var(--accent-relarp);
 }
 
 .actionLike:hover {
-  background: rgba(10, 102, 194, 0.08);
-  color: #0A66C2;
-  border-top-color: #0A66C2;
+  background: var(--accent-like-soft);
+  color: var(--accent-like);
+  border-top-color: var(--accent-like);
 }
 
 .actionLikeActive {
-  background: rgba(10, 102, 194, 0.12);
-  color: #0A66C2;
-  border-top-color: #0A66C2;
+  background: var(--accent-like-soft);
+  color: var(--accent-like);
+  border-top-color: var(--accent-like);
 }
 
 .actionLove:hover {
-  background: rgba(223, 51, 51, 0.08);
-  color: #df3333;
-  border-top-color: #df3333;
+  background: var(--accent-love-soft);
+  color: var(--accent-love);
+  border-top-color: var(--accent-love);
 }
 
 .actionLoveActive {
-  background: rgba(223, 51, 51, 0.12);
-  color: #df3333;
-  border-top-color: #df3333;
+  background: var(--accent-love-soft);
+  color: var(--accent-love);
+  border-top-color: var(--accent-love);
 }
 
 .actionDm:hover {
-  background: rgba(124, 58, 237, 0.08);
-  color: #7c3aed;
-  border-top-color: #7c3aed;
+  background: rgba(179, 155, 255, 0.14);
+  color: var(--accent-violet);
+  border-top-color: var(--accent-violet);
 }
 
 .relarpComposer {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  background: #f7fbf8;
+  border-top: 1px solid var(--border);
+  background: rgba(167, 139, 250, 0.02);
   padding: 12px 16px 14px;
 }
 
 .relarpTitle {
   font-size: 13px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.78);
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
 }
 
 .relarpInput {
   margin-top: 8px;
   width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border-md);
   border-radius: 10px;
   padding: 9px 10px;
   resize: vertical;
   min-height: 64px;
   font-size: 13px;
   line-height: 1.4;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .relarpInput:focus {
-  border-color: #057642;
-  box-shadow: 0 0 0 2px rgba(5, 118, 66, 0.12);
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.12);
   outline: none;
 }
 
@@ -508,13 +513,13 @@
 
 .relarpHint {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--text-muted);
 }
 
 .relarpError {
   margin-top: 6px;
   font-size: 12px;
-  color: #b42318;
+  color: var(--neon);
 }
 
 .relarpActions {
@@ -525,39 +530,45 @@
 }
 
 .relarpCancel {
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid var(--border-md);
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-secondary);
+  background: none;
 }
 
 .relarpCancel:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(167, 139, 250, 0.04);
+  border-color: var(--border-strong);
+  color: var(--neon);
 }
 
 .relarpSubmit {
-  border-radius: 999px;
-  background: #057642;
-  color: #ffffff;
+  border-radius: 8px;
+  background: var(--neon);
+  color: var(--text-on-accent);
   font-size: 12px;
   font-weight: 700;
   padding: 6px 12px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
 }
 
 .relarpSubmit:hover {
-  background: #045e35;
+  background: var(--neon-dark);
+  box-shadow: var(--glow-sm);
 }
 
 .relarpSubmit:disabled {
-  background: rgba(5, 118, 66, 0.5);
+  background: rgba(167, 139, 250, 0.3);
   cursor: not-allowed;
 }
 
 .commentsSection {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  background: #fcfdff;
+  border-top: 1px solid var(--border);
+  background: rgba(167, 139, 250, 0.01);
   padding: 12px 16px 14px;
 }
 
@@ -569,14 +580,16 @@
 }
 
 .commentsTitle {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.75);
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
 }
 
 .commentsMeta {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.55);
+  color: var(--text-muted);
 }
 
 .commentList {
@@ -598,13 +611,14 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--text-on-accent);
   font-size: 11px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
 }
 
 .commentBody {
@@ -612,21 +626,23 @@
 }
 
 .commentBubble {
-  background: #f3f6f9;
+  background: var(--bg-elevated);
   border-radius: 12px;
   padding: 8px 10px;
+  border: 1px solid var(--border);
 }
 
 .commentAuthor {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.8);
+  color: var(--neon);
   margin-bottom: 2px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .commentContent {
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.8);
+  color: var(--text-primary);
   line-height: 1.45;
   white-space: pre-wrap;
 }
@@ -634,14 +650,15 @@
 .commentTime {
   margin-top: 3px;
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--text-muted);
   padding-left: 8px;
 }
 
 .emptyComments {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.55);
+  color: var(--text-muted);
   margin-bottom: 10px;
+  font-style: italic;
 }
 
 .commentComposer {
@@ -658,18 +675,21 @@
 
 .commentInput {
   width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border-md);
   border-radius: 10px;
   padding: 9px 10px;
   resize: vertical;
   min-height: 64px;
   font-size: 13px;
   line-height: 1.4;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .commentInput:focus {
-  border-color: #0A66C2;
-  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.12);
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.12);
   outline: none;
 }
 
@@ -682,23 +702,23 @@
 
 .commentHint {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--text-muted);
 }
 
 .charCount {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
 }
 
 .charCountWarn {
-  color: #b45309;
+  color: var(--neon-dark);
   font-weight: 700;
 }
 
 .commentError {
   margin-top: 6px;
   font-size: 12px;
-  color: #b42318;
+  color: var(--neon);
 }
 
 .commentComposerActions {
@@ -709,33 +729,36 @@
 }
 
 .commentCancel {
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid var(--border-md);
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-secondary);
 }
 
 .commentCancel:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(167, 139, 250, 0.04);
 }
 
 .commentSubmit {
-  border-radius: 999px;
-  background: #0A66C2;
-  color: #ffffff;
+  border-radius: 8px;
+  background: var(--neon);
+  color: var(--text-on-accent);
   font-size: 12px;
   font-weight: 700;
   padding: 6px 12px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
 }
 
 .commentSubmit:hover {
-  background: #0757a8;
+  background: var(--neon-dark);
+  box-shadow: var(--glow-sm);
 }
 
 .commentSubmit:disabled {
-  background: rgba(10, 102, 194, 0.5);
+  background: rgba(167, 139, 250, 0.3);
   cursor: not-allowed;
 }
 
@@ -758,22 +781,23 @@
   border: none;
   font-size: 11px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   cursor: pointer;
   padding: 0;
   transition: color var(--transition-fast);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .commentActionBtn:hover {
-  color: #0A66C2;
+  color: var(--neon);
 }
 
 .commentDeleteBtn:hover {
-  color: #b42318;
+  color: var(--neon);
 }
 
 .commentDeleteBtn:disabled {
-  color: rgba(0, 0, 0, 0.3);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
@@ -784,15 +808,18 @@
 
 .commentEditInput {
   width: 100%;
-  border: 1px solid #0A66C2;
+  border: 1px solid var(--neon);
   border-radius: 10px;
   padding: 8px 10px;
   resize: vertical;
   min-height: 48px;
   font-size: 13px;
   line-height: 1.4;
-  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.12);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.12);
   outline: none;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .commentEditActions {
@@ -803,36 +830,38 @@
 }
 
 .commentEditCancel {
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid var(--border-md);
   padding: 4px 10px;
   font-size: 11px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-secondary);
   background: none;
   cursor: pointer;
 }
 
 .commentEditCancel:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(167, 139, 250, 0.04);
 }
 
 .commentEditSave {
-  border-radius: 999px;
-  background: #0A66C2;
-  color: #ffffff;
+  border-radius: 8px;
+  background: var(--neon);
+  color: var(--text-on-accent);
   font-size: 11px;
   font-weight: 700;
   padding: 4px 10px;
   border: none;
   cursor: pointer;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .commentEditSave:hover {
-  background: #0757a8;
+  background: var(--neon-dark);
+  box-shadow: var(--glow-sm);
 }
 
 .commentEditSave:disabled {
-  background: rgba(10, 102, 194, 0.5);
+  background: rgba(167, 139, 250, 0.3);
   cursor: not-allowed;
 }

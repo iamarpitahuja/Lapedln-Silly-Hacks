@@ -5,23 +5,43 @@
 }
 
 .card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
   overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.card:hover {
+  border-color: var(--border-md);
 }
 
 .coverPhoto {
-  height: 56px;
-  background: linear-gradient(135deg, #0A66C2 0%, #004182 100%);
+  height: 64px;
+  background:
+    linear-gradient(135deg, var(--neon-dark) 0%, var(--neon) 100%);
   background-size: cover;
   background-position: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-md);
+}
+
+.coverPhoto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
 }
 
 .avatarWrap {
   display: flex;
   justify-content: center;
-  margin-top: -36px;
+  margin-top: -28px;
   margin-bottom: 8px;
 }
 
@@ -29,23 +49,26 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  border: 4px solid #fff;
+  border: 2px solid var(--border-md);
   object-fit: cover;
-  background: #f3f2ef;
+  background: var(--bg-elevated);
+  box-shadow: 0 3px 10px rgba(9, 7, 15, 0.18);
 }
 
 .avatar {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #0A66C2;
-  color: #fff;
+  background: var(--neon-dark);
+  color: var(--text-on-accent);
   font-size: 24px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 4px solid #fff;
+  border: 2px solid var(--border-md);
+  box-shadow: 0 3px 10px rgba(9, 7, 15, 0.18);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .identity {
@@ -54,15 +77,17 @@
 }
 
 .name {
-  font-size: 16px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.9);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 4px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  text-shadow: none;
 }
 
 .headline {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   line-height: 1.4;
   margin-bottom: 12px;
 }
@@ -77,12 +102,12 @@
 
 .ratingLabel {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .ratingInfo {
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
 }
 
 .gaugeWrap {
@@ -93,13 +118,13 @@
 
 .persona {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .divider {
   height: 1px;
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--border);
   margin: 0 16px;
 }
 
@@ -110,19 +135,19 @@
 .statLine {
   font-size: 12px;
   line-height: 1.8;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
 }
 
 .statLabel {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
 }
 
 .statValue {
-  color: rgba(0, 0, 0, 0.9);
-  font-weight: 600;
+  color: var(--neon);
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-/* Widget shared styles */
 .widgetHeader {
   display: flex;
   justify-content: space-between;
@@ -131,19 +156,21 @@
 }
 
 .widgetTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.9);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-shadow: none;
 }
 
 .moreBtn {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-muted);
   font-size: 16px;
   letter-spacing: 1px;
   padding: 0 4px;
 }
 
-/* Glazers */
 .glazers {
   padding: 0 16px 16px;
   display: flex;
@@ -156,40 +183,42 @@
   align-items: center;
   gap: 10px;
 }
+
 .glazerAvatarImg {
   width: 36px;
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  border: 1px solid var(--border);
 }
 
 .glazerAvatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #057642;
-  color: #fff;
+  background: var(--bg-elevated);
+  color: var(--neon);
   font-size: 12px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
 }
 
 .glazerName {
   font-size: 13px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.9);
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .glazerSub {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-muted);
 }
 
-/* Aura growth */
 .auraRow {
   display: flex;
   justify-content: space-between;
@@ -199,7 +228,7 @@
 
 .auraLabel {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -212,13 +241,15 @@
 .auraNumber {
   font-size: 16px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.9);
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  text-shadow: none;
 }
 
 .auraChange {
   font-size: 12px;
-  font-weight: 600;
-  color: #057642;
+  font-weight: 700;
+  color: var(--neon);
 }
 
 .seeMore {
@@ -227,11 +258,40 @@
   padding: 10px 16px;
   font-size: 13px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.6);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
   text-align: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.03em;
+  transition: color var(--transition-fast), background var(--transition-fast);
 }
 
 .seeMore:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--neon-faint);
+  color: var(--neon);
+}
+
+@keyframes railItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rail > *:nth-child(1) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 0ms; }
+.rail > *:nth-child(2) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 50ms; }
+.rail > *:nth-child(3) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 100ms; }
+.rail > *:nth-child(4) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 150ms; }
+.rail > *:nth-child(5) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 200ms; }
+
+.glazerRow {
+  transition: transform var(--transition-fast);
+}
+
+.glazerRow:hover {
+  transform: translateX(3px);
 }

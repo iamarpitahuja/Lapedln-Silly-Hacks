@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { AnimatePresence, motion as Motion } from 'framer-motion'
 import { useMockData } from '../context/MockDataContext'
+import { springBouncy } from '../lib/motion'
 import styles from './JobsPage.module.css'
 
 export default function JobsPage() {
@@ -50,25 +52,43 @@ export default function JobsPage() {
             value={job}
             onChange={e => setJob(e.target.value)}
           />
-          <button
+          <Motion.button
             type="submit"
             className={styles.submitBtn}
             disabled={!job.trim() || status === 'updating'}
+            whileTap={{ scale: 0.95 }}
+            transition={springBouncy}
           >
             {status === 'updating' ? 'Rebranding...' : 'Claim Job'}
-          </button>
+          </Motion.button>
         </form>
 
-        {status === 'success' && (
-          <p className={styles.success}>
-            Job updated. You are now larping as &ldquo;{lastJob}&rdquo;.
-          </p>
-        )}
-        {status === 'error' && (
-          <p className={styles.error}>
-            Job update failed. Your delusion did not persist.
-          </p>
-        )}
+        <AnimatePresence mode="wait">
+          {status === 'success' && (
+            <Motion.p
+              key="success"
+              className={styles.success}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={springBouncy}
+            >
+              Job updated. You are now larping as &ldquo;{lastJob}&rdquo;.
+            </Motion.p>
+          )}
+          {status === 'error' && (
+            <Motion.p
+              key="error"
+              className={styles.error}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, x: [0, -6, 6, -4, 4, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              Job update failed. Your delusion did not persist.
+            </Motion.p>
+          )}
+        </AnimatePresence>
 
         <div className={styles.suggestions}>
           <p className={styles.suggestionsLabel}>Need inspiration? Pick a prebuilt larp:</p>
@@ -84,3 +104,4 @@ export default function JobsPage() {
     </div>
   )
 }
+

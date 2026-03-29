@@ -29,7 +29,7 @@
 .gaugeValue {
   font-size: 18px;
   font-weight: 800;
-  color: rgba(0, 0, 0, 0.9);
+  color: var(--text-primary);
   line-height: 1;
 }
 
@@ -44,9 +44,9 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  border: 1.5px solid;
-  border-radius: 5px;
-  padding: 3px 8px;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 3px 10px;
   vertical-align: middle;
   line-height: 1;
   transition: all var(--transition-fast);
@@ -54,7 +54,7 @@
 }
 
 .small:hover {
-  box-shadow: 0 2px 8px var(--tier-color, #666);
+  box-shadow: 0 2px 8px var(--tier-color, #5b7348);
   transform: translateY(-1px);
 }
 

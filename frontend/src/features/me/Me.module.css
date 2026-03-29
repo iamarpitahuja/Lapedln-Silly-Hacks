@@ -1,5 +1,5 @@
 .page {
-  background: #f3f2ef;
+  background: var(--bg-deep);
   min-height: calc(100vh - 52px);
   padding: 24px 16px;
 }
@@ -17,15 +17,18 @@
   left: 50%;
   bottom: 16px;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
+  background: rgba(167, 139, 250, 0.12);
+  color: var(--neon);
   padding: 8px 14px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 600;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+  box-shadow: var(--glow-md), 0 8px 22px rgba(0, 0, 0, 0.5);
   z-index: 300;
   pointer-events: none;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
 }
 
 .noticeVisible {
