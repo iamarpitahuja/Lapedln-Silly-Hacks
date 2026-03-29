@@ -11,21 +11,14 @@ function parseOpportunityDraft(value) {
 }
 
 export default function LarpStatus({ onNotice }) {
-  const { currentUser, cyclePersona, updateLarpStatus } = useMockData()
-  const { persona, larpStatus } = currentUser
+  const { currentUser, updateLarpStatus } = useMockData()
+  const { job, larpStatus } = currentUser
   const opportunities = larpStatus?.opportunities ?? []
   const [isEditing, setIsEditing] = useState(false)
-  const [personaDraft, setPersonaDraft] = useState(persona)
   const [opportunityDraft, setOpportunityDraft] = useState(opportunities.join('\n'))
 
   function syncDrafts() {
-    setPersonaDraft(persona)
     setOpportunityDraft(opportunities.join('\n'))
-  }
-
-  function handleSwitchPersona() {
-    const result = cyclePersona()
-    onNotice?.(result.ok ? `Persona switched to ${result.persona}` : result.error)
   }
 
   function handleOpenEditor() {
@@ -41,7 +34,6 @@ export default function LarpStatus({ onNotice }) {
   function handleStatusSave(event) {
     event.preventDefault()
     const result = updateLarpStatus({
-      persona: personaDraft,
       opportunities: parseOpportunityDraft(opportunityDraft),
     })
 
@@ -71,8 +63,8 @@ export default function LarpStatus({ onNotice }) {
         
         {!isEditing ? (
           <div className={styles.displayArea}>
-            {persona
-              ? <p className={styles.persona}>{persona}</p>
+            {job
+              ? <p className={styles.persona}>{job}</p>
               : <p className={styles.emptyState}>No active persona set. Define the role you are currently performing.</p>
             }
             <div className={styles.pills}>
@@ -84,11 +76,9 @@ export default function LarpStatus({ onNotice }) {
               }
             </div>
             <div className={styles.actions}>
-              <button className={styles.btnOutlined} onClick={handleSwitchPersona}>
-                Cycle Persona
-              </button>
+              <span className={styles.btnOutlined}>Current larp is managed from J*bs</span>
               <button className={styles.btnFilled} onClick={handleOpenEditor}>
-                Refine Status
+                Edit Target Larps
               </button>
             </div>
           </div>
@@ -96,22 +86,12 @@ export default function LarpStatus({ onNotice }) {
           <div className={styles.editorWrapper}>
             <form className={styles.form} onSubmit={handleStatusSave}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Active Persona</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={personaDraft}
-                  onChange={event => setPersonaDraft(event.target.value)}
-                  placeholder="e.g. Arcane Webweaver"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Desired Quests (comma or newline separated)</label>
+                <label className={styles.formLabel}>Target Larps (comma or newline separated)</label>
                 <textarea
                   className={styles.textarea}
                   value={opportunityDraft}
                   onChange={event => setOpportunityDraft(event.target.value)}
-                  placeholder="e.g. Remote raids, Dungeon crawling, Pair programming"
+                  placeholder="e.g. Finance Bro, VC Nepo Baby, AI Prompt Cowboy"
                 />
               </div>
               <div className={styles.formActions}>

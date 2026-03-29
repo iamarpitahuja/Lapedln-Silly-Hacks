@@ -6,6 +6,7 @@ vi.mock('../services/api', () => ({
   createPost: vi.fn(async () => ({ id: 'new-post' })),
   createPostComment: vi.fn(async () => ({ id: 'new-comment' })),
   createRelarp: vi.fn(async () => ({ id: 'new-relarp' })),
+  fetchJobOptions: vi.fn(async () => ({ options: ['Finance Bro', 'VC Nepo Baby'] })),
   fetchFeed: vi.fn(async () => ({
     posts: [
       {
@@ -13,7 +14,7 @@ vi.mock('../services/api', () => ({
         profiles: {
           id: 'author-1',
           display_name: 'Priya Krishnamurthy',
-          title: 'Fractional Brand Philosopher',
+          job: 'Fractional Brand Philosopher',
           avatar_url: null,
           larp_rating: 54.1,
         },
@@ -38,11 +39,10 @@ vi.mock('../services/api', () => ({
   fetchProfile: vi.fn(async () => ({
     id: '00000000-0000-0000-0000-000000000000',
     display_name: 'Arjun Malhotra',
-    title: 'Incoming Quant VC Product Strategist',
+    job: 'Finance Bro',
     avatar_url: null,
     cover_photo_url: null,
     larp_rating: 67.2,
-    persona: 'Stealth Founder / Ex-McKinsey Adjacent',
     bio: 'Building at the intersection of ambiguity and momentum.',
     stats: {
       recruiterViews: 413,
@@ -51,7 +51,7 @@ vi.mock('../services/api', () => ({
       weeklyAuraGrowthPct: '+9%',
     },
     glazers: [],
-    larp_status: { opportunities: ['Stealth Founder / Ex-McKinsey Adjacent', 'Fractional Visionary'] },
+    larp_status: { opportunities: ['Finance Bro', 'VC Nepo Baby'] },
     experience: [],
     education: [],
     skills: [],
@@ -59,6 +59,7 @@ vi.mock('../services/api', () => ({
     glazes_received: [],
   })),
   removeRelarp: vi.fn(async () => undefined),
+  updateJob: vi.fn(async job => ({ job })),
   updateProfilePatch: vi.fn(async payload => payload),
 }))
 

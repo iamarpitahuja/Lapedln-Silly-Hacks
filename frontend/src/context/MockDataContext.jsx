@@ -6,8 +6,10 @@ import {
   createPostComment,
   createRelarp as apiCreateRelarp,
   fetchFeed,
+  fetchJobOptions,
   fetchProfile,
   removeRelarp as apiRemoveRelarp,
+  updateJob as apiUpdateJob,
   updateProfilePatch,
 } from '../services/api'
 
@@ -18,11 +20,10 @@ const DEV_USER_ID = '00000000-0000-0000-0000-000000000000'
 const EMPTY_PROFILE = {
   id: '',
   name: '',
-  headline: '',
+  job: '',
   avatar: null,
   coverPhoto: null,
   larpRating: 0,
-  persona: '',
   about: '',
   stats: {
     recruiterViews: 0,
@@ -44,11 +45,10 @@ const EMPTY_PROFILE = {
 const TEST_PROFILE = {
   id: DEV_USER_ID,
   name: 'Arjun Malhotra',
-  headline: 'Incoming Quant VC Product Strategist',
+  job: 'Finance Bro',
   avatar: null,
   coverPhoto: null,
   larpRating: 67.2,
-  persona: 'Stealth Founder / Ex-McKinsey Adjacent',
   about: 'Building at the intersection of ambiguity and momentum.',
   stats: {
     recruiterViews: 413,
@@ -59,9 +59,9 @@ const TEST_PROFILE = {
   glazers: [],
   larpStatus: {
     opportunities: [
-      'Stealth Founder / Ex-McKinsey Adjacent',
-      'Fractional Visionary',
-      'Regional Hustler',
+      'Finance Bro',
+      'Stealth Startup Girlie',
+      'VC Nepo Baby',
     ],
   },
   experience: [
@@ -168,11 +168,10 @@ function adaptProfile(row) {
   return {
     id: row.id ?? '',
     name: row.display_name ?? '',
-    headline: row.title ?? '',
+    job: row.job ?? row.title ?? row.persona ?? '',
     avatar: row.avatar_url ?? null,
     coverPhoto: row.cover_photo_url ?? null,
     larpRating: Number(row.larp_rating ?? 0),
-    persona: row.persona ?? '',
     about: row.bio ?? '',
     stats: {
       recruiterViews: Number(stats.recruiterViews ?? 0),
@@ -199,7 +198,7 @@ function adaptBackendPost(post) {
     author: {
       id: post.profiles?.id ?? post.author_id ?? null,
       name: post.profiles?.display_name ?? 'Anonymous Larper',
-      headline: post.profiles?.title ?? 'Aspiring Thought Leader',
+      headline: post.profiles?.job ?? post.profiles?.title ?? 'Aspiring Thought Leader',
       avatar: post.profiles?.avatar_url ?? null,
       larpRating: post.profiles?.larp_rating ?? 0,
     },
@@ -228,10 +227,8 @@ function adaptBackendPost(post) {
 function toProfilePatch(profile) {
   return {
     display_name: profile.name,
-    title: profile.headline,
     avatar_url: profile.avatar,
     cover_photo_url: profile.coverPhoto,
-    persona: profile.persona,
     bio: profile.about,
     stats: profile.stats,
     glazers: profile.glazers,
@@ -247,6 +244,7 @@ function toProfilePatch(profile) {
 export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
   const { user } = useAuth()
   const [profile, setProfile] = useState(testMode ? { ...TEST_PROFILE } : { ...EMPTY_PROFILE })
+  const [jobOptions, setJobOptions] = useState(testMode ? [...TEST_PROFILE.larpStatus.opportunities] : [])
   const [allPosts, setAllPosts] = useState(
     testMode ? [{ ...TEST_SOURCE_POST, author: { ...TEST_SOURCE_POST.author } }] : []
   )
@@ -271,6 +269,9 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
   useEffect(() => {
     if (testMode) return
 
+    fetchJobOptions()
+      .then(data => setJobOptions(data.options ?? []))
+      .catch(() => setJobOptions([]))
     fetchProfile()
       .then(data => setProfile(adaptProfile(data)))
       .catch(() => setProfile({ ...EMPTY_PROFILE }))
@@ -321,38 +322,16 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     return Number(targetRating ?? 0) <= profile.larpRating
   }
 
-  async function updateProfile({ name, headline, persona, avatar, coverPhoto, note } = {}) {
+  async function updateProfile({ name, avatar, coverPhoto } = {}) {
     if (name !== undefined && !String(name ?? '').trim()) {
       return { ok: false, error: 'Name cannot be empty.' }
-    }
-    if (headline !== undefined && !String(headline ?? '').trim()) {
-      return { ok: false, error: 'Headline cannot be empty.' }
-    }
-    if (persona !== undefined && !String(persona ?? '').trim()) {
-      return { ok: false, error: 'Persona cannot be empty.' }
     }
 
     const nextProfile = {
       ...profile,
       ...(name !== undefined ? { name: String(name).trim() } : {}),
-      ...(headline !== undefined ? { headline: String(headline).trim() } : {}),
-      ...(persona !== undefined ? { persona: String(persona).trim() } : {}),
       ...(avatar !== undefined ? { avatar: avatar || null } : {}),
       ...(coverPhoto !== undefined ? { coverPhoto: coverPhoto || null } : {}),
-    }
-
-    if (persona !== undefined && nextProfile.persona !== profile.persona) {
-      nextProfile.larpHistory = [
-        {
-          id: makeEntityId(),
-          date: new Date().toLocaleString('en-US', { month: 'short', year: 'numeric' }),
-          from: profile.persona || 'Unknown Persona',
-          to: nextProfile.persona,
-          note: note || 'Persona updated.',
-          createdAt: new Date().toISOString(),
-        },
-        ...profile.larpHistory,
-      ]
     }
 
     setProfile(nextProfile)
@@ -370,45 +349,8 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     return { ok: true }
   }
 
-  function cyclePersona() {
-    const opportunities = toArray(profile.larpStatus?.opportunities)
-    if (!opportunities.length) {
-      return { ok: false, error: 'No personas available to switch.' }
-    }
-
-    const currentIndex = opportunities.indexOf(profile.persona)
-    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % opportunities.length
-    const nextPersona = opportunities[nextIndex]
-    if (!nextPersona) return { ok: false, error: 'No personas available to switch.' }
-
-    const nextProfile = {
-      ...profile,
-      persona: nextPersona,
-      larpHistory: [
-        {
-          id: makeEntityId(),
-          date: new Date().toLocaleString('en-US', { month: 'short', year: 'numeric' }),
-          from: profile.persona || 'Unknown Persona',
-          to: nextPersona,
-          note: 'Switched persona from Open to Larping.',
-          createdAt: new Date().toISOString(),
-        },
-        ...profile.larpHistory,
-      ],
-    }
-
-    setProfile(nextProfile)
-    void persistProfile(nextProfile)
-    return { ok: true, persona: nextPersona }
-  }
-
-  function updateLarpStatus({ persona, opportunities } = {}) {
-    const hasPersona = persona !== undefined
+  function updateLarpStatus({ opportunities } = {}) {
     const hasOpportunities = opportunities !== undefined
-
-    if (hasPersona && !String(persona ?? '').trim()) {
-      return { ok: false, error: 'Persona cannot be empty.' }
-    }
 
     const nextOpportunities = hasOpportunities
       ? toArray(opportunities).map(v => String(v).trim()).filter(Boolean)
@@ -418,20 +360,54 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
       return { ok: false, error: 'At least one opportunity type is required.' }
     }
 
-    let nextPersona = hasPersona ? String(persona).trim() : profile.persona
-    if (!nextOpportunities.includes(nextPersona)) {
-      nextPersona = nextOpportunities[0] || nextPersona
-    }
-
     const nextProfile = {
       ...profile,
-      persona: nextPersona,
       larpStatus: { opportunities: nextOpportunities },
     }
 
     setProfile(nextProfile)
     void persistProfile(nextProfile)
     return { ok: true }
+  }
+
+  async function updateCurrentJob(job) {
+    const nextJob = String(job ?? '').trim()
+    if (!nextJob) return { ok: false, error: 'Job cannot be empty.' }
+
+    const applyJob = (existingProfile, resolvedJob) => ({
+      ...existingProfile,
+      job: resolvedJob,
+      larpStatus: {
+        opportunities: Array.from(new Set([resolvedJob, ...toArray(existingProfile.larpStatus?.opportunities)])),
+      },
+      larpHistory: resolvedJob === existingProfile.job
+        ? existingProfile.larpHistory
+        : [
+          {
+            id: makeEntityId(),
+            date: new Date().toLocaleString('en-US', { month: 'short', year: 'numeric' }),
+            from: existingProfile.job || 'Unknown Larp',
+            to: resolvedJob,
+            note: 'Updated current larp from the jobs board.',
+            createdAt: new Date().toISOString(),
+          },
+          ...existingProfile.larpHistory,
+        ],
+    })
+
+    if (testMode) {
+      setProfile(prev => applyJob(prev, nextJob))
+      return { ok: true, job: nextJob }
+    }
+
+    try {
+      const result = await apiUpdateJob(nextJob)
+      const resolvedJob = result.job ?? nextJob
+      setProfile(prev => applyJob(prev, resolvedJob))
+      return { ok: true, job: resolvedJob }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : 'Job update failed.' }
+    }
   }
 
   function addExperience(entry) {
@@ -615,7 +591,7 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
         author: {
           id: profile.id,
           name: profile.name,
-          headline: profile.headline,
+          headline: profile.job,
           avatar: profile.avatar,
           larpRating: profile.larpRating,
         },
@@ -662,7 +638,7 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
         content: text,
         author: {
           name: profile.name,
-          headline: profile.headline,
+          headline: profile.job,
           avatar: profile.avatar,
           larpRating: profile.larpRating,
         },
@@ -726,7 +702,7 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
         author: {
           id: profile.id,
           name: profile.name,
-          headline: profile.headline,
+          headline: profile.job,
           avatar: profile.avatar,
           larpRating: profile.larpRating,
         },
@@ -815,10 +791,11 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     allPosts,
     trendingDelusions,
     buzzwords,
+    jobOptions,
     isAccessible,
     updateProfile,
     updateAbout,
-    cyclePersona,
+    updateCurrentJob,
     updateLarpStatus,
     addExperience,
     updateExperience,

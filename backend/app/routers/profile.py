@@ -10,11 +10,9 @@ router = APIRouter(tags=["profile"])
 
 class ProfileUpdate(BaseModel):
     display_name: str | None = None
-    title: str | None = None
     bio: str | None = None
     avatar_url: str | None = None
     cover_photo_url: str | None = None
-    persona: str | None = None
     stats: dict[str, Any] | None = None
     glazers: list[dict[str, Any]] | None = None
     larp_status: dict[str, Any] | None = None

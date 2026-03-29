@@ -6,7 +6,7 @@ import styles from './LeftRail.module.css'
 
 export default function LeftRail() {
   const { currentUser } = useMockData()
-  const { name, headline, larpRating, persona, stats, glazers, avatar, coverPhoto } = currentUser
+  const { name, job, larpRating, stats, glazers, avatar, coverPhoto } = currentUser
 
   return (
     <div className={styles.rail}>
@@ -25,7 +25,7 @@ export default function LeftRail() {
         </div>
         <div className={styles.identity}>
           <h2 className={styles.name}>{name}</h2>
-          <p className={styles.headline}>{headline}</p>
+          <p className={styles.headline}>{job}</p>
           <div className={styles.ratingRow}>
             <span className={styles.ratingLabel}>LarpRating</span>
             <svg className={styles.ratingInfo} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
@@ -35,7 +35,6 @@ export default function LeftRail() {
           <div className={styles.gaugeWrap}>
             <LarpRatingBadge rating={larpRating} size="large" />
           </div>
-          <p className={styles.persona}>{persona}</p>
         </div>
         <div className={styles.divider} />
         <div className={styles.stats}>

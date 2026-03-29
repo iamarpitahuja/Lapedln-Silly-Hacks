@@ -36,11 +36,15 @@ export async function createPost({ content, postType = 'thought_leadership' }) {
   })
 }
 
-export async function updateTitle(title) {
-  return authFetch(`${API_BASE}/jobs/title`, {
+export async function fetchJobOptions() {
+  return authFetch(`${API_BASE}/jobs/options`)
+}
+
+export async function updateJob(job) {
+  return authFetch(`${API_BASE}/jobs/current`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title }),
+    body: JSON.stringify({ job }),
   })
 }
 

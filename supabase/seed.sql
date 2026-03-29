@@ -1,0 +1,1 @@
+-- Intentionally empty seed file for local Supabase resets.

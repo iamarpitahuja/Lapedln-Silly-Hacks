@@ -1,7 +1,18 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
-const AuthContext = createContext(null)
+const DEFAULT_AUTH_CONTEXT = {
+  session: null,
+  user: null,
+  accessToken: null,
+  loading: false,
+  signUp: async () => ({ user: null }),
+  signIn: async () => ({ user: null }),
+  signInWithGoogle: async () => ({ provider: 'google' }),
+  signOut: async () => undefined,
+}
+
+const AuthContext = createContext(DEFAULT_AUTH_CONTEXT)
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
@@ -71,6 +82,5 @@ export function AuthProvider({ children }) {
 // eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-  return ctx
+  return ctx ?? DEFAULT_AUTH_CONTEXT
 }
