@@ -122,17 +122,20 @@ export default function PostCard({ post, isOwnPost = false }) {
     setReactionError('')
     const removeFn = post.isRelarp ? apiRemoveRelarpLike : apiRemoveLike
     const createFn = post.isRelarp ? apiCreateRelarpLike : apiCreateLike
+    const shouldLike = !isLarped
+
+    setIsLarped(shouldLike)
+    setLarpCount(prev => Math.max(0, prev + (shouldLike ? 1 : -1)))
+
     try {
-      if (isLarped) {
-        await removeFn(post.id)
-        setIsLarped(false)
-        setLarpCount(prev => Math.max(0, prev - 1))
-      } else {
+      if (shouldLike) {
         await createFn(post.id)
-        setIsLarped(true)
-        setLarpCount(prev => prev + 1)
+      } else {
+        await removeFn(post.id)
       }
     } catch {
+      setIsLarped(!shouldLike)
+      setLarpCount(prev => Math.max(0, prev + (shouldLike ? -1 : 1)))
       setReactionError('Unable to update your reaction right now.')
     } finally {
       setIsUpdatingLike(false)
@@ -146,17 +149,20 @@ export default function PostCard({ post, isOwnPost = false }) {
     setReactionError('')
     const removeFn = post.isRelarp ? apiRemoveRelarpLove : apiRemoveLove
     const createFn = post.isRelarp ? apiCreateRelarpLove : apiCreateLove
+    const shouldLove = !isLoved
+
+    setIsLoved(shouldLove)
+    setLoveCount(prev => Math.max(0, prev + (shouldLove ? 1 : -1)))
+
     try {
-      if (isLoved) {
-        await removeFn(post.id)
-        setIsLoved(false)
-        setLoveCount(prev => Math.max(0, prev - 1))
-      } else {
+      if (shouldLove) {
         await createFn(post.id)
-        setIsLoved(true)
-        setLoveCount(prev => prev + 1)
+      } else {
+        await removeFn(post.id)
       }
     } catch {
+      setIsLoved(!shouldLove)
+      setLoveCount(prev => Math.max(0, prev + (shouldLove ? -1 : 1)))
       setReactionError('Unable to update your reaction right now.')
     } finally {
       setIsUpdatingLove(false)
@@ -451,7 +457,7 @@ export default function PostCard({ post, isOwnPost = false }) {
         <div className={styles.reactionSummary}>
           <button
             className={`${styles.reactionGroup} ${isLarped ? styles.activeReaction : ''}`}
-            title="Larps"
+            title="Likes"
             onClick={handleLarpClick}
             disabled={isUpdatingLike}
           >
@@ -500,7 +506,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             aria-label={isLarped ? 'Unlike' : 'Like'}
           >
             <Icon name="thumbsUp" size={18} />
-            <span>{isLarped ? 'Larped' : 'Larp'}</span>
+            <span>{isLarped ? 'Liked' : 'Like'}</span>
           </button>
         ) : null}
         {!blockReactions ? (

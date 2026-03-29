@@ -200,9 +200,9 @@
 
 .composerHeader {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   margin-bottom: 10px;
 }
 
@@ -255,9 +255,34 @@
 
 .composerActions {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
   margin-top: 12px;
+}
+
+.composerActionsPrimary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mediaBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  transition: background 0.15s, color 0.15s;
+}
+
+.mediaBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.9);
 }
 
 .cancelBtn,
