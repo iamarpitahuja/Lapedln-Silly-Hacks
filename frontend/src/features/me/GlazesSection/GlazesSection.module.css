@@ -84,3 +84,9 @@
   color: rgba(0, 0, 0, 0.7);
   font-style: italic;
 }
+
+.emptyState {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.35);
+  font-style: italic;
+}

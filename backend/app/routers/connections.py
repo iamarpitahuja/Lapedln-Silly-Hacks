@@ -100,12 +100,12 @@ async def remove_connection(
     user_id: str = Depends(get_current_user),
     supabase=Depends(get_service_client),
 ):
-    """Withdraw a sent request or remove an accepted connection (requester only)."""
+    """Withdraw a sent request or remove an accepted connection (either party)."""
     conn = (
         supabase.table("connections")
         .select("*")
         .eq("id", connection_id)
-        .eq("requester_id", user_id)
+        .or_(f"requester_id.eq.{user_id},addressee_id.eq.{user_id}")
         .execute()
     )
     if not conn.data:
@@ -162,6 +162,25 @@ async def get_pending_connections(
         .execute()
     )
     return {"pending": result.data}
+
+
+@router.get("/connections/outgoing")
+async def get_outgoing_connections(
+    user_id: str = Depends(get_current_user),
+    supabase=Depends(get_service_client),
+):
+    """List pending connection requests the current user has sent."""
+    result = (
+        supabase.table("connections")
+        .select(
+            "*, addressee:profiles!addressee_id(id, display_name, title, avatar_url, larp_rating)"
+        )
+        .eq("requester_id", user_id)
+        .eq("status", "pending")
+        .order("created_at", desc=True)
+        .execute()
+    )
+    return {"outgoing": result.data}
 
 
 @router.get("/connections/suggestions")

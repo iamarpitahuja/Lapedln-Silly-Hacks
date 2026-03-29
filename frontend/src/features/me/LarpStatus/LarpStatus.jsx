@@ -71,11 +71,17 @@ export default function LarpStatus({ onNotice }) {
         
         {!isEditing ? (
           <div className={styles.displayArea}>
-            <p className={styles.persona}>{persona}</p>
+            {persona
+              ? <p className={styles.persona}>{persona}</p>
+              : <p className={styles.emptyState}>No active persona set. Define the role you are currently performing.</p>
+            }
             <div className={styles.pills}>
-              {opportunities.map(type => (
-                <span key={type} className={styles.pill}>{type}</span>
-              ))}
+              {opportunities.length > 0
+                ? opportunities.map(type => (
+                    <span key={type} className={styles.pill}>{type}</span>
+                  ))
+                : <p className={styles.emptyState}>No opportunity types listed. Add what roles you are open to.</p>
+              }
             </div>
             <div className={styles.actions}>
               <button className={styles.btnOutlined} onClick={handleSwitchPersona}>

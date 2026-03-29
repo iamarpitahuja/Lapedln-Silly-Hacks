@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { getInitials } from '../../../utils/strings'
 import styles from './ConversationList.module.css'
 
@@ -10,6 +11,11 @@ function getAvatarColor(name) {
 }
 
 export default function ConversationList({ conversations, activeUserId, onSelect, onNewMessage }) {
+  const [search, setSearch] = useState('')
+  const filtered = conversations.filter(c =>
+    (c.other_user?.display_name || '').toLowerCase().includes(search.toLowerCase())
+  )
+
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
@@ -21,12 +27,23 @@ export default function ConversationList({ conversations, activeUserId, onSelect
         </button>
       </div>
 
-      {conversations.length === 0 && (
-        <p className={styles.empty}>No conversations yet. DM someone from the Network page.</p>
+      <div className={styles.searchWrap}>
+        <input
+          className={styles.searchInput}
+          placeholder="Search messages"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      {filtered.length === 0 && (
+        <p className={styles.empty}>
+          {search ? 'No conversations match your search.' : 'No conversations yet. DM someone from the Network page.'}
+        </p>
       )}
 
       <ul className={styles.list}>
-        {conversations.map(conv => {
+        {filtered.map(conv => {
           const user = conv.other_user
           const name = user?.display_name || 'Anonymous Larper'
           const isActive = activeUserId === user?.id

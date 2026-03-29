@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import LarpRatingBadge from '../../../components/LarpRatingBadge/LarpRatingBadge'
 import ConnectButton from '../ConnectButton/ConnectButton'
 import { getInitials } from '../../../utils/strings'
@@ -15,6 +16,7 @@ function getAvatarColor(name) {
 export default function UserCard({ user, initialStatus = 'none', connectionId: initialConnectionId = null }) {
   const [status, setStatus] = useState(initialStatus)
   const [connectionId, setConnectionId] = useState(initialConnectionId)
+  const navigate = useNavigate()
 
   function handleStatusChange(newStatus, newId) {
     setStatus(newStatus)
@@ -49,6 +51,14 @@ export default function UserCard({ user, initialStatus = 'none', connectionId: i
           connectionId={connectionId}
           onStatusChange={handleStatusChange}
         />
+        {status === 'accepted' && (
+          <button
+            className={styles.messageBtn}
+            onClick={() => navigate(`/messaging?userId=${user.id}`)}
+          >
+            Message
+          </button>
+        )}
       </div>
     </div>
   )

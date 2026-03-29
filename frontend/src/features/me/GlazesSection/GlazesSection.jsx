@@ -12,6 +12,9 @@ export default function GlazesSection() {
         <h2 className={styles.title}>Glazes Received</h2>
       </div>
       <div className={styles.glazes}>
+        {glazes.length === 0 && (
+          <p className={styles.emptyState}>No glazes received yet. Keep posting.</p>
+        )}
         {glazes.map(glaze => (
           <article key={glaze.id ?? glaze.name} className={styles.glazeCard}>
             <div className={styles.glazeAvatar}>{getInitials(glaze.name)}</div>

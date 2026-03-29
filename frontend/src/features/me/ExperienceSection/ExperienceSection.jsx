@@ -126,6 +126,9 @@ export default function ExperienceSection({ onNotice }) {
         </div>
       )}
       <div className={styles.roles}>
+        {currentUser.experience.length === 0 && (
+          <p className={styles.emptyState}>No career milestones yet. Add your first synergy-driven role.</p>
+        )}
         {currentUser.experience.map(role => (
           <article key={role.id} className={styles.role}>
             <div className={styles.logoPlaceholder}>{getInitials(role.company)}</div>

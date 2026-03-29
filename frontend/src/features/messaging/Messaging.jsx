@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { fetchConversations, fetchProfile } from '../../services/api'
+import { fetchConversations, fetchProfile, fetchUserProfile } from '../../services/api'
 import ConversationList from './ConversationList/ConversationList'
 import ChatWindow from './ChatWindow/ChatWindow'
 import styles from './Messaging.module.css'
@@ -28,7 +28,9 @@ export default function Messaging() {
           if (existing) {
             setActiveUser(existing.other_user)
           } else {
-            setActiveUser({ id: initialUserId, display_name: 'Loading…' })
+            fetchUserProfile(initialUserId)
+              .then(profile => { if (!cancelled) setActiveUser(profile) })
+              .catch(() => { if (!cancelled) setActiveUser({ id: initialUserId, display_name: 'Unknown User' }) })
           }
         }
       })

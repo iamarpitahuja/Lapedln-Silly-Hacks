@@ -48,6 +48,10 @@ export async function fetchProfile() {
   return authFetch(`${API_BASE}/me`)
 }
 
+export async function fetchUserProfile(userId) {
+  return authFetch(`${API_BASE}/users/${userId}`)
+}
+
 export async function updateProfilePatch(payload) {
   return authFetch(`${API_BASE}/me`, {
     method: 'PATCH',
@@ -74,6 +78,10 @@ export async function fetchPendingConnections() {
 
 export async function fetchConnectionSuggestions() {
   return authFetch(`${API_BASE}/connections/suggestions`)
+}
+
+export async function fetchOutgoingConnections() {
+  return authFetch(`${API_BASE}/connections/outgoing`)
 }
 
 export async function sendConnectionRequest(addresseeId) {

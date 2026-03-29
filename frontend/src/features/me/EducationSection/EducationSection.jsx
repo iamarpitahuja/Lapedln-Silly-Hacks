@@ -130,6 +130,9 @@ export default function EducationSection({ onNotice }) {
         </div>
       )}
       <div className={styles.entries}>
+        {currentUser.education.length === 0 && (
+          <p className={styles.emptyState}>No credentials listed. Add an institution to signal your intellectual capital.</p>
+        )}
         {currentUser.education.map(entry => (
           <article key={entry.id} className={styles.entry}>
             <div className={styles.logoPlaceholder}>{getInitials(entry.school)}</div>

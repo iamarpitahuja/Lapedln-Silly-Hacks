@@ -66,4 +66,25 @@
 
 .actions {
   margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.messageBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0a66c2;
+  background: none;
+  border: 1px solid #0a66c2;
+  border-radius: 20px;
+  padding: 5px 16px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.messageBtn:hover {
+  background: #0a66c2;
+  color: #fff;
 }

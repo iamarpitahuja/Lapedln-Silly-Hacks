@@ -179,6 +179,13 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.emptyState {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.35);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }

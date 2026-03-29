@@ -146,7 +146,7 @@ export default function Feed() {
                   isOwnPost={post.author.id === currentUser.id}
                 />
               ) : (
-                <LockedPostCard />
+                <LockedPostCard post={post} />
               )}
             </div>
           ))}

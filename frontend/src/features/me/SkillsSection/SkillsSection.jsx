@@ -77,6 +77,9 @@ export default function SkillsSection({ onNotice }) {
         </div>
       )}
       <div className={styles.skills}>
+        {currentUser.skills.length === 0 && (
+          <p className={styles.emptyState}>No skills listed. Add your first endorsable competency.</p>
+        )}
         {currentUser.skills.map(skill => (
           <article key={skill.id} className={styles.skillRow}>
             <div className={styles.skillInfo}>

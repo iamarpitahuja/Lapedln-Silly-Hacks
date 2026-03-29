@@ -3,6 +3,7 @@ import {
   fetchConnectionSuggestions,
   fetchPendingConnections,
   fetchConnections,
+  fetchOutgoingConnections,
 } from '../../services/api'
 import UserCard from './UserCard/UserCard'
 import styles from './Network.module.css'
@@ -13,6 +14,7 @@ export default function Network() {
   const [activeTab, setActiveTab] = useState('Suggestions')
   const [suggestions, setSuggestions] = useState([])
   const [pending, setPending] = useState([])
+  const [outgoing, setOutgoing] = useState([])
   const [connections, setConnections] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -30,6 +32,9 @@ export default function Network() {
         setSuggestions(s.suggestions ?? [])
         setPending(p.pending ?? [])
         setConnections(c.connections ?? [])
+        fetchOutgoingConnections()
+          .then(o => setOutgoing(o.outgoing ?? []))
+          .catch(() => {})
       } catch {
         setError('Failed to load network data. Is the backend running?')
       } finally {
@@ -66,12 +71,22 @@ export default function Network() {
           <>
             {activeTab === 'Suggestions' && (
               <div className={styles.grid}>
-                {suggestions.length === 0 ? (
+                {suggestions.length === 0 && outgoing.length === 0 ? (
                   <p className={styles.empty}>No suggestions right now. You know everyone!</p>
                 ) : (
-                  suggestions.map(user => (
-                    <UserCard key={user.id} user={user} initialStatus="none" />
-                  ))
+                  <>
+                    {outgoing.map(conn => (
+                      <UserCard
+                        key={conn.id}
+                        user={conn.addressee}
+                        initialStatus="pending_sent"
+                        connectionId={conn.id}
+                      />
+                    ))}
+                    {suggestions.map(user => (
+                      <UserCard key={user.id} user={user} initialStatus="none" />
+                    ))}
+                  </>
                 )}
               </div>
             )}

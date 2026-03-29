@@ -55,7 +55,9 @@ export default function AboutSection({ onNotice }) {
         )}
       </div>
       {!isEditing ? (
-        <p className={styles.bio}>{currentUser.about}</p>
+        currentUser.about
+          ? <p className={styles.bio}>{currentUser.about}</p>
+          : <p className={styles.emptyState}>No personal brand narrative yet. Click edit to share your thought leadership journey.</p>
       ) : (
         <div className={styles.editorWrapper}>
           <form className={styles.form} onSubmit={handleSave}>
