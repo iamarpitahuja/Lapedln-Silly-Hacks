@@ -1,0 +1,70 @@
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 12px 16px;
+  overflow: hidden;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+  margin-bottom: 10px;
+}
+
+/* Trending list */
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.listItem {
+  display: flex;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.listNum {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  min-width: 16px;
+}
+
+/* Buzzwords */
+.buzzList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.buzzItem {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.9);
+  padding: 2px 0;
+}
+
+.seeMore {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 4px 0;
+  display: block;
+}
+
+.seeMore:hover {
+  color: rgba(0, 0, 0, 0.9);
+  text-decoration: underline;
+}

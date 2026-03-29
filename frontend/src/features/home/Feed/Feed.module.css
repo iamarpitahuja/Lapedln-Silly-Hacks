@@ -1,0 +1,23 @@
+.feed {
+  display: flex;
+  flex-direction: column;
+}
+
+.loadingText {
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  margin: 32px 0;
+}
+
+.posts {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

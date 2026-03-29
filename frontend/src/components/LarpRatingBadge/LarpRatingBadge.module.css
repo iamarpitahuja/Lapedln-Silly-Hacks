@@ -1,0 +1,77 @@
+.gauge {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gaugeCircle {
+  transition: stroke-dasharray 1.2s var(--ease-out-quint);
+  animation: gaugeFill 1.5s var(--ease-out-quint) forwards;
+}
+
+@keyframes gaugeFill {
+  from { stroke-dasharray: 0 251.32; }
+}
+
+.gaugeInner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  animation: fadeIn var(--transition-slow) forwards;
+}
+
+.gaugeValue {
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.9);
+  line-height: 1;
+}
+
+.gaugeTier {
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.small {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1.5px solid;
+  border-radius: 5px;
+  padding: 2px 6px;
+  vertical-align: middle;
+  line-height: 1;
+  transition: all var(--transition-fast);
+  cursor: help;
+}
+
+.small:hover {
+  box-shadow: 0 2px 8px var(--tier-color, #666);
+  transform: translateY(-1px);
+}
+
+.small:active {
+  transform: scale(var(--active-scale));
+}
+
+.smallValue {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.smallTier {
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1.2;
+  opacity: 0.85;
+  white-space: nowrap;
+}

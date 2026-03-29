@@ -1,0 +1,119 @@
+.card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  min-height: 160px;
+  margin-bottom: 8px;
+}
+
+/* Blurred fake content layer */
+.blurLayer {
+  padding: 16px;
+  filter: blur(6px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.fakeAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #c8c8c8;
+  flex-shrink: 0;
+}
+
+.fakeLines {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+}
+
+.fakeLine {
+  height: 11px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.lineWide {
+  width: 55%;
+}
+
+.lineMid {
+  width: 38%;
+}
+
+.lineAction {
+  width: 60px;
+  height: 10px;
+}
+
+.fakeBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.fakePara {
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.paraFull {
+  width: 100%;
+}
+
+.paraNarrow {
+  width: 65%;
+}
+
+.fakeActions {
+  display: flex;
+  gap: 20px;
+  padding-top: 12px;
+  border-top: 1px solid #e8e8e8;
+}
+
+/* Overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  gap: 6px;
+  padding: 16px;
+}
+
+.lockIcon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.lockMessage {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.75);
+  text-align: center;
+  margin: 0;
+}
+
+.lockSub {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  margin: 0;
+}

@@ -1,0 +1,162 @@
+:root {
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  --spring-soft: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition-fast: 0.15s var(--ease-out-quint);
+  --transition-normal: 0.3s var(--ease-out-quint);
+  --transition-slow: 0.5s var(--ease-out-quint);
+  
+  --active-scale: 0.96;
+  --hover-scale: 1.02;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  background-color: #f3f2ef;
+  color: rgba(0, 0, 0, 0.9);
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, .interactive {
+  cursor: pointer;
+  transition: transform var(--transition-fast), opacity var(--transition-fast), background-color var(--transition-fast);
+}
+
+button:active, .interactive:active {
+  transform: scale(var(--active-scale));
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--transition-normal) var(--spring-soft) forwards;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input {
+  font-family: inherit;
+}
+
+/* ─── LarpMaxxer Theme Variables ─── */
+:root {
+  --bg-base: #0D1117;
+  --bg-surface: #161B22;
+  --bg-elevated: #1C2128;
+  --bg-hover: #21262D;
+  --bg-input: #0D1117;
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-muted: rgba(255, 255, 255, 0.04);
+  --border-accent: rgba(56, 139, 253, 0.4);
+  --text-primary: #E6EDF3;
+  --text-secondary: #8B949E;
+  --text-muted: #484F58;
+  --text-link: #58A6FF;
+  --accent: #58A6FF;
+  --accent-emphasis: #388BFD;
+  --accent-muted: rgba(56, 139, 253, 0.15);
+  --accent-subtle: rgba(56, 139, 253, 0.08);
+  --green: #3FB950;
+  --green-muted: rgba(63, 185, 80, 0.15);
+  --red: #F85149;
+  --red-muted: rgba(248, 81, 73, 0.15);
+  --amber: #D29922;
+  --amber-muted: rgba(210, 153, 34, 0.15);
+  --purple: #A371F7;
+  --purple-muted: rgba(163, 113, 247, 0.15);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-blur: blur(20px);
+  --font-display: 'Sora', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Source Sans 3', sans-serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 500ms;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(56, 139, 253, 0.15);
+}
+
+@keyframes borderPulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--accent-emphasis), 0 0 20px rgba(56, 139, 253, 0.1); }
+  50% { box-shadow: 0 0 0 2px var(--accent-emphasis), 0 0 30px rgba(56, 139, 253, 0.2); }
+}
+.entry-card-pulse {
+  animation: borderPulse 3s ease-in-out infinite;
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+}
+.typing-dot:nth-child(1) { animation: typingBounce 1.2s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation: typingBounce 1.2s ease-in-out infinite 0.2s; }
+.typing-dot:nth-child(3) { animation: typingBounce 1.2s ease-in-out infinite 0.4s; }
+
+.li-btn-primary {
+  background: var(--accent-emphasis);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.li-btn-primary:hover {
+  background: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+
+.li-btn-secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent-emphasis);
+  border-radius: 24px;
+  padding: 7px 19px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.li-btn-secondary:hover {
+  background: var(--accent-muted);
+  box-shadow: var(--shadow-glow);
+}
