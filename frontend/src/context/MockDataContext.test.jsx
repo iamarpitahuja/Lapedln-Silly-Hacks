@@ -9,7 +9,7 @@ function TestConsumer() {
     allPosts,
     isAccessible,
     updateAbout,
-    cyclePersona,
+    updateCurrentJob,
     addExperience,
     endorseSkill,
     createPost,
@@ -25,7 +25,7 @@ function TestConsumer() {
     <div>
       <span data-testid="name">{currentUser.name}</span>
       <span data-testid="rating">{currentUser.larpRating}</span>
-      <span data-testid="persona">{currentUser.persona}</span>
+      <span data-testid="job">{currentUser.job}</span>
       <span data-testid="about">{currentUser.about}</span>
       <span data-testid="history-count">{currentUser.larpHistory.length}</span>
       <span data-testid="experience-count">{currentUser.experience.length}</span>
@@ -60,7 +60,7 @@ function TestConsumer() {
       </button>
       <button onClick={() => undoRelarp({ postId: sourcePost?.id })}>undo-relarp</button>
       <button onClick={() => updateAbout('Updated about from context test')}>update-about</button>
-      <button onClick={() => cyclePersona()}>switch-persona</button>
+      <button onClick={() => updateCurrentJob('VC Nepo Baby')}>update-job</button>
       <button
         onClick={() =>
           addExperience({
@@ -172,13 +172,13 @@ describe('MockDataContext', () => {
     expect(screen.getByTestId('about')).toHaveTextContent('Updated about from context test')
   })
 
-  it('cyclePersona updates persona and appends history entry', () => {
+  it('updateCurrentJob updates the current larp and appends history entry', () => {
     render(<MockDataProvider><TestConsumer /></MockDataProvider>)
 
     const initialHistoryCount = Number(screen.getByTestId('history-count').textContent)
-    fireEvent.click(screen.getByText('switch-persona'))
+    fireEvent.click(screen.getByText('update-job'))
 
-    expect(screen.getByTestId('persona')).toHaveTextContent('Fractional Visionary')
+    expect(screen.getByTestId('job')).toHaveTextContent('VC Nepo Baby')
     expect(Number(screen.getByTestId('history-count').textContent)).toBe(initialHistoryCount + 1)
   })
 

@@ -24,7 +24,7 @@ function adaptBackendPost(post) {
     author: {
       id: post.profiles?.id ?? post.author_id ?? null,
       name: post.profiles?.display_name ?? 'Anonymous Larper',
-      headline: post.profiles?.title ?? 'Aspiring Thought Leader',
+      headline: post.profiles?.job ?? post.profiles?.title ?? 'Aspiring Thought Leader',
       avatar: post.profiles?.avatar_url ?? null,
       larpRating: post.profiles?.larp_rating ?? 0,
     },

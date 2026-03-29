@@ -51,7 +51,7 @@ async def get_feed(
     """
     posts_result = (
         user_client.table("posts")
-        .select("*, profiles(id, display_name, title, avatar_url, larp_rating)")
+        .select("*, profiles(id, display_name, job, avatar_url, larp_rating)")
         .order("created_at", desc=True)
         .range(offset, offset + limit - 1)
         .execute()
@@ -77,7 +77,7 @@ async def get_feed(
     # Fetch comments and relarps for visible posts
     comments_result = (
         user_client.table("comments")
-        .select("*, author:profiles!author_id(display_name, title, avatar_url, larp_rating)")
+        .select("*, author:profiles!author_id(display_name, job, avatar_url, larp_rating)")
         .in_("post_id", post_ids)
         .order("created_at", desc=True)
         .execute()
@@ -91,7 +91,7 @@ async def get_feed(
             "timestamp": "Just now",
             "author": {
                 "name": c["author"]["display_name"],
-                "headline": c["author"]["title"],
+                "headline": c["author"]["job"],
                 "avatar": c["author"].get("avatar_url"),
                 "larpRating": c["author"].get("larp_rating", 0),
             },

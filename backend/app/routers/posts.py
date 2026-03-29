@@ -122,7 +122,7 @@ async def create_comment(
 
     author_result = (
         supabase.table("profiles")
-        .select("display_name, title, avatar_url, larp_rating")
+        .select("display_name, job, avatar_url, larp_rating")
         .eq("id", user_id)
         .single()
         .execute()
@@ -136,7 +136,7 @@ async def create_comment(
         "content": comment["content"],
         "author": {
             "name": author["display_name"],
-            "headline": author["title"],
+            "headline": author["job"],
             "avatar": author.get("avatar_url"),
             "larpRating": author.get("larp_rating", 0),
         },

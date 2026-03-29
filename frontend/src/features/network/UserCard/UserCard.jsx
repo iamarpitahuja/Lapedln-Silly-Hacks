@@ -22,7 +22,7 @@ export default function UserCard({ user, initialStatus = 'none', connectionId: i
   }
 
   const name = user.display_name || 'Anonymous Larper'
-  const title = user.title || 'Aspiring Thought Leader'
+  const title = user.job || user.title || 'Aspiring Thought Leader'
 
   return (
     <div className={styles.card}>

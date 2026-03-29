@@ -27,8 +27,8 @@ async def get_conversations(
         supabase.table("messages")
         .select(
             "*, "
-            "sender:profiles!sender_id(id, display_name, avatar_url), "
-            "receiver:profiles!receiver_id(id, display_name, avatar_url)"
+            "sender:profiles!sender_id(id, display_name, job, avatar_url), "
+            "receiver:profiles!receiver_id(id, display_name, job, avatar_url)"
         )
         .or_(f"sender_id.eq.{user_id},receiver_id.eq.{user_id}")
         .order("created_at", desc=True)

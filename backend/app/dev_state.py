@@ -6,7 +6,7 @@ when no database is available. Resets on server restart.
 DEV_PROFILE = {
     "id": "00000000-0000-0000-0000-000000000000",
     "display_name": "Arjun Malhotra",
-    "title": "Incoming Quant VC Product Strategist",
+    "job": "Finance Bro",
     "bio": "Stealth Founder / Ex-McKinsey Adjacent",
     "avatar_url": None,
     "larp_rating": 67.2,

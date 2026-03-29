@@ -121,7 +121,7 @@ export default function ChatWindow({ otherUser, currentUserId }) {
         </div>
         <div>
           <div className={styles.headerName}>{name}</div>
-          <div className={styles.headerTitle}>{otherUser.title ?? 'Aspiring Thought Leader'}</div>
+          <div className={styles.headerTitle}>{otherUser.job ?? otherUser.title ?? 'Aspiring Thought Leader'}</div>
         </div>
       </div>
 

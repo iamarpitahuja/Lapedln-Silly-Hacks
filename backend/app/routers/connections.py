@@ -125,8 +125,8 @@ async def get_my_connections(
         supabase.table("connections")
         .select(
             "*, "
-            "requester:profiles!requester_id(id, display_name, title, avatar_url, larp_rating), "
-            "addressee:profiles!addressee_id(id, display_name, title, avatar_url, larp_rating)"
+            "requester:profiles!requester_id(id, display_name, job, avatar_url, larp_rating), "
+            "addressee:profiles!addressee_id(id, display_name, job, avatar_url, larp_rating)"
         )
         .or_(f"requester_id.eq.{user_id},addressee_id.eq.{user_id}")
         .eq("status", "accepted")
@@ -154,7 +154,7 @@ async def get_pending_connections(
     result = (
         supabase.table("connections")
         .select(
-            "*, requester:profiles!requester_id(id, display_name, title, avatar_url, larp_rating)"
+            "*, requester:profiles!requester_id(id, display_name, job, avatar_url, larp_rating)"
         )
         .eq("addressee_id", user_id)
         .eq("status", "pending")
@@ -183,7 +183,7 @@ async def get_connection_suggestions(
 
     all_profiles = (
         supabase.table("profiles")
-        .select("id, display_name, title, avatar_url, larp_rating")
+        .select("id, display_name, job, avatar_url, larp_rating")
         .execute()
     )
     suggestions = [p for p in all_profiles.data if p["id"] not in excluded]

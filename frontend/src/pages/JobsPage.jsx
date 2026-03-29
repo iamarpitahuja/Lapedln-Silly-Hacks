@@ -1,43 +1,31 @@
 import { useState } from 'react'
 import { useMockData } from '../context/MockDataContext'
-import { updateTitle } from '../services/api'
 import styles from './JobsPage.module.css'
 
-const SUGGESTED_TITLES = [
-  'Chief Vibes Officer',
-  'Fractional Thought Leader',
-  'Head of Disruption & Synergy',
-  'VP of Looking Busy',
-  'Senior Director of Paradigm Shifts',
-  'Incoming Quantum Blockchain Evangelist',
-  'Post-Exit Founder | Limited Partner | Aura Architect',
-]
-
 export default function JobsPage() {
-  const { currentUser, updateProfile } = useMockData()
-  const [title, setTitle] = useState('')
+  const { currentUser, jobOptions, updateCurrentJob } = useMockData()
+  const [job, setJob] = useState('')
   const [status, setStatus] = useState(null) // 'updating' | 'success' | 'error'
-  const [lastTitle, setLastTitle] = useState(null)
+  const [lastJob, setLastJob] = useState(null)
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (!title.trim()) return
+    if (!job.trim()) return
     setStatus('updating')
-    try {
-      const result = await updateTitle(title)
-      await updateProfile({ headline: result.new_title })
-      setLastTitle(result.new_title)
-      setTitle('')
+    const result = await updateCurrentJob(job)
+    if (result.ok) {
+      setLastJob(result.job)
+      setJob('')
       setStatus('success')
       setTimeout(() => setStatus(null), 3000)
-    } catch {
+    } else {
       setStatus('error')
       setTimeout(() => setStatus(null), 3000)
     }
   }
 
   function handleSuggestion(suggested) {
-    setTitle(suggested)
+    setJob(suggested)
   }
 
   return (
@@ -45,47 +33,47 @@ export default function JobsPage() {
       <div className={styles.card}>
         <h2 className={styles.heading}>J*bs</h2>
         <p className={styles.subheading}>
-          Instantly overwrite your professional title. No questions asked.
-          No validation. No length check. No profanity filter. That&apos;s the joke.
+          Pick the exact fake profession you want to project. This now controls
+          your professional headline everywhere on the app.
         </p>
 
         <div className={styles.current}>
-          <span className={styles.currentLabel}>Current title:</span>
-          <span className={styles.currentValue}>{currentUser.headline}</span>
+          <span className={styles.currentLabel}>Current larp:</span>
+          <span className={styles.currentValue}>{currentUser.job}</span>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <input
             type="text"
             className={styles.input}
-            placeholder="Enter your new prestigious title..."
-            value={title}
-            onChange={e => setTitle(e.target.value)}
+            placeholder="Enter your new fake profession..."
+            value={job}
+            onChange={e => setJob(e.target.value)}
           />
           <button
             type="submit"
             className={styles.submitBtn}
-            disabled={!title.trim() || status === 'updating'}
+            disabled={!job.trim() || status === 'updating'}
           >
-            {status === 'updating' ? 'Ascending...' : 'Claim Title'}
+            {status === 'updating' ? 'Rebranding...' : 'Claim Job'}
           </button>
         </form>
 
         {status === 'success' && (
           <p className={styles.success}>
-            Prestige updated. You are now &ldquo;{lastTitle}&rdquo;. No one can take this from you.
+            Job updated. You are now larping as &ldquo;{lastJob}&rdquo;.
           </p>
         )}
         {status === 'error' && (
           <p className={styles.error}>
-            Title update failed. Even the backend rejects your ambition. (Is it running?)
+            Job update failed. Your delusion did not persist.
           </p>
         )}
 
         <div className={styles.suggestions}>
-          <p className={styles.suggestionsLabel}>Need inspiration? Try one of these:</p>
+          <p className={styles.suggestionsLabel}>Need inspiration? Pick a prebuilt larp:</p>
           <div className={styles.pills}>
-            {SUGGESTED_TITLES.map(t => (
+            {jobOptions.map(t => (
               <button key={t} className={styles.pill} onClick={() => handleSuggestion(t)}>
                 {t}
               </button>

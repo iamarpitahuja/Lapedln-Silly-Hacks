@@ -8,8 +8,6 @@ import styles from './ProfileHero.module.css'
 function toFormValues(currentUser) {
   return {
     name: currentUser.name,
-    headline: currentUser.headline,
-    persona: currentUser.persona,
     avatar: currentUser.avatar ?? '',
     coverPhoto: currentUser.coverPhoto ?? '',
   }
@@ -17,7 +15,7 @@ function toFormValues(currentUser) {
 
 export default function ProfileHero({ onNotice }) {
   const { currentUser, updateProfile } = useMockData()
-  const { name, headline, larpRating, persona, stats, avatar, coverPhoto } = currentUser
+  const { name, job, larpRating, stats, avatar, coverPhoto } = currentUser
   const [isEditing, setIsEditing] = useState(false)
   const [formValues, setFormValues] = useState(toFormValues(currentUser))
 
@@ -56,8 +54,6 @@ export default function ProfileHero({ onNotice }) {
     event.preventDefault()
     const result = await updateProfile({
       name: formValues.name,
-      headline: formValues.headline,
-      persona: formValues.persona,
       avatar: formValues.avatar,
       coverPhoto: formValues.coverPhoto,
     })
@@ -136,11 +132,10 @@ export default function ProfileHero({ onNotice }) {
         {!isEditing ? (
           <div className={styles.profileInfo}>
             <h1 className={styles.name}>{name}</h1>
-            <p className={styles.headline}>{headline}</p>
+            <p className={styles.headline}>{job}</p>
             <div className={styles.badgeRow}>
               <LarpRatingBadge rating={larpRating} size="small" />
             </div>
-            <p className={styles.persona}>{persona}</p>
             <p className={styles.recruiterStat}>
               {stats.recruiterViews} recruiters are monitoring your trajectory.
             </p>
@@ -161,27 +156,13 @@ export default function ProfileHero({ onNotice }) {
                 />
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Professional Headline</label>
+                <label className={styles.formLabel}>Current Larp Job</label>
                 <input
                   type="text"
                   className={styles.input}
-                  value={formValues.headline}
-                  onChange={event =>
-                    setFormValues(existing => ({ ...existing, headline: event.target.value }))
-                  }
-                  placeholder="e.g. Senior Solutions Architect"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>RPG Persona</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={formValues.persona}
-                  onChange={event =>
-                    setFormValues(existing => ({ ...existing, persona: event.target.value }))
-                  }
-                  placeholder="e.g. Level 14 Arcane Webweaver"
+                  value={job}
+                  readOnly
+                  placeholder="Update this from the J*bs page"
                 />
               </div>
               <div className={styles.formGroup}>
