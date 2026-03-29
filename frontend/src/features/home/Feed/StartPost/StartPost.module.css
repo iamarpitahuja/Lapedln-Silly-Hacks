@@ -220,105 +220,6 @@
   padding: 6px 12px;
 }
 
-.templateBuilder {
-  border: 1px dashed rgba(10, 102, 194, 0.35);
-  border-radius: 10px;
-  background: rgba(10, 102, 194, 0.04);
-  padding: 10px;
-  margin-bottom: 8px;
-}
-
-.templateHint {
-  font-size: 12px;
-  font-weight: 600;
-  color: #084f95;
-  margin-bottom: 8px;
-}
-
-.templatePreview {
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(0, 0, 0, 0.85);
-  margin-bottom: 10px;
-}
-
-.templateText {
-  white-space: pre-wrap;
-}
-
-.slotBlank {
-  display: inline-block;
-  margin: 1px 2px;
-  border: 1px dashed #0A66C2;
-  border-radius: 8px;
-  background: #fff;
-  color: #0A66C2;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 2px 6px;
-  cursor: pointer;
-}
-
-.slotBlankFilled {
-  border-style: solid;
-  background: rgba(10, 102, 194, 0.12);
-  color: #063b6f;
-}
-
-.slotBlankActive {
-  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2);
-}
-
-.slotEditor {
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  padding: 8px;
-}
-
-.slotLabel {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.7);
-  margin-bottom: 6px;
-}
-
-.slotInput {
-  width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  font-size: 13px;
-  padding: 7px 9px;
-  margin-bottom: 8px;
-}
-
-.slotInput:focus {
-  outline: none;
-  border-color: #0A66C2;
-  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.12);
-}
-
-.slotSuggestions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.slotSuggestion {
-  border-radius: 999px;
-  border: 1px solid rgba(10, 102, 194, 0.3);
-  background: #fff;
-  color: #0A66C2;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 10px;
-}
-
-.slotSuggestion:hover {
-  background: rgba(10, 102, 194, 0.08);
-}
-
 .composerMeta {
   margin-top: 8px;
   display: flex;
@@ -386,4 +287,36 @@
 .publishBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.suggestionCards {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0;
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.suggestionCard {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.suggestionCard:hover {
+  background: rgba(10, 102, 194, 0.04);
+  border-color: rgba(10, 102, 194, 0.3);
 }
