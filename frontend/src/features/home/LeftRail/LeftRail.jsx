@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useMockData } from '../../../context/MockDataContext'
 import LarpRatingBadge from '../../../components/LarpRatingBadge/LarpRatingBadge'
 import Icon from '../../../components/Icon/Icon'
@@ -7,15 +8,30 @@ import styles from './LeftRail.module.css'
 export default function LeftRail() {
   const { currentUser } = useMockData()
   const { name, job, larpRating, stats, glazers, avatar, coverPhoto } = currentUser
+  const resolvedCoverPhoto = useMemo(() => {
+    if (typeof coverPhoto !== 'string') return ''
+    return coverPhoto.trim()
+  }, [coverPhoto])
+  const [isCoverPhotoBroken, setIsCoverPhotoBroken] = useState(false)
+
+  useEffect(() => {
+    setIsCoverPhotoBroken(false)
+  }, [resolvedCoverPhoto])
 
   return (
     <div className={styles.rail}>
       {/* Identity card */}
       <div className={styles.card}>
-        <div
-          className={styles.coverPhoto}
-          style={coverPhoto ? { backgroundImage: `url(${coverPhoto})` } : {}}
-        />
+        <div className={styles.coverPhoto}>
+          {resolvedCoverPhoto && !isCoverPhotoBroken ? (
+            <img
+              src={resolvedCoverPhoto}
+              alt=""
+              className={styles.coverPhotoImg}
+              onError={() => setIsCoverPhotoBroken(true)}
+            />
+          ) : null}
+        </div>
         <div className={styles.avatarWrap}>
           {avatar ? (
             <img src={avatar} alt={name} className={styles.avatarImg} />

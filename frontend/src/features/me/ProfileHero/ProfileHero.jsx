@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMockData } from '../../../context/MockDataContext'
 import LarpRatingBadge from '../../../components/LarpRatingBadge/LarpRatingBadge'
 import Icon from '../../../components/Icon/Icon'
@@ -18,6 +18,16 @@ export default function ProfileHero({ onNotice }) {
   const { name, job, larpRating, stats, avatar, coverPhoto } = currentUser
   const [isEditing, setIsEditing] = useState(false)
   const [formValues, setFormValues] = useState(toFormValues(currentUser))
+  const activeCoverPhoto = useMemo(() => {
+    const value = isEditing ? formValues.coverPhoto : coverPhoto
+    if (typeof value !== 'string') return ''
+    return value.trim()
+  }, [coverPhoto, formValues.coverPhoto, isEditing])
+  const [isCoverPhotoBroken, setIsCoverPhotoBroken] = useState(false)
+
+  useEffect(() => {
+    setIsCoverPhotoBroken(false)
+  }, [activeCoverPhoto])
 
   function handleStartEditing() {
     setFormValues(toFormValues(currentUser))
@@ -69,16 +79,15 @@ export default function ProfileHero({ onNotice }) {
 
   return (
     <div className={styles.card}>
-      <div
-        className={styles.coverPhoto}
-        style={
-          isEditing && formValues.coverPhoto
-            ? { backgroundImage: `url(${formValues.coverPhoto})` }
-            : coverPhoto
-              ? { backgroundImage: `url(${coverPhoto})` }
-              : {}
-        }
-      >
+      <div className={styles.coverPhoto}>
+        {activeCoverPhoto && !isCoverPhotoBroken ? (
+          <img
+            src={activeCoverPhoto}
+            alt=""
+            className={styles.coverPhotoImg}
+            onError={() => setIsCoverPhotoBroken(true)}
+          />
+        ) : null}
         {isEditing && (
           <label className={styles.uploadOverlay} title="Upload cover photo">
             <Icon name="camera" size={24} />

@@ -23,14 +23,25 @@
   background-size: cover;
   background-position: center;
   position: relative;
+  z-index: 0;
   overflow: hidden;
   border-bottom: 1px solid var(--border-md);
+}
+
+.coverPhotoImg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .coverPhoto::after {
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.12) 0%,
@@ -39,6 +50,8 @@
 }
 
 .avatarWrap {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: center;
   margin-top: -28px;
