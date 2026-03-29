@@ -487,7 +487,7 @@ export default function PostCard({ post, isOwnPost = false }) {
           aria-label="View thread"
         >
           <Icon name="message" size={12} className={styles.commentIcon} />
-          <span className={styles.commentCount} aria-hidden="true">{totalCommentCount} comments</span>
+          <span className={styles.commentCount} aria-hidden="true">{totalCommentCount} comment{totalCommentCount === 1 ? '' : 's'}</span>
         </button>
       </div>
 

@@ -119,4 +119,23 @@ describe('PostCard', () => {
     expect(screen.getByText('This aged like a high-signal market thesis.')).toBeInTheDocument()
     expect(screen.getByText('Fractional Brand Philosopher')).toBeInTheDocument()
   })
+
+  it('shows "1 comment" (singular) when there is exactly one comment', () => {
+    const singleCommentPost = {
+      ...basePost,
+      reactions: { count: 1, comments: 1, relarps: 0 },
+    }
+    renderCard(singleCommentPost)
+    expect(screen.getByText('1 comment')).toBeInTheDocument()
+    expect(screen.queryByText('1 comments')).not.toBeInTheDocument()
+  })
+
+  it('shows "2 comments" (plural) when there are multiple comments', () => {
+    const multiCommentPost = {
+      ...basePost,
+      reactions: { count: 3, comments: 3, relarps: 0 },
+    }
+    renderCard(multiCommentPost)
+    expect(screen.getByText('3 comments')).toBeInTheDocument()
+  })
 })
