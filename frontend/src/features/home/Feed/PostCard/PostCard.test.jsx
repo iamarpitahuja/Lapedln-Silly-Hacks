@@ -130,7 +130,7 @@ describe('PostCard', () => {
     expect(screen.queryByText('1 comments')).not.toBeInTheDocument()
   })
 
-  it('shows "2 comments" (plural) when there are multiple comments', () => {
+  it('shows "3 comments" (plural) when there are multiple comments', () => {
     const multiCommentPost = {
       ...basePost,
       reactions: { count: 3, comments: 3, relarps: 0 },
