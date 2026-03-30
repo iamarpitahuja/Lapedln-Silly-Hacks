@@ -1,0 +1,179 @@
+.root {
+  height: 100vh;
+  background: #f3f2ef;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 52px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.topLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-weight: 900;
+  font-size: 20px;
+  color: #0a66c2;
+  letter-spacing: -0.03em;
+  font-family: Georgia, serif;
+}
+
+.mode {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.4);
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  padding-left: 12px;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.personaTag {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.lrBadge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0a66c2;
+  background: #eef3f8;
+  border: 1px solid rgba(10, 102, 194, 0.2);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.exitBtn {
+  background: transparent;
+  border: 1.5px solid #0a66c2;
+  border-radius: 24px;
+  padding: 5px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0a66c2;
+  transition: background 0.15s;
+}
+
+.exitBtn:hover {
+  background: rgba(10, 102, 194, 0.05);
+}
+
+.panels {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.leftPanel {
+  width: 25%;
+  min-width: 200px;
+  max-width: 280px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.centerPanel {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.rightPanel {
+  width: 25%;
+  min-width: 200px;
+  max-width: 280px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.idleState {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 32px;
+  background: #f3f2ef;
+  gap: 8px;
+}
+
+.idleIcon {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.idleText {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.4);
+  font-style: italic;
+}
+
+.errorCard {
+  max-width: 360px;
+  background: #ffffff;
+  border: 1px solid rgba(204, 16, 22, 0.3);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.errorMsg {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.errorActions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btnSmPrimary {
+  background: #0a66c2;
+  color: #ffffff;
+  border: none;
+  border-radius: 18px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnSmSecondary {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 18px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}

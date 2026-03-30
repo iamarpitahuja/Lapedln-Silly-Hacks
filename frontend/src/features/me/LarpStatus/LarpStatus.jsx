@@ -80,6 +80,12 @@ export default function LarpStatus({ onNotice }) {
               <button className={styles.btnFilled} onClick={handleOpenEditor}>
                 Edit Target Larps
               </button>
+              <button
+                className={styles.trainingBtn}
+                onClick={() => window.location.assign('/persona-select')}
+              >
+                ⚔️ Start Training
+              </button>
             </div>
           </div>
         ) : (

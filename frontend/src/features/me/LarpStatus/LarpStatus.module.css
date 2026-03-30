@@ -198,6 +198,23 @@
   border: 1px solid var(--border-md);
 }
 
+.trainingBtn {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.6);
+  padding: 6px 16px;
+  border-radius: 18px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.trainingBtn:hover {
+  border-color: #0a66c2;
+  color: #0a66c2;
+}
+
 .emptyState {
   font-size: 14px;
   color: var(--text-muted);

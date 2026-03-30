@@ -1,0 +1,148 @@
+.wrap {
+  padding: 24px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 16px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.scenarioName {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.9);
+  margin: 0 0 4px;
+}
+
+.setting {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+.diffBadge {
+  flex-shrink: 0;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.characterRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.charAvatar {
+  font-size: 32px;
+}
+
+.charName {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.85);
+  margin: 0 0 2px;
+}
+
+.charRole {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+.openingLine {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.6;
+  font-style: italic;
+  border-left: 3px solid #0a66c2;
+  padding-left: 12px;
+  margin-bottom: 16px;
+}
+
+.personaFit {
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.objectives {
+  margin-bottom: 8px;
+}
+
+.objectivesTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 8px;
+}
+
+.objectiveItem {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  padding: 3px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btnConfirm {
+  flex: 1;
+  background: #0a66c2;
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnConfirm:hover {
+  background: #004182;
+}
+
+.btnBack {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 24px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.btnBack:hover {
+  border-color: rgba(0, 0, 0, 0.3);
+}
