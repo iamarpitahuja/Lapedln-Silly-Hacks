@@ -1,14 +1,17 @@
 .wrap {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--border);
   padding: 10px 16px 12px;
-  background: #fafafa;
+  background: rgba(167, 139, 250, 0.02);
 }
 
 .label {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.6);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon);
   margin-bottom: 8px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.06em;
+  text-shadow: none;
 }
 
 .pills {
@@ -21,20 +24,22 @@
 
 .pill {
   padding: 5px 12px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-md);
   border-radius: 20px;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.8);
-  background: #fff;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
   transition: all var(--transition-fast);
   cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .pill:hover:not(:disabled) {
-  background: #eef3f8;
-  border-color: #0A66C2;
-  color: #0A66C2;
+  background: rgba(167, 139, 250, 0.06);
+  border-color: var(--neon);
+  color: var(--neon);
   transform: translateY(-1px);
+  box-shadow: var(--glow-sm);
 }
 
 .pill:active:not(:disabled) {
@@ -42,16 +47,18 @@
 }
 
 .pill:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .confirmation {
   font-size: 12px;
-  color: #057642;
-  font-weight: 600;
+  color: var(--neon);
+  font-weight: 700;
   padding: 6px 0;
   margin-bottom: 10px;
+  text-shadow: none;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .customRow {
@@ -64,36 +71,42 @@
   flex: 1;
   padding: 8px 12px;
   font-size: 13px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-md);
   border-radius: 4px;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .input:focus {
-  border-color: #0A66C2;
-  box-shadow: inset 0 0 0 1px #0A66C2;
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.12);
 }
 
 .sendBtn {
   padding: 0 16px;
-  background: #0A66C2;
-  color: #fff;
+  background: var(--neon);
+  color: var(--text-on-accent);
   border-radius: 20px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, box-shadow 0.15s;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
 }
 
 .sendBtn:hover:not(:disabled) {
-  background: #004182;
+  background: var(--neon-dark);
+  box-shadow: var(--glow-md);
 }
 
 .sendBtn:disabled {
-  background: rgba(0, 0, 0, 0.1);
-  color: rgba(0, 0, 0, 0.3);
+  background: rgba(167, 139, 250, 0.2);
+  color: rgba(0, 0, 0, 0.5);
   cursor: not-allowed;
 }
 
@@ -105,7 +118,7 @@
 
 .sliderLabel {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -115,7 +128,7 @@
   -webkit-appearance: none;
   height: 4px;
   border-radius: 2px;
-  background: #dde0e4;
+  background: rgba(167, 139, 250, 0.15);
   outline: none;
 }
 
@@ -124,17 +137,17 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #0A66C2;
+  background: var(--neon);
   cursor: pointer;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px #0A66C2;
+  border: 2px solid var(--bg-deep);
+  box-shadow: 0 0 0 1px var(--neon), 0 0 8px rgba(167, 139, 250, 0.2);
 }
 
 .slider::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #0A66C2;
+  background: var(--neon);
   cursor: pointer;
-  border: 2px solid #fff;
+  border: 2px solid var(--bg-deep);
 }

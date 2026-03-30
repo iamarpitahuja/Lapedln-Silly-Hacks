@@ -1,0 +1,27 @@
+.wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  overflow: hidden;
+  position: relative;
+}
+
+.history {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px 8px;
+}
+
+.flashOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 7, 15, 0.78);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+

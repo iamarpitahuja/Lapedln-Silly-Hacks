@@ -1,21 +1,23 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from supabase import create_client
 
 from app.config import settings
-from app.routers import feed, posts, jobs
+from app.routers import feed, posts, jobs, profile, connections, messages, notifications, relarps, games, larpmaxxer
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: create service-role Supabase client (singleton)
+    from supabase import create_client
+    logger.info("Connecting to Supabase at %s", settings.supabase_url)
     app.state.supabase = create_client(
         settings.supabase_url, settings.supabase_service_role_key
     )
     yield
-    # Shutdown: nothing to clean up
 
 
 app = FastAPI(title="LARP Platform", version="0.1.0", lifespan=lifespan)
@@ -31,8 +33,15 @@ app.add_middleware(
 app.include_router(feed.router, prefix="/api")
 app.include_router(posts.router, prefix="/api")
 app.include_router(jobs.router, prefix="/api")
+app.include_router(profile.router, prefix="/api")
+app.include_router(connections.router, prefix="/api")
+app.include_router(messages.router, prefix="/api")
+app.include_router(notifications.router, prefix="/api")
+app.include_router(relarps.router, prefix="/api")
+app.include_router(games.router)
+app.include_router(larpmaxxer.router, prefix="/api")
 
 
 @app.get("/health")
 async def health():
-    return {"status": "larping"}
+    return {"status": "larping", "dev_mode": settings.dev_mode}

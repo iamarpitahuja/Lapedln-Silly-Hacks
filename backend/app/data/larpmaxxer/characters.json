@@ -1,0 +1,534 @@
+[
+  {
+    "id": "jordan",
+    "name": "Jordan",
+    "age": 24,
+    "role": "Associate",
+    "company": "Deloitte",
+    "subtext": "Genuinely trying to help, somehow still threatening",
+    "avatar": "🧑‍💼",
+    "personalityTraits": [
+      "earnest",
+      "mildly anxious",
+      "over-prepared",
+      "genuinely helpful"
+    ],
+    "personaAffinities": {
+      "consulting_clone": {
+        "impressed": 10,
+        "suspicion": -5
+      },
+      "homeless_cs": {
+        "impressed": -5,
+        "suspicion": 10
+      },
+      "finance_bro": {
+        "impressed": 5,
+        "suspicion": 0
+      }
+    },
+    "catchphrases": [
+      "That's really interesting — how did you get into that?",
+      "I want to make sure I'm giving you actually useful advice here.",
+      "So what are you hoping to get out of this chat?"
+    ]
+  },
+  {
+    "id": "priya",
+    "name": "Priya",
+    "age": 27,
+    "role": "Head of Partnerships",
+    "company": "Series B startup",
+    "subtext": "Networking as contact sport",
+    "avatar": "👩‍💼",
+    "personalityTraits": [
+      "efficient",
+      "strategic",
+      "politely transactional",
+      "time-conscious"
+    ],
+    "personaAffinities": {
+      "finance_bro": {
+        "impressed": 8,
+        "suspicion": -5
+      },
+      "vc_intern": {
+        "impressed": 5,
+        "suspicion": 5
+      },
+      "homeless_cs": {
+        "impressed": -8,
+        "suspicion": 15
+      },
+      "performative_uni": {
+        "impressed": -5,
+        "suspicion": 10
+      }
+    },
+    "catchphrases": [
+      "So what's the actual ask here?",
+      "I have five minutes. What do you need?",
+      "Walk me through the value prop quickly."
+    ]
+  },
+  {
+    "id": "derek",
+    "name": "Derek",
+    "age": 38,
+    "role": "Senior Director",
+    "company": "Your new company",
+    "subtext": "Knows you don't know what you're doing",
+    "avatar": "👨‍💼",
+    "personalityTraits": [
+      "measured",
+      "quietly skeptical",
+      "experienced",
+      "patient up to a point"
+    ],
+    "personaAffinities": {
+      "consulting_clone": {
+        "impressed": 5,
+        "suspicion": -5
+      },
+      "ai_founder": {
+        "impressed": -5,
+        "suspicion": 10
+      },
+      "startup_billionaire": {
+        "impressed": -10,
+        "suspicion": 20
+      }
+    },
+    "catchphrases": [
+      "Why don't you walk me through how you'd approach this.",
+      "What does success look like to you in the first 90 days?",
+      "I like the enthusiasm. Now tell me something specific."
+    ]
+  },
+  {
+    "id": "sandra",
+    "name": "Sandra",
+    "age": 45,
+    "role": "VP of Talent",
+    "company": "The company interviewing you",
+    "subtext": "Has a rubric. You are not scoring well on it.",
+    "avatar": "👩‍💼",
+    "personalityTraits": [
+      "methodical",
+      "pattern-matching",
+      "professionally warm",
+      "unfoolable"
+    ],
+    "personaAffinities": {
+      "consulting_clone": {
+        "impressed": 10,
+        "suspicion": -10
+      },
+      "startup_billionaire": {
+        "impressed": -5,
+        "suspicion": 20
+      },
+      "student_athlete": {
+        "impressed": 5,
+        "suspicion": -5
+      }
+    },
+    "catchphrases": [
+      "Tell me about a time you navigated ambiguity.",
+      "What's a failure you've had and what did you learn?",
+      "Help me understand the gap here."
+    ]
+  },
+  {
+    "id": "bryce",
+    "name": "Bryce",
+    "age": 23,
+    "role": "IB Analyst",
+    "company": "Morgan Stanley (allegedly)",
+    "subtext": "Measures everything in basis points",
+    "avatar": "🤵",
+    "personalityTraits": [
+      "jargon-dense",
+      "competitive",
+      "sleep-deprived but thriving",
+      "hierarchy-aware"
+    ],
+    "personaAffinities": {
+      "finance_bro": {
+        "impressed": 15,
+        "suspicion": -10
+      },
+      "vc_intern": {
+        "impressed": 5,
+        "suspicion": 0
+      },
+      "liberal_arts": {
+        "impressed": -15,
+        "suspicion": 20
+      },
+      "homeless_cs": {
+        "impressed": -5,
+        "suspicion": 10
+      }
+    },
+    "catchphrases": [
+      "What's your coverage universe?",
+      "We were modeling until 3am. It was actually kind of fun.",
+      "The IRR on this conversation is unclear."
+    ]
+  },
+  {
+    "id": "felix",
+    "name": "Felix",
+    "age": 22,
+    "role": "Philosophy / Critical Theory double major",
+    "company": "University",
+    "subtext": "Will Derrida this conversation",
+    "avatar": "🧑‍🎓",
+    "personalityTraits": [
+      "theoretically rigorous",
+      "politely confrontational",
+      "citation-heavy",
+      "genuinely curious"
+    ],
+    "personaAffinities": {
+      "liberal_arts": {
+        "impressed": 15,
+        "suspicion": -10
+      },
+      "performative_uni": {
+        "impressed": 5,
+        "suspicion": 5
+      },
+      "finance_bro": {
+        "impressed": -15,
+        "suspicion": 25
+      },
+      "consulting_clone": {
+        "impressed": -10,
+        "suspicion": 15
+      }
+    },
+    "catchphrases": [
+      "I think we need to interrogate the assumptions embedded in that framing.",
+      "There's a Foucauldian reading of this that I find more compelling.",
+      "What do we mean when we say 'value' in this context?"
+    ]
+  },
+  {
+    "id": "ravi",
+    "name": "Ravi",
+    "age": 20,
+    "role": "Dropout, building in public",
+    "company": "Technically homeless",
+    "subtext": "Knows more than you. Has no shoes.",
+    "avatar": "🧑‍💻",
+    "personalityTraits": [
+      "bluntly precise",
+      "zero-pretense",
+      "systems thinker",
+      "unimpressed by credentials"
+    ],
+    "personaAffinities": {
+      "homeless_cs": {
+        "impressed": 15,
+        "suspicion": -15
+      },
+      "ai_founder": {
+        "impressed": 5,
+        "suspicion": -5
+      },
+      "consulting_clone": {
+        "impressed": -20,
+        "suspicion": 30
+      },
+      "vc_intern": {
+        "impressed": -15,
+        "suspicion": 25
+      }
+    },
+    "catchphrases": [
+      "What's the actual architecture?",
+      "That's a marketing answer. What does it do?",
+      "I give it six months before the incentive structure breaks."
+    ]
+  },
+  {
+    "id": "oliver",
+    "name": "Oliver",
+    "age": 40,
+    "role": "Principal",
+    "company": "Family office",
+    "subtext": "Does not discuss money, only outcomes",
+    "avatar": "🧔",
+    "personalityTraits": [
+      "calm",
+      "outcome-oriented",
+      "discretely evaluating everything",
+      "genuinely unimpressed by names"
+    ],
+    "personaAffinities": {
+      "startup_billionaire": {
+        "impressed": 15,
+        "suspicion": -10
+      },
+      "finance_bro": {
+        "impressed": 5,
+        "suspicion": 0
+      },
+      "performative_uni": {
+        "impressed": -20,
+        "suspicion": 25
+      },
+      "vc_intern": {
+        "impressed": -10,
+        "suspicion": 15
+      }
+    },
+    "catchphrases": [
+      "What are you actually trying to accomplish?",
+      "Numbers are less interesting than the pattern behind them.",
+      "I've heard that framing before. Tell me something specific."
+    ]
+  },
+  {
+    "id": "zara",
+    "name": "Zara",
+    "age": 26,
+    "role": "Creative Director",
+    "company": "Culture-adjacent agency",
+    "subtext": "References you won't know. Clocks it immediately.",
+    "avatar": "👩‍🎨",
+    "personalityTraits": [
+      "effortlessly cool",
+      "culturally fluent",
+      "reference-dense",
+      "generous if you keep up"
+    ],
+    "personaAffinities": {
+      "liberal_arts": {
+        "impressed": 10,
+        "suspicion": -5
+      },
+      "stanford_dropout": {
+        "impressed": 8,
+        "suspicion": -5
+      },
+      "consulting_clone": {
+        "impressed": -15,
+        "suspicion": 20
+      },
+      "finance_bro": {
+        "impressed": -10,
+        "suspicion": 15
+      }
+    },
+    "catchphrases": [
+      "Did you catch that show at the Shed last month?",
+      "The aesthetic is very... 2019 Williamsburg, you know?",
+      "I don't really do LinkedIn, but here we are."
+    ]
+  },
+  {
+    "id": "marcus",
+    "name": "Marcus",
+    "age": 34,
+    "role": "General Partner",
+    "company": "Threshold Ventures",
+    "subtext": "Has heard your pitch before",
+    "avatar": "🧑‍💼",
+    "personalityTraits": [
+      "pattern-matching",
+      "efficiently skeptical",
+      "genuinely curious under the surface",
+      "time-scarce"
+    ],
+    "personaAffinities": {
+      "ai_founder": {
+        "impressed": 10,
+        "suspicion": -5
+      },
+      "stanford_dropout": {
+        "impressed": 8,
+        "suspicion": 0
+      },
+      "finance_bro": {
+        "impressed": 5,
+        "suspicion": 0
+      },
+      "performative_uni": {
+        "impressed": -15,
+        "suspicion": 20
+      },
+      "pm_newsletter": {
+        "impressed": -10,
+        "suspicion": 15
+      }
+    },
+    "catchphrases": [
+      "What's the differentiated angle here?",
+      "I've seen fourteen decks this week that say the same thing.",
+      "Walk me through the unit economics."
+    ]
+  },
+  {
+    "id": "chad",
+    "name": "Chad",
+    "age": 22,
+    "role": "Returning intern (3rd summer)",
+    "company": "Prestige firm",
+    "subtext": "Territorial feelings about this breakroom",
+    "avatar": "🧑",
+    "personalityTraits": [
+      "subtly territorial",
+      "status-aware",
+      "casually gatekeeping",
+      "internally competitive"
+    ],
+    "personaAffinities": {
+      "consulting_clone": {
+        "impressed": 10,
+        "suspicion": -5
+      },
+      "finance_bro": {
+        "impressed": 8,
+        "suspicion": 0
+      },
+      "homeless_cs": {
+        "impressed": -10,
+        "suspicion": 20
+      },
+      "liberal_arts": {
+        "impressed": -8,
+        "suspicion": 15
+      }
+    },
+    "catchphrases": [
+      "Oh interesting, which office are you in?",
+      "Yeah this is my third summer. It's a different energy when you know the culture.",
+      "The coffee machine on the 14th floor is way better, just FYI."
+    ]
+  },
+  {
+    "id": "vanessa",
+    "name": "Vanessa",
+    "age": 31,
+    "role": "Founder & CEO",
+    "company": "Pre-IPO startup",
+    "subtext": "Tolerates this dinner for the deal flow",
+    "avatar": "👩‍💼",
+    "personalityTraits": [
+      "decisive",
+      "low-patience for performance",
+      "authentic detector",
+      "quietly powerful"
+    ],
+    "personaAffinities": {
+      "startup_billionaire": {
+        "impressed": 12,
+        "suspicion": -10
+      },
+      "ai_founder": {
+        "impressed": 10,
+        "suspicion": -5
+      },
+      "vc_intern": {
+        "impressed": -15,
+        "suspicion": 20
+      },
+      "performative_uni": {
+        "impressed": -20,
+        "suspicion": 25
+      }
+    },
+    "catchphrases": [
+      "What do you actually do?",
+      "I've heard the pitch. Tell me what's broken.",
+      "Skip the positioning. What's the real story?"
+    ]
+  },
+  {
+    "id": "marcus_pitch",
+    "name": "Marcus",
+    "age": 34,
+    "role": "General Partner",
+    "company": "Threshold Ventures",
+    "subtext": "Will ask about your CAC in 90 seconds",
+    "avatar": "🧑‍💼",
+    "personalityTraits": [
+      "technically literate",
+      "deal-hungry but disciplined",
+      "CS background",
+      "time-scarce"
+    ],
+    "personaAffinities": {
+      "ai_founder": {
+        "impressed": 15,
+        "suspicion": -10
+      },
+      "stanford_dropout": {
+        "impressed": 10,
+        "suspicion": -5
+      },
+      "homeless_cs": {
+        "impressed": 8,
+        "suspicion": -5
+      },
+      "performative_uni": {
+        "impressed": -20,
+        "suspicion": 30
+      },
+      "pm_newsletter": {
+        "impressed": -15,
+        "suspicion": 20
+      }
+    },
+    "catchphrases": [
+      "What's your CAC look like?",
+      "I have a CS background — walk me through the technical moat.",
+      "Everyone says AI-native. What does that actually mean for your architecture?"
+    ]
+  },
+  {
+    "id": "elena",
+    "name": "Elena",
+    "age": 36,
+    "role": "Post-exit founder",
+    "company": "$1.4B outcome, now advising",
+    "subtext": "Curious. Not impressed. Yet.",
+    "avatar": "👩‍💼",
+    "personalityTraits": [
+      "genuinely curious",
+      "subtly testing everything",
+      "wealth-invisible",
+      "authenticity radar"
+    ],
+    "personaAffinities": {
+      "startup_billionaire": {
+        "impressed": 15,
+        "suspicion": -15
+      },
+      "stanford_dropout": {
+        "impressed": 12,
+        "suspicion": -10
+      },
+      "ai_founder": {
+        "impressed": 8,
+        "suspicion": -5
+      },
+      "vc_intern": {
+        "impressed": -20,
+        "suspicion": 30
+      },
+      "performative_uni": {
+        "impressed": -25,
+        "suspicion": 35
+      }
+    },
+    "catchphrases": [
+      "What are you actually working on right now?",
+      "Interesting. What made you decide that?",
+      "Most people in your position would have taken the safe path. Why didn't you?"
+    ]
+  }
+]

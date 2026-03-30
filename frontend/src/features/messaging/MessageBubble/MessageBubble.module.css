@@ -1,0 +1,54 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 72%;
+  gap: 2px;
+}
+
+.mine {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.theirs {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.bubble {
+  padding: 9px 13px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-word;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.bubbleMine {
+  background: var(--neon-dark);
+  color: var(--text-on-accent);
+  border-radius: 14px 14px 3px 14px;
+  box-shadow: 0 0 12px rgba(0, 204, 51, 0.3);
+}
+
+.bubbleTheirs {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-md);
+  border-radius: 14px 14px 14px 3px;
+}
+
+.senderName {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon);
+  padding: 0 4px;
+  margin-top: 4px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+}
+
+.time {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 0 4px;
+}

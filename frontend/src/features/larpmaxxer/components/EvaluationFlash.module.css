@@ -1,0 +1,68 @@
+.card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 24px 28px;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 12px 40px var(--border-md);
+  text-align: center;
+}
+
+.alignmentBadge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.thinks {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.deltas {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.delta {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.larpDelta {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.dismissBtn {
+  background: var(--neon);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 24px;
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dismissBtn:hover {
+  background: var(--neon-dark);
+}
+
+
+

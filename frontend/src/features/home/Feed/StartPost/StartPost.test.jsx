@@ -62,23 +62,37 @@ describe('StartPost', () => {
     expect(screen.getByLabelText('Post content')).toHaveValue('')
   })
 
-  it('action buttons expand the footer, select type, and inject blank template text', () => {
+  it('clicking an action shows suggestion cards', () => {
     renderStartPost()
     fireEvent.click(screen.getByRole('button', { name: /Celebrate fake promotion/i }))
-    expect(screen.getByLabelText('Post type')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('Career Lore')).toBeInTheDocument()
-    expect(screen.getByLabelText('Post content')).toHaveValue(
-      'Thrilled to share that I have been promoted to ____ROLE TITLE____ at ____COMPANY NAME____. Massive thanks to ____WHO TO THANK____ for backing this journey.'
-    )
+    expect(screen.getByTestId('suggestion-cards')).toBeInTheDocument()
+    expect(screen.getAllByTestId('suggestion-card')).toHaveLength(3)
   })
 
-  it('fills a specific blank from slot suggestions', () => {
+  it('clicking a suggestion loads its text into the textarea', () => {
     renderStartPost()
     fireEvent.click(screen.getByRole('button', { name: /Celebrate fake promotion/i }))
-    fireEvent.click(screen.getByRole('button', { name: /role title/i }))
-    fireEvent.click(screen.getByRole('button', { name: 'Senior Prompt Engineer' }))
+    const cards = screen.getAllByTestId('suggestion-card')
+    fireEvent.click(cards[0])
     expect(screen.getByLabelText('Post content')).toHaveValue(
-      'Thrilled to share that I have been promoted to Senior Prompt Engineer at ____COMPANY NAME____. Massive thanks to ____WHO TO THANK____ for backing this journey.'
+      'Thrilled to share that I have accepted a role as Chief Vibe Strategist at Nimbus Dynamics. Grateful for everyone who believed in my journey. The ecosystem is ready for what comes next.'
     )
+    expect(screen.queryByTestId('suggestion-cards')).not.toBeInTheDocument()
+  })
+
+  it('clicking the active action again dismisses suggestion cards', () => {
+    renderStartPost()
+    fireEvent.click(screen.getByRole('button', { name: /Celebrate fake promotion/i }))
+    expect(screen.getByTestId('suggestion-cards')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /Celebrate fake promotion/i }))
+    expect(screen.queryByTestId('suggestion-cards')).not.toBeInTheDocument()
+  })
+
+  it('cancel dismisses suggestion cards', () => {
+    renderStartPost()
+    fireEvent.click(screen.getByRole('button', { name: /Celebrate fake promotion/i }))
+    expect(screen.getByTestId('suggestion-cards')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.queryByTestId('suggestion-cards')).not.toBeInTheDocument()
   })
 })

@@ -1,10 +1,10 @@
 .card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(10, 20, 12, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   padding: 24px;
 }
 
@@ -16,10 +16,12 @@
 }
 
 .title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
-  letter-spacing: -0.01em;
+  color: var(--neon);
+  letter-spacing: 0.02em;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  text-shadow: none;
 }
 
 .headerActions {
@@ -34,13 +36,13 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .iconBtn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(167, 139, 250, 0.08);
+  color: var(--neon);
 }
 
 .entries {
@@ -58,15 +60,16 @@
   width: 52px;
   height: 52px;
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--bg-elevated);
   font-size: 16px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--neon);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .entryInfo {
@@ -74,37 +77,39 @@
 }
 
 .school {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--neon);
   margin-bottom: 2px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
 }
 
 .degree {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-primary);
   margin-bottom: 2px;
 }
 
 .dates {
-  font-size: 13px;
-  color: rgba(0, 0, 0, 0.4);
+  font-size: 12px;
+  color: var(--text-muted);
   margin-bottom: 8px;
 }
 
 .activities {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
+  font-size: 13px;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
 .editorWrapper {
   animation: fadeIn 0.2s ease-out;
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(167, 139, 250, 0.02);
   padding: 16px;
   border-radius: 12px;
-  border: 1px dashed rgba(0, 0, 0, 0.1);
+  border: 1px dashed rgba(167, 139, 250, 0.2);
   margin-bottom: 16px;
 }
 
@@ -116,20 +121,21 @@
 
 .editor input,
 .editor textarea {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-md);
   border-radius: 8px;
   padding: 10px 14px;
-  font-size: 14px;
-  background: rgba(255, 255, 255, 0.8);
-  font-family: inherit;
+  font-size: 13px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .editor input:focus,
 .editor textarea:focus {
   outline: none;
-  border-color: #0a66c2;
-  box-shadow: 0 0 0 4px rgba(10, 102, 194, 0.1);
+  border-color: var(--neon);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
 }
 
 .editor textarea {
@@ -145,31 +151,36 @@
 }
 
 .primaryBtn {
-  background: #0a66c2;
-  color: white;
+  background: var(--neon);
+  color: var(--text-on-accent);
   padding: 8px 20px;
   border-radius: 20px;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .primaryBtn:hover {
-  background: #004182;
+  background: var(--neon-dark);
+  box-shadow: var(--glow-md);
 }
 
 .secondaryBtn {
   background: transparent;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   padding: 8px 20px;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 13px;
+  border: 1px solid var(--border-md);
+  transition: all var(--transition-fast);
 }
 
 .secondaryBtn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.9);
+  background: rgba(167, 139, 250, 0.04);
+  border-color: var(--border-strong);
+  color: var(--neon);
 }
 
 .rowHead {
@@ -197,17 +208,24 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .rowBtn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(167, 139, 250, 0.08);
+  color: var(--neon);
 }
 
 .rowBtn[aria-label*="Delete"]:hover {
-  color: #d11124;
-  background-color: rgba(209, 17, 36, 0.05);
+  color: var(--neon);
+  background-color: rgba(167, 139, 250, 0.08);
+}
+
+.emptyState {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 @keyframes fadeIn {

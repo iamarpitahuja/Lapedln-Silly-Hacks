@@ -1,40 +1,43 @@
 from fastapi import Header, HTTPException, Request
-from jose import JWTError, jwt
-from supabase import create_client, Client
 
 from app.config import settings
 
+DEV_USER_ID = "00000000-0000-0000-0000-000000000000"
 
-def get_current_user(authorization: str = Header(...)) -> str:
-    """Extract and verify user_id from Supabase JWT."""
+
+def get_current_user(authorization: str = Header(default=""), request: Request = None) -> str:
+    """Extract and verify user_id from Supabase JWT.
+
+    Uses the Supabase service client to verify the token via Supabase Auth API,
+    so no JWT secret is needed locally.
+    """
+    if settings.skip_auth:
+        return DEV_USER_ID
+
     if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid authorization header")
+        raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
 
     token = authorization.removeprefix("Bearer ")
 
     try:
-        payload = jwt.decode(
-            token,
-            settings.supabase_service_role_key,
-            algorithms=["HS256"],
-            audience="authenticated",
-        )
-        user_id = payload.get("sub")
-        if not user_id:
-            raise HTTPException(status_code=401, detail="Invalid token: no sub claim")
-        return user_id
-    except JWTError as e:
+        # Use Supabase Auth API to verify the token and get the user
+        supabase = request.app.state.supabase
+        user_response = supabase.auth.get_user(token)
+        user = user_response.user
+        if not user or not user.id:
+            raise HTTPException(status_code=401, detail="Invalid token: no user found")
+        return str(user.id)
+    except HTTPException:
+        raise
+    except Exception as e:
         raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
 
 
-def get_service_client(request: Request) -> Client:
+def get_service_client(request: Request):
     """Return the service-role Supabase client (bypasses RLS)."""
     return request.app.state.supabase
 
 
-def get_user_client(authorization: str = Header(...)) -> Client:
-    """Create a Supabase client with the user's JWT so RLS applies."""
-    token = authorization.removeprefix("Bearer ")
-    client = create_client(settings.supabase_url, settings.supabase_anon_key)
-    client.postgrest.auth(token)
-    return client
+def get_user_client(request: Request):
+    """Return the service-role client for now. TODO: use user JWT once Social Blindness is needed."""
+    return request.app.state.supabase

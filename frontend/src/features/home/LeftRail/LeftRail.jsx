@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useMockData } from '../../../context/MockDataContext'
 import LarpRatingBadge from '../../../components/LarpRatingBadge/LarpRatingBadge'
 import Icon from '../../../components/Icon/Icon'
@@ -6,16 +8,31 @@ import styles from './LeftRail.module.css'
 
 export default function LeftRail() {
   const { currentUser } = useMockData()
-  const { name, headline, larpRating, persona, stats, glazers, avatar, coverPhoto } = currentUser
+  const { name, job, larpRating, stats, glazers, avatar, coverPhoto } = currentUser
+  const resolvedCoverPhoto = useMemo(() => {
+    if (typeof coverPhoto !== 'string') return ''
+    return coverPhoto.trim()
+  }, [coverPhoto])
+  const [isCoverPhotoBroken, setIsCoverPhotoBroken] = useState(false)
+
+  useEffect(() => {
+    setIsCoverPhotoBroken(false)
+  }, [resolvedCoverPhoto])
 
   return (
     <div className={styles.rail}>
       {/* Identity card */}
       <div className={styles.card}>
-        <div
-          className={styles.coverPhoto}
-          style={coverPhoto ? { backgroundImage: `url(${coverPhoto})` } : {}}
-        />
+        <div className={styles.coverPhoto}>
+          {resolvedCoverPhoto && !isCoverPhotoBroken ? (
+            <img
+              src={resolvedCoverPhoto}
+              alt=""
+              className={styles.coverPhotoImg}
+              onError={() => setIsCoverPhotoBroken(true)}
+            />
+          ) : null}
+        </div>
         <div className={styles.avatarWrap}>
           {avatar ? (
             <img src={avatar} alt={name} className={styles.avatarImg} />
@@ -25,7 +42,7 @@ export default function LeftRail() {
         </div>
         <div className={styles.identity}>
           <h2 className={styles.name}>{name}</h2>
-          <p className={styles.headline}>{headline}</p>
+          <p className={styles.headline}>{job}</p>
           <div className={styles.ratingRow}>
             <span className={styles.ratingLabel}>LarpRating</span>
             <svg className={styles.ratingInfo} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
@@ -35,7 +52,6 @@ export default function LeftRail() {
           <div className={styles.gaugeWrap}>
             <LarpRatingBadge rating={larpRating} size="large" />
           </div>
-          <p className={styles.persona}>{persona}</p>
         </div>
         <div className={styles.divider} />
         <div className={styles.stats}>
@@ -87,7 +103,6 @@ export default function LeftRail() {
         <div className={styles.auraRow}>
           <div>
             <p className={styles.auraLabel}>Weekly aura growth</p>
-            <p className={styles.auraLabel}>aura growth</p>
           </div>
           <div className={styles.auraValues}>
             <span className={styles.auraNumber}>{stats.weeklyAuraGrowth}</span>
@@ -97,6 +112,22 @@ export default function LeftRail() {
         <button className={styles.seeMore}>
           See more <Icon name="arrowRight" size={14} />
         </button>
+      </div>
+
+      {/* LarpMaxxer quick access */}
+      <div className={styles.card}>
+        <div className={styles.larpmaxxerCard}>
+          <div className={styles.larpmaxxerHeader}>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16" className={styles.larpmaxxerIcon}>
+              <path d="M10 2l2.5 5.5L18 8.5l-4 4 1 5.5L10 15.5 4.5 18l1-5.5-4-4 5.5-1z" />
+            </svg>
+            <span className={styles.larpmaxxerTitle}>LarpMaxxer</span>
+          </div>
+          <p className={styles.larpmaxxerSub}>Train your corporate persona</p>
+          <Link to="/larpmaxxer" className={styles.larpmaxxerBtn}>
+            Enter Training
+          </Link>
+        </div>
       </div>
     </div>
   )

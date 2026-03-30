@@ -1,10 +1,10 @@
 .card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(10, 20, 12, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   padding: 24px;
 }
 
@@ -13,10 +13,12 @@
 }
 
 .title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
-  letter-spacing: -0.01em;
+  color: var(--neon);
+  letter-spacing: 0.02em;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  text-shadow: none;
 }
 
 .glazes {
@@ -29,30 +31,31 @@
   display: flex;
   gap: 16px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(167, 139, 250, 0.03);
   border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.02);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  border: 1px solid var(--border);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
 .glazeCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), var(--glow-sm);
+  border-color: var(--border-md);
 }
 
 .glazeAvatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #f3f2ef;
+  background: var(--bg-elevated);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--neon);
   flex-shrink: 0;
-  border: 2px solid #fff;
+  border: 2px solid var(--border);
 }
 
 .glazeBody {
@@ -67,20 +70,28 @@
 }
 
 .glazerName {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
 }
 
 .glazeRel {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .glazeText {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+.emptyState {
   font-size: 14px;
-  line-height: 1.5;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-muted);
   font-style: italic;
 }

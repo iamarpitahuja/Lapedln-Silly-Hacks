@@ -1,0 +1,313 @@
+.page {
+  background: var(--bg-deep);
+  min-height: calc(100vh - 52px);
+  padding: 24px 16px;
+}
+
+.content {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  padding: 48px 0;
+}
+
+/* Hero */
+.heroCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--glow-md);
+  overflow: hidden;
+}
+
+.coverPhoto {
+  height: 180px;
+  background: linear-gradient(135deg, var(--neon-dark), #09070f);
+  background-size: cover;
+  background-position: center;
+}
+
+.heroBody {
+  padding: 0 24px 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.avatarWrap {
+  margin-top: -40px;
+  margin-bottom: 12px;
+}
+
+.avatar,
+.avatarImg {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 3px solid var(--bg-card);
+  box-shadow: var(--glow-sm);
+}
+
+.avatar {
+  color: #fff;
+  font-size: 32px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarImg {
+  object-fit: cover;
+}
+
+.profileInfo {
+  margin-bottom: 16px;
+}
+
+.heroName {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.heroHeadline {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.badgeRow {
+  margin-bottom: 8px;
+}
+
+.recruiterStat {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.dmBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  background: var(--neon);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
+  align-self: flex-start;
+}
+
+.dmBtn:hover {
+  background: var(--neon-dark);
+  box-shadow: var(--glow-sm);
+}
+
+/* Sections */
+.section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--glow-md);
+  padding: 24px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.emptyState {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.bio {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* Experience / Education lists */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.listItem {
+  display: flex;
+  gap: 16px;
+}
+
+.logoPlaceholder {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.itemSub {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.itemDates {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.itemDesc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin-top: 6px;
+}
+
+/* Skills */
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skillChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--neon-faint);
+  border: 1px solid var(--border-md);
+  border-radius: 20px;
+  padding: 6px 14px;
+}
+
+.skillName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.endorsements {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Larp History timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-left: 16px;
+  border-left: 2px solid var(--border-strong);
+}
+
+.timelineItem {
+  display: flex;
+  gap: 12px;
+  position: relative;
+}
+
+.timelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--neon);
+  flex-shrink: 0;
+  margin-top: 4px;
+  margin-left: -21px;
+  box-shadow: 0 0 6px var(--neon-dim);
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timelineDate {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.timelineText {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.timelineNote {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Glazes */
+.glazesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.glazeCard {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px 14px;
+  background: var(--accent-glaze-soft);
+  border-radius: 8px;
+  border: 1px solid rgba(241, 199, 91, 0.15);
+}
+
+.glazeIcon {
+  color: var(--accent-glaze);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.glazeText {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}

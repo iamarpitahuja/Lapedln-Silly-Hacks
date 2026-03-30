@@ -1,0 +1,127 @@
+.page {
+  display: flex;
+  justify-content: center;
+  padding-top: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 760px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.heading {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-shadow: none;
+}
+
+.subheading {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.state,
+.stateError,
+.empty {
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.state {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.stateError {
+  color: var(--neon);
+  font-weight: 600;
+}
+
+.empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.listWrap {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.sectionTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+}
+
+.list {
+  margin-top: 8px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+}
+
+.item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg-elevated);
+  transition: border-color var(--transition-fast);
+}
+
+.item:hover {
+  border-color: var(--border-md);
+}
+
+.itemTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.itemBody {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.itemMeta {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.openLink {
+  color: var(--neon);
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: text-shadow var(--transition-fast);
+}
+
+.openLink:hover {
+  text-decoration: underline;
+  text-shadow: none;
+}

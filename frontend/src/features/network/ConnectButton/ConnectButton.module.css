@@ -1,0 +1,97 @@
+.btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.connect {
+  background: transparent;
+  border-color: var(--accent-connect);
+  color: var(--accent-connect);
+}
+
+.connect:hover:not(:disabled) {
+  background: var(--accent-connect-soft);
+  box-shadow: var(--glow-sm);
+}
+
+.pending {
+  background: transparent;
+  border-color: var(--accent-pending);
+  color: var(--accent-pending);
+}
+
+.pending:hover:not(:disabled) {
+  background: var(--accent-pending-soft);
+  border-color: var(--accent-pending);
+  color: var(--accent-pending);
+}
+
+.accept {
+  background: var(--neon-dark);
+  color: var(--text-on-accent);
+  border-color: transparent;
+}
+
+.accept:hover:not(:disabled) {
+  background: var(--neon-dark);
+  box-shadow: var(--glow-md);
+}
+
+.decline {
+  background: transparent;
+  border-color: var(--accent-danger);
+  color: var(--accent-danger);
+}
+
+.decline:hover:not(:disabled) {
+  background: var(--accent-danger-soft);
+  border-color: var(--accent-danger);
+  color: var(--accent-danger);
+}
+
+.connected {
+  background: transparent;
+  border-color: var(--neon-dark);
+  color: var(--neon-dark);
+  font-size: 12px;
+}
+
+.connectedLabel {
+  display: inline;
+}
+
+.removeLabel {
+  display: none;
+}
+
+.connected:hover:not(:disabled) {
+  background: var(--accent-danger-soft);
+  border-color: var(--accent-danger);
+  color: var(--accent-danger);
+}
+
+.connected:hover:not(:disabled) .connectedLabel {
+  display: none;
+}
+
+.connected:hover:not(:disabled) .removeLabel {
+  display: inline;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}

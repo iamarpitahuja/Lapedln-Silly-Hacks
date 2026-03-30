@@ -1,5 +1,5 @@
 .page {
-  background: #f3f2ef;
+  background: var(--bg-deep);
   min-height: calc(100vh - 52px);
 }
 
@@ -15,16 +15,16 @@
 
 .left, .right {
   position: sticky;
-  top: 64px; /* nav height + 12px gap */
-  max-height: calc(100vh - 64px - 24px); /* viewport minus top gap and bottom padding */
+  top: 64px;
+  max-height: calc(100vh - 64px - 24px);
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .left::-webkit-scrollbar,
 .right::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
 }
 
 .center {

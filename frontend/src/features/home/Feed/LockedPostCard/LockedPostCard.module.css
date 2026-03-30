@@ -1,17 +1,16 @@
 .card {
   position: relative;
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
   overflow: hidden;
   min-height: 160px;
   margin-bottom: 8px;
 }
 
-/* Blurred fake content layer */
 .blurLayer {
   padding: 16px;
-  filter: blur(6px);
+  filter: blur(8px);
   user-select: none;
   pointer-events: none;
 }
@@ -23,12 +22,37 @@
   margin-bottom: 14px;
 }
 
+.avatarWrap {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+}
+
+.realAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .fakeAvatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #c8c8c8;
+  background: var(--bg-elevated);
   flex-shrink: 0;
+}
+
+.realName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neon);
+  margin-bottom: 2px;
+}
+
+.realHeadline {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 .fakeLines {
@@ -40,7 +64,7 @@
 
 .fakeLine {
   height: 11px;
-  background: #e0e0e0;
+  background: var(--bg-elevated);
   border-radius: 4px;
 }
 
@@ -66,7 +90,7 @@
 
 .fakePara {
   height: 12px;
-  background: #e0e0e0;
+  background: var(--bg-elevated);
   border-radius: 4px;
 }
 
@@ -82,10 +106,9 @@
   display: flex;
   gap: 20px;
   padding-top: 12px;
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid var(--border);
 }
 
-/* Overlay */
 .overlay {
   position: absolute;
   inset: 0;
@@ -93,27 +116,64 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--overlay-scrim);
   gap: 6px;
   padding: 16px;
+  backdrop-filter: blur(2px);
 }
 
 .lockIcon {
-  font-size: 28px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neon);
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.22));
 }
 
 .lockMessage {
   font-size: 13px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.75);
+  font-weight: 700;
+  color: var(--neon);
   text-align: center;
   margin: 0;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-shadow: none;
 }
 
 .lockSub {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-secondary);
   text-align: center;
   margin: 0;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes lockPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.fakeLine,
+.fakePara {
+  background: linear-gradient(90deg, rgba(167, 139, 250, 0.08) 25%, rgba(167, 139, 250, 0.16) 50%, rgba(167, 139, 250, 0.08) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.lockIcon {
+  animation: lockPulse 3s ease-in-out infinite;
 }

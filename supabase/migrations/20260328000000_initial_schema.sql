@@ -59,8 +59,9 @@ create table public.posts (
     id uuid primary key default gen_random_uuid(),
     author_id uuid not null references public.profiles(id) on delete cascade,
     content text not null,
-    post_type text not null default 'thought_leadership' check (post_type in (
-        'thought_leadership', 'humble_brag', 'announcement', 'hot_take', 'glaze'
+    post_type text not null default 'Career Lore' check (post_type in (
+        'Career Lore', 'Humblebrag', 'Thought Leadership Incident',
+        'Aura Farming', 'Corporate Trauma Dump', 'Stealth Build Update', 'Personal Update'
     )),
     buzzword_score numeric(10, 2) default 0.00,
     created_at timestamptz not null default now()

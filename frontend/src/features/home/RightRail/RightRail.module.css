@@ -5,21 +5,28 @@
 }
 
 .card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
   padding: 12px 16px;
   overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.card:hover {
+  border-color: var(--border-md);
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.9);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--neon);
   margin-bottom: 10px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-shadow: none;
 }
 
-/* Trending list */
 .list {
   list-style: none;
   display: flex;
@@ -32,39 +39,89 @@
   display: flex;
   gap: 6px;
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.9);
+  color: var(--text-primary);
 }
 
 .listNum {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--neon);
   font-size: 12px;
-  min-width: 16px;
+  min-width: 20px;
+  flex-shrink: 0;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Buzzwords */
 .buzzList {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
 .buzzItem {
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.9);
-  padding: 2px 0;
+  color: var(--text-primary);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  white-space: normal;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all var(--transition-fast);
+}
+
+.buzzItem:hover {
+  background: transparent;
+  box-shadow: none;
+  color: var(--neon);
 }
 
 .seeMore {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   padding: 4px 0;
   display: block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.03em;
+  transition: color var(--transition-fast);
 }
 
 .seeMore:hover {
-  color: rgba(0, 0, 0, 0.9);
+  color: var(--neon);
   text-decoration: underline;
+}
+
+@keyframes railItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rail > *:nth-child(1) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 0ms; }
+.rail > *:nth-child(2) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 60ms; }
+.rail > *:nth-child(3) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 120ms; }
+.rail > *:nth-child(4) { animation: railItemIn 0.3s var(--ease-out-quint) both; animation-delay: 180ms; }
+
+.buzzItem {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.buzzItem:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+
+.listItem {
+  transition: transform var(--transition-fast);
+}
+
+.listItem:hover {
+  transform: translateX(3px);
 }

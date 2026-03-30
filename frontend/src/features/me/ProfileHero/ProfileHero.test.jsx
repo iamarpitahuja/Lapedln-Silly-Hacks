@@ -9,9 +9,9 @@ describe('ProfileHero', () => {
     expect(screen.getByText('Arjun Malhotra')).toBeTruthy()
   })
 
-  it('renders current persona', () => {
+  it('renders current larp job', () => {
     render(<MockDataProvider><ProfileHero /></MockDataProvider>)
-    expect(screen.getByText('Stealth Founder / Ex-McKinsey Adjacent')).toBeTruthy()
+    expect(screen.getByText('Finance Bro')).toBeTruthy()
   })
 
   it('renders recruiter stat line', () => {

@@ -1,0 +1,709 @@
+{
+  "scenarioId": "startup-pitch",
+  "briefDescription": "Marcus has a CS background, $400M under management, and 8 minutes before his next meeting. He's heard every AI pitch this week. You need genuine interest, not polite tolerance.",
+  "openingLine": "You've got me for eight minutes. What are you building?",
+  "dialogueNodes": [
+    {
+      "turn": 1,
+      "characterLine": "Okay. And what makes this different from the fourteen other AI infrastructure pitches I've seen this week?",
+      "options": [
+        {
+          "id": "sp-t1-a",
+          "personaTag": "ai_founder",
+          "text": "We're not AI infrastructure in the way you're thinking. We're the abstraction layer between enterprise data and inference — the part everyone's trying to avoid building themselves.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "Specific framing. He knows where the pain is. That's not nothing."
+        },
+        {
+          "id": "sp-t1-b",
+          "personaTag": "stanford_dropout",
+          "text": "We're not AI-native. We're post-AI. The assumption embedded in every other pitch is that the model is the product. We think that's already over.",
+          "flavorBadge": "unhinged",
+          "metricDeltas": {
+            "aura": 16,
+            "socialFooting": 2,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -3
+          },
+          "characterThinks": "'Post-AI.' That's either a real insight or the most expensive wrong bet I'll see today."
+        },
+        {
+          "id": "sp-t1-c",
+          "personaTag": "pm_newsletter",
+          "text": "Honestly, I think about it as a product problem. Everyone's optimizing the technology layer but nobody's solved the user adoption curve.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -3,
+            "socialFooting": -1,
+            "plausibility": -2,
+            "larpContinuity": -2,
+            "respect": -3
+          },
+          "meterDeltas": {
+            "impressed": -4,
+            "suspicion": 12
+          },
+          "characterThinks": "User adoption curve. He has six minutes and he's talking about product-market fit framing."
+        },
+        {
+          "id": "sp-t1-d",
+          "personaTag": "finance_bro",
+          "text": "The TAM is the differentiation. Most pitches are targeting the tooling layer — we're going after the workflow layer where the actual budget lives.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 7,
+            "socialFooting": 1,
+            "plausibility": 2,
+            "larpContinuity": 2,
+            "respect": 4
+          },
+          "meterDeltas": {
+            "impressed": 8,
+            "suspicion": -2
+          },
+          "characterThinks": "TAM-first answer from a founder. Marcus has seen this. It's not wrong, it's just not interesting."
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "characterLine": "Walk me through the technical architecture. What does the actual system look like?",
+      "options": [
+        {
+          "id": "sp-t2-a",
+          "personaTag": "ai_founder",
+          "text": "Three layers: a schema-agnostic ingestion pipeline, a semantic routing layer that handles context compression, and an inference gateway that manages latency SLAs per use case. The magic is in the middle layer.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 2,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 16,
+            "suspicion": -10
+          },
+          "characterThinks": "He actually knows what he's building. This is the first real technical answer I've heard today."
+        },
+        {
+          "id": "sp-t2-b",
+          "personaTag": "stanford_dropout",
+          "text": "I'd rather show you than describe it. The description always sounds like everything else. Can I pull up a live demo on my phone?",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 12,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -5
+          },
+          "characterThinks": "Pivoting to demo instead of description. Bold move when you have five minutes left."
+        },
+        {
+          "id": "sp-t2-c",
+          "personaTag": "homeless_cs",
+          "text": "It's a transformer-based retrieval system with custom attention masks for domain-specific context windows. The benchmark numbers are on our GitHub if you want the actual performance data.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 1,
+            "plausibility": 4,
+            "larpContinuity": 2,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -4
+          },
+          "characterThinks": "GitHub reference. Either this is real or it's a very good bluff. Marcus is curious which."
+        },
+        {
+          "id": "sp-t2-d",
+          "personaTag": "consulting_clone",
+          "text": "The architecture is best understood in three distinct modules, each addressing a specific failure mode in the current enterprise AI stack —",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -2,
+            "socialFooting": -1,
+            "plausibility": -1,
+            "larpContinuity": -2,
+            "respect": -2
+          },
+          "meterDeltas": {
+            "impressed": -3,
+            "suspicion": 10
+          },
+          "characterThinks": "He started a sentence with 'best understood in three distinct modules.' Marcus is already gone."
+        }
+      ]
+    },
+    {
+      "turn": 3,
+      "characterLine": "What are your unit economics? What does CAC look like and what's the payback period?",
+      "options": [
+        {
+          "id": "sp-t3-a",
+          "personaTag": "ai_founder",
+          "text": "CAC is $18K on the enterprise side, 11-month payback on $28K ACV. We're not at the SMB economics yet — intentionally. We're proving the enterprise motion first.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -9
+          },
+          "characterThinks": "Specific numbers. He didn't round. That's either a good sign or a very well-memorized bluff."
+        },
+        {
+          "id": "sp-t3-b",
+          "personaTag": "stanford_dropout",
+          "text": "We're pre-scale so the CAC numbers are meaningless right now — we're closing deals through founder-led sales that we'll never be able to replicate at scale. The honest answer is we don't know yet.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 1,
+            "plausibility": 5,
+            "larpContinuity": 3,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 12,
+            "suspicion": -6
+          },
+          "characterThinks": "He admitted what he doesn't know. Marcus respects that more than he expected to."
+        },
+        {
+          "id": "sp-t3-c",
+          "personaTag": "vc_intern",
+          "text": "The LTV-to-CAC ratio is really the key metric here, and we're benchmarking really well against comparable SaaS cohorts at this stage.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -5,
+            "socialFooting": -1,
+            "plausibility": -3,
+            "larpContinuity": -3,
+            "respect": -5
+          },
+          "meterDeltas": {
+            "impressed": -8,
+            "suspicion": 18
+          },
+          "characterThinks": "'Comparable SaaS cohorts.' He's using investor language to avoid answering the question."
+        },
+        {
+          "id": "sp-t3-d",
+          "personaTag": "finance_bro",
+          "text": "On current ACV of $24K, we're looking at roughly 14-month payback with a 3.2x LTV multiple at 24 months. We're tightening the model as we close Q3.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 1,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -4
+          },
+          "characterThinks": "Specific enough. Marcus has seen worse financial literacy from founders at this stage."
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "characterLine": "Who's going to build the defensible moat here? What stops Google from doing this in six months?",
+      "options": [
+        {
+          "id": "sp-t4-a",
+          "personaTag": "ai_founder",
+          "text": "Google doesn't want enterprise data touching their infrastructure — the compliance exposure is a feature for us, not a bug. The regulated industries we're in would never run on hyperscaler AI.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 2,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 16,
+            "suspicion": -10
+          },
+          "characterThinks": "Compliance moat. He flipped the threat into an advantage. That's a real answer."
+        },
+        {
+          "id": "sp-t4-b",
+          "personaTag": "stanford_dropout",
+          "text": "Nothing stops Google technically. The moat is the customer relationships and the data flywheel — we get smarter with every enterprise we onboard in ways a generic model can't replicate.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 12,
+            "socialFooting": 1,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -6
+          },
+          "characterThinks": "He didn't pretend Google isn't a threat. Marcus respects intellectual honesty."
+        },
+        {
+          "id": "sp-t4-c",
+          "personaTag": "pm_newsletter",
+          "text": "The defensibility is really in the community we're building. Our users become advocates and that network effect is incredibly powerful —",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -6,
+            "socialFooting": -2,
+            "plausibility": -4,
+            "larpContinuity": -4,
+            "respect": -6
+          },
+          "meterDeltas": {
+            "impressed": -10,
+            "suspicion": 22
+          },
+          "characterThinks": "He said 'community' as a moat argument against Google. This conversation is over."
+        },
+        {
+          "id": "sp-t4-d",
+          "personaTag": "homeless_cs",
+          "text": "The honest answer is speed and specificity. We're building for one vertical so deeply that by the time a platform player notices us, we'll have 18 months of domain data they can't buy.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "Vertical depth as defensibility. Not flashy, but Marcus has seen it work."
+        }
+      ]
+    },
+    {
+      "turn": 5,
+      "characterLine": "Tell me about the team. Who's been here from the beginning and why are they still here?",
+      "options": [
+        {
+          "id": "sp-t5-a",
+          "personaTag": "ai_founder",
+          "text": "Three of us from the original research. None of us have taken a salary increase in two years. The equity math works if we're right about the thesis — that's the retention mechanism.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -8
+          },
+          "characterThinks": "No salary increases in two years. Either deeply committed or deeply dysfunctional. Probably the former."
+        },
+        {
+          "id": "sp-t5-b",
+          "personaTag": "stanford_dropout",
+          "text": "The people who left left for the right reasons. The people who stayed are here because they can't stop thinking about the problem. That's the only filter I trust.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "He addressed attrition before Marcus asked about it. Self-aware."
+        },
+        {
+          "id": "sp-t5-c",
+          "personaTag": "vc_intern",
+          "text": "Our team is world-class — we have PhDs from Stanford and MIT, and our CTO was at Google Brain for three years before joining.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 4,
+            "socialFooting": 0,
+            "plausibility": 1,
+            "larpContinuity": 1,
+            "respect": 2
+          },
+          "meterDeltas": {
+            "impressed": 5,
+            "suspicion": 4
+          },
+          "characterThinks": "Credentials recitation. Marcus has funded PhDs who couldn't ship. He's heard this."
+        },
+        {
+          "id": "sp-t5-d",
+          "personaTag": "finance_bro",
+          "text": "Strong retention metrics — 94% twelve-month retention across the engineering team. We pay at the 75th percentile for the market.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -2,
+            "socialFooting": -1,
+            "plausibility": -1,
+            "larpContinuity": -2,
+            "respect": -2
+          },
+          "meterDeltas": {
+            "impressed": -3,
+            "suspicion": 8
+          },
+          "characterThinks": "He quoted retention metrics at a people question. Marcus wanted to understand the culture."
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "characterLine": "What do you need from us beyond capital? What does a strategic investor actually do for you?",
+      "options": [
+        {
+          "id": "sp-t6-a",
+          "personaTag": "ai_founder",
+          "text": "Three enterprise intros in regulated industries — healthcare, finance, defense. We don't need help selling, we need doors that take 18 months to open on our own.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 10
+          },
+          "meterDeltas": {
+            "impressed": 16,
+            "suspicion": -9
+          },
+          "characterThinks": "Specific ask. He knows what he wants and it's not generic 'guidance.' Marcus likes this."
+        },
+        {
+          "id": "sp-t6-b",
+          "personaTag": "stanford_dropout",
+          "text": "Honestly? The thing that matters most is someone who picks up the phone at 11pm when something breaks in a way I haven't seen before. The rest is noise.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 12,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -6
+          },
+          "characterThinks": "Real answer. He wants a partner, not a check. Marcus files this."
+        },
+        {
+          "id": "sp-t6-c",
+          "personaTag": "pm_newsletter",
+          "text": "Brand association is huge for us at this stage — being in your portfolio is a signal that resonates with enterprise procurement teams.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -5,
+            "socialFooting": -2,
+            "plausibility": -3,
+            "larpContinuity": -3,
+            "respect": -5
+          },
+          "meterDeltas": {
+            "impressed": -8,
+            "suspicion": 16
+          },
+          "characterThinks": "He wants brand association. He's looking at Marcus as a logo, not a partner."
+        },
+        {
+          "id": "sp-t6-d",
+          "personaTag": "consulting_clone",
+          "text": "Portfolio synergies are the primary value driver. If two or three of your existing companies have the infrastructure problem we're solving, the conversation becomes a lot easier.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 1,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -3
+          },
+          "characterThinks": "Portfolio synergies pitch. Homework done, delivery slightly robotic."
+        }
+      ]
+    },
+    {
+      "turn": 7,
+      "characterLine": "We're at seven minutes. Last question: what's the thing about this that you haven't been able to fully explain yet — the thing you're still figuring out?",
+      "options": [
+        {
+          "id": "sp-t7-a",
+          "personaTag": "ai_founder",
+          "text": "The pricing model. We know the value is real but we don't know where the natural price ceiling is in enterprise. We're running experiments now and the answer is somewhere between 'higher than we thought' and 'much higher than we thought.'",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 10
+          },
+          "meterDeltas": {
+            "impressed": 17,
+            "suspicion": -10
+          },
+          "characterThinks": "He named a real unknown and admitted he doesn't have the answer. Marcus wants to take this meeting."
+        },
+        {
+          "id": "sp-t7-b",
+          "personaTag": "stanford_dropout",
+          "text": "Whether the enterprise GTM is the right motion or whether we should be going bottom-up through individual teams. We've been top-down but the organic adoption data suggests we're leaving something on the table.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "GTM uncertainty, honestly stated. This is a real founder's answer."
+        },
+        {
+          "id": "sp-t7-c",
+          "personaTag": "vc_intern",
+          "text": "Honestly we've got a pretty clear picture of everything at this point. The model is tight and the team is aligned.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -8,
+            "socialFooting": -2,
+            "plausibility": -5,
+            "larpContinuity": -5,
+            "respect": -8
+          },
+          "meterDeltas": {
+            "impressed": -12,
+            "suspicion": 25
+          },
+          "characterThinks": "He said everything is figured out. No founder has everything figured out. Marcus is done."
+        },
+        {
+          "id": "sp-t7-d",
+          "personaTag": "homeless_cs",
+          "text": "The latency problem at scale. We've solved it in the lab. We haven't proven it holds at enterprise volumes and I won't know until we're there. That's the honest answer.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 5,
+            "larpContinuity": 4,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "Technical honesty. He didn't dress it up. Marcus respects this."
+        }
+      ]
+    },
+    {
+      "turn": 8,
+      "characterLine": "I want to have my associate set up a proper meeting. What does your timeline look like?",
+      "options": [
+        {
+          "id": "sp-t8-a",
+          "personaTag": "ai_founder",
+          "text": "We're running a process that closes in six weeks. I'd want to get you in front of the technical deep-dive before the end of week two. Does that work?",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 16,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 10
+          },
+          "meterDeltas": {
+            "impressed": 17,
+            "suspicion": -9
+          },
+          "characterThinks": "He's running a process. He set the timeline, not Marcus. That's a founder move."
+        },
+        {
+          "id": "sp-t8-b",
+          "personaTag": "stanford_dropout",
+          "text": "Flexible on timing, but I'd rather move fast than slow. I'll have the technical memo in your associate's inbox by Friday.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "Proactive follow-through. He's not waiting to be chased."
+        },
+        {
+          "id": "sp-t8-c",
+          "personaTag": "vc_intern",
+          "text": "Oh amazing, yes! Any time works for us — we're really flexible. I'll take literally any slot you have available.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -7,
+            "socialFooting": -3,
+            "plausibility": -4,
+            "larpContinuity": -4,
+            "respect": -7
+          },
+          "meterDeltas": {
+            "impressed": -11,
+            "suspicion": 20
+          },
+          "characterThinks": "'Literally any slot.' He vaporized all the leverage he'd built in eight minutes."
+        },
+        {
+          "id": "sp-t8-d",
+          "personaTag": "finance_bro",
+          "text": "We're targeting close by end of Q3. I'd want to run you through the full model in the next two weeks if the high-level resonates.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 1,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -4
+          },
+          "characterThinks": "Structured close. Not as confident as option A but not bad."
+        }
+      ]
+    },
+    {
+      "turn": 9,
+      "characterLine": "One more thing — are you the right person to scale this? Not to build it. To scale it.",
+      "options": [
+        {
+          "id": "sp-t9-a",
+          "personaTag": "ai_founder",
+          "text": "No, and I know it. The plan is to bring in a professional CEO by Series B. My job is to prove the thesis and get us to the point where that hire is a great job. I'm not interested in being CEO of a big company.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 18,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 11
+          },
+          "meterDeltas": {
+            "impressed": 18,
+            "suspicion": -12
+          },
+          "characterThinks": "He said no. Marcus has been waiting eight minutes to hear someone say that honestly."
+        },
+        {
+          "id": "sp-t9-b",
+          "personaTag": "stanford_dropout",
+          "text": "I think I can get us to $20M ARR. After that I genuinely don't know. I'd rather answer that honestly now than confidently and wrong.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 2,
+            "plausibility": 5,
+            "larpContinuity": 4,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 16,
+            "suspicion": -9
+          },
+          "characterThinks": "Bounded honesty. That's rarer than it should be."
+        },
+        {
+          "id": "sp-t9-c",
+          "personaTag": "vc_intern",
+          "text": "Absolutely — I have a vision for where this goes and I'm committed to growing into the role. Leadership is a journey and I'm fully invested in that journey.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -8,
+            "socialFooting": -2,
+            "plausibility": -5,
+            "larpContinuity": -5,
+            "respect": -8
+          },
+          "meterDeltas": {
+            "impressed": -12,
+            "suspicion": 25
+          },
+          "characterThinks": "'Leadership is a journey.' That's the sound of someone who's never scaled anything."
+        },
+        {
+          "id": "sp-t9-d",
+          "personaTag": "startup_billionaire",
+          "text": "I've done it once. I know what breaks at each stage and I know where I need to supplement. The answer is yes, with the right board.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -7
+          },
+          "characterThinks": "Prior exit reference, board awareness. This is a real founder's answer."
+        }
+      ]
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 .card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(10, 20, 12, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   padding: 24px;
 }
 
@@ -24,15 +24,19 @@
 .dot {
   width: 10px;
   height: 10px;
-  background-color: #057647;
+  background-color: var(--neon);
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba(5, 118, 71, 0.4);
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.28), 0 0 20px rgba(167, 139, 250, 0.3);
+  animation: none;
 }
 
 .title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-shadow: none;
 }
 
 .editBtn {
@@ -42,20 +46,21 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .editBtn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(167, 139, 250, 0.08);
+  color: var(--neon);
 }
 
 .persona {
-  font-size: 15px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.9);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 12px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .pills {
@@ -66,12 +71,14 @@
 }
 
 .pill {
-  background: rgba(5, 118, 71, 0.08);
-  color: #057647;
+  background: rgba(167, 139, 250, 0.08);
+  color: var(--neon);
   padding: 4px 12px;
   border-radius: 14px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .actions {
@@ -80,37 +87,45 @@
 }
 
 .btnOutlined {
-  border: 1px solid #0a66c2;
-  color: #0a66c2;
+  border: 1px solid var(--neon);
+  color: var(--neon);
   padding: 6px 16px;
   border-radius: 18px;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  transition: all var(--transition-fast);
 }
 
 .btnOutlined:hover {
-  background: rgba(10, 102, 194, 0.05);
+  background: rgba(167, 139, 250, 0.08);
+  box-shadow: var(--glow-sm);
 }
 
 .btnFilled {
-  background: #0a66c2;
-  color: white;
+  background: var(--neon);
+  color: var(--text-on-accent);
   padding: 6px 16px;
   border-radius: 18px;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  transition: all var(--transition-fast);
 }
 
 .btnFilled:hover {
-  background: #004182;
+  background: var(--neon-dark);
+  box-shadow: var(--glow-md);
 }
 
 .editorWrapper {
   animation: fadeIn 0.2s ease-out;
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(167, 139, 250, 0.02);
   padding: 16px;
   border-radius: 12px;
-  border: 1px dashed rgba(0, 0, 0, 0.1);
+  border: 1px dashed rgba(167, 139, 250, 0.2);
 }
 
 .form {
@@ -126,27 +141,30 @@
 }
 
 .formLabel {
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.5);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .input,
 .textarea {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-md);
   border-radius: 8px;
   padding: 10px 14px;
-  font-size: 14px;
-  background: rgba(255, 255, 255, 0.8);
-  font-family: inherit;
+  font-size: 13px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .input:focus,
 .textarea:focus {
   outline: none;
-  border-color: #0a66c2;
-  box-shadow: 0 0 0 4px rgba(10, 102, 194, 0.1);
+  border-color: var(--neon);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
 }
 
 .textarea {
@@ -161,22 +179,49 @@
 }
 
 .saveBtn {
-  background: #0a66c2;
-  color: white;
+  background: var(--neon);
+  color: var(--text-on-accent);
   padding: 8px 20px;
   border-radius: 20px;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .cancelBtn {
   background: transparent;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   padding: 8px 20px;
   border-radius: 20px;
   font-weight: 600;
+  font-size: 13px;
+  border: 1px solid var(--border-md);
+}
+
+.btnTrain {
+  background: var(--neon-faint);
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  padding: 6px 16px;
+  border-radius: 18px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.btnTrain:hover {
+  background: rgba(167, 139, 250, 0.12);
+  box-shadow: var(--glow-sm);
+}
+
+.emptyState {
   font-size: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 20px;
 }
 
 @keyframes fadeIn {

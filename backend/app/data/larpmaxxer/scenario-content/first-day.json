@@ -1,0 +1,775 @@
+{
+  "scenarioId": "first-day",
+  "briefDescription": "Derek is a Senior Director who has been at the company for seven years. He has seen seventeen people onboard into your role. Eleven of them are still at the company. He already has a read on you from your interview loop and is running a calibration.",
+  "openingLine": "Welcome. I'm Derek — Senior Director, Strategy and Operations. I'll be your onboarding buddy for the first two weeks, which mostly means I'm the person you ask when you don't know who to ask. We'll do a proper 1:1 next week, but while I have you — what drew you to this role specifically?",
+  "dialogueNodes": [
+    {
+      "turn": 1,
+      "characterLine": "Okay. That's a common answer — which isn't a criticism, it just means I've heard variations of it. I'm more curious about what you actually looked for in the role, not the mission. The mission statement is on the website. What was the specific thing that made you accept?",
+      "options": [
+        {
+          "id": "fd-t1-a",
+          "personaTag": "consulting_clone",
+          "text": "Honestly? The scope. The role sits at the intersection of product and GTM in a way I haven't seen elsewhere at this stage. Most companies keep those functions siloed until too late. I want to be in the room where that interface is being designed.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 12,
+            "socialFooting": 5,
+            "plausibility": 5,
+            "larpContinuity": 4,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 12,
+            "suspicion": -5
+          },
+          "characterThinks": "Specific, strategic framing, not rehearsed mission-speak. He's done the homework."
+        },
+        {
+          "id": "fd-t1-b",
+          "personaTag": "ai_founder",
+          "text": "The data architecture you're sitting on is genuinely unusual for a company at this stage. Most Series C companies have Frankenstein stacks. Yours looks like someone made good early decisions. I want to work in that environment.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -2
+          },
+          "characterThinks": "He researched the tech stack. That's above and beyond for a first-day answer. I'm recalibrating slightly."
+        },
+        {
+          "id": "fd-t1-c",
+          "personaTag": "startup_billionaire",
+          "text": "The speed of the decision-making here was the tell. From first call to offer was eleven days. That's a signal about how the company actually operates, not just what it says it does. I trust that kind of evidence.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 9,
+            "suspicion": -3
+          },
+          "characterThinks": "He clocked the speed of our process and read it as a cultural data point. That's a sophisticated read."
+        },
+        {
+          "id": "fd-t1-d",
+          "personaTag": "performative_uni",
+          "text": "Genuinely — the team culture came through really strongly in the interviews. I got the sense that people here care about the work beyond the metrics, and that felt rare. I wanted to be somewhere with that energy.",
+          "flavorBadge": "glazed",
+          "metricDeltas": {
+            "aura": 2,
+            "socialFooting": 1,
+            "plausibility": 2,
+            "larpContinuity": 1,
+            "respect": 1
+          },
+          "meterDeltas": {
+            "impressed": 2,
+            "suspicion": 5
+          },
+          "characterThinks": "'Team culture came through strongly' — I've heard this every first day for seven years. Usually means they didn't have a better answer."
+        },
+        {
+          "id": "fd-t1-e",
+          "personaTag": "finance_bro",
+          "text": "Comp was market-leading for the stage, equity structure is cleaner than most Series C, and the role gave me better exit optionality than the alternatives I was evaluating. It was a portfolio decision.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -3,
+            "socialFooting": -2,
+            "plausibility": 1,
+            "larpContinuity": -3,
+            "respect": -2
+          },
+          "meterDeltas": {
+            "impressed": -2,
+            "suspicion": 10
+          },
+          "characterThinks": "He described joining our company as a portfolio decision on the first day. I have noted this."
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "characterLine": "Fair. The intersection you described is genuinely where the leverage is — and also where the conflict is. You'll see that fast. How do you typically handle situations where your read on the right move differs from your manager's?",
+      "options": [
+        {
+          "id": "fd-t2-a",
+          "personaTag": "consulting_clone",
+          "text": "I try to separate the disagreement from the decision. I'll make my case once, clearly, with the evidence I have — and then if the decision goes the other way, I execute as if I agreed. Second-guessing after the decision is expensive and I try not to do it.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 5,
+            "plausibility": 4,
+            "larpContinuity": 5,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -5
+          },
+          "characterThinks": "Make the case once, then commit. That's the answer. He's been here before."
+        },
+        {
+          "id": "fd-t2-b",
+          "personaTag": "startup_billionaire",
+          "text": "I try to get upstream of the disagreement by building shared context first. If my manager and I are reading the same signals differently, the faster fix is to sync on the data before the decision, not argue about it after.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -3
+          },
+          "characterThinks": "Good instinct. He's thinking about preventing conflict, not just managing it. I like that."
+        },
+        {
+          "id": "fd-t2-c",
+          "personaTag": "stanford_dropout",
+          "text": "Honestly, I push pretty hard when I think I'm right — I'd rather lose the argument with good evidence on the table than hold back and watch a bad decision happen. I try to read the room but I don't let social pressure override my analysis.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 4,
+            "socialFooting": 0,
+            "plausibility": 2,
+            "larpContinuity": 1,
+            "respect": 2
+          },
+          "meterDeltas": {
+            "impressed": 3,
+            "suspicion": 6
+          },
+          "characterThinks": "He'll push hard in disagreements. Sometimes that's what you want. On day one, it's a flag."
+        },
+        {
+          "id": "fd-t2-d",
+          "personaTag": "pm_newsletter",
+          "text": "I think a lot about the disagree-and-commit framework — you advocate, you document your reasoning, and then you execute fully once the decision is made. The documentation protects everyone when you revisit it later.",
+          "flavorBadge": "glazed",
+          "metricDeltas": {
+            "aura": 5,
+            "socialFooting": 2,
+            "plausibility": 3,
+            "larpContinuity": 2,
+            "respect": 3
+          },
+          "meterDeltas": {
+            "impressed": 5,
+            "suspicion": 3
+          },
+          "characterThinks": "'Disagree-and-commit' — he's citing Jeff Bezos on day one. Respectable if slightly over-prepared."
+        },
+        {
+          "id": "fd-t2-e",
+          "personaTag": "crypto_philosopher",
+          "text": "I think it depends on whether the disagreement is about values or strategy. If it's values, that's a deeper conversation. If it's strategy, I'd want to stress-test both models empirically before deferring to hierarchy.",
+          "flavorBadge": "unhinged",
+          "metricDeltas": {
+            "aura": -3,
+            "socialFooting": -2,
+            "plausibility": -2,
+            "larpContinuity": -3,
+            "respect": -2
+          },
+          "meterDeltas": {
+            "impressed": -1,
+            "suspicion": 10
+          },
+          "characterThinks": "He introduced a values-strategy dichotomy on his first day. We're in Operations. I need to watch this one."
+        }
+      ]
+    },
+    {
+      "turn": 3,
+      "characterLine": "Good. That maps to how we operate — we call it 'loud up, quiet down' here. Meaning you escalate disagreements to the right level early and then you commit to the execution. One thing to know about your onboarding: we're going to give you a real project in week two. Not busywork. You'll be under-resourced by design. How do you feel about that?",
+      "options": [
+        {
+          "id": "fd-t3-a",
+          "personaTag": "consulting_clone",
+          "text": "Good — constrained scope is actually where I do my best work. I'll find out quickly what I can do independently versus what I need to borrow. That's useful information I'd want to know early.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 12,
+            "socialFooting": 5,
+            "plausibility": 4,
+            "larpContinuity": 5,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -6
+          },
+          "characterThinks": "He reframed constraint as diagnostic information. That's a senior-level read from a new hire."
+        },
+        {
+          "id": "fd-t3-b",
+          "personaTag": "homeless_cs",
+          "text": "Good. I'll figure out the minimum viable version, ship something, and use the gaps in what I built to scope the real version. I'd rather learn from real feedback than from a ramp plan.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -2
+          },
+          "characterThinks": "MVP mindset on an ops project. Slightly startup-flavored but the instinct is right."
+        },
+        {
+          "id": "fd-t3-c",
+          "personaTag": "student_athlete",
+          "text": "Honestly, I thrive under pressure — I've always done my best work when the resources are tight. Just point me at the problem and tell me who to go to when I'm stuck.",
+          "flavorBadge": "glazed",
+          "metricDeltas": {
+            "aura": 4,
+            "socialFooting": 2,
+            "plausibility": 2,
+            "larpContinuity": 2,
+            "respect": 2
+          },
+          "meterDeltas": {
+            "impressed": 4,
+            "suspicion": 3
+          },
+          "characterThinks": "'I thrive under pressure' — said every first-day hire since 2012. We'll see in week two."
+        },
+        {
+          "id": "fd-t3-d",
+          "personaTag": "pm_newsletter",
+          "text": "I'd want to know the success criteria up front — not because I need hand-holding, but because 'under-resourced' only tells me the constraints, not what done looks like. Are we optimizing for speed, quality, or learning?",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 8,
+            "socialFooting": 3,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 8,
+            "suspicion": -1
+          },
+          "characterThinks": "He asked for the success criteria. That's the right question and I'm mildly annoyed I didn't lead with it."
+        },
+        {
+          "id": "fd-t3-e",
+          "personaTag": "vc_intern",
+          "text": "I'm excited about it — though I'll say, I want to make sure I'm getting input from the right stakeholders early. I don't want to optimize in the wrong direction just because I haven't mapped the political landscape yet.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": 1,
+            "socialFooting": -1,
+            "plausibility": 1,
+            "larpContinuity": 0,
+            "respect": 0
+          },
+          "meterDeltas": {
+            "impressed": 1,
+            "suspicion": 7
+          },
+          "characterThinks": "He said 'political landscape' on day one. He's not wrong but he's said the quiet part loud."
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "characterLine": "The success criteria is a fair ask. We'll define that together. Here's something I tell every new hire that sounds obvious but isn't: in your first 90 days, your job is to ask questions, not give answers. Most people get this backwards. What's your instinct when you walk into a room where everyone seems to know more than you?",
+      "options": [
+        {
+          "id": "fd-t4-a",
+          "personaTag": "consulting_clone",
+          "text": "My instinct is to listen for about 80% longer than feels comfortable. I've learned that the version of a problem that comes out in the first five minutes of a meeting is usually not the real problem. I wait for the contradiction.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "'Wait for the contradiction.' I'm going to use that. This person is good."
+        },
+        {
+          "id": "fd-t4-b",
+          "personaTag": "startup_billionaire",
+          "text": "I try to figure out the one question that would tell me the most — the diagnostic question that, if I asked it, would surface the underlying structure of how people think here. Then I ask that and listen hard.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -4
+          },
+          "characterThinks": "He's thinking about information density, not just information quantity. That's a good sign."
+        },
+        {
+          "id": "fd-t4-c",
+          "personaTag": "homeless_cs",
+          "text": "I ask the dumb question. I've noticed that the question everyone is afraid to ask because it seems too basic is usually the most useful one. People are always relieved when someone says it out loud.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 9,
+            "suspicion": -3
+          },
+          "characterThinks": "The dumb question instinct is correct and rare. He'll earn social capital with this."
+        },
+        {
+          "id": "fd-t4-d",
+          "personaTag": "finance_bro",
+          "text": "Honestly my instinct is to establish credibility quickly — I find ways to contribute something useful within the first few exchanges so that I'm not just a passive observer. Silence reads as empty in most rooms.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 3,
+            "socialFooting": 1,
+            "plausibility": 2,
+            "larpContinuity": 1,
+            "respect": 2
+          },
+          "meterDeltas": {
+            "impressed": 3,
+            "suspicion": 6
+          },
+          "characterThinks": "He wants to establish credibility on day one. That's the exact trap I just told him not to walk into."
+        },
+        {
+          "id": "fd-t4-e",
+          "personaTag": "liberal_arts",
+          "text": "I try to notice what's not being said — the assumptions that everyone shares so completely they don't think to name them. Those are usually where the most interesting leverage is.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 7,
+            "socialFooting": 2,
+            "plausibility": 3,
+            "larpContinuity": 2,
+            "respect": 4
+          },
+          "meterDeltas": {
+            "impressed": 6,
+            "suspicion": 2
+          },
+          "characterThinks": "Looking for unstated assumptions. That's a good instinct. Slightly philosophical but it's defensible."
+        }
+      ]
+    },
+    {
+      "turn": 5,
+      "characterLine": "Good answer. You'll earn the right to give answers pretty quickly here if you do that. Let me tell you something about the team — there's a lot of scar tissue from a reorg eight months ago. People are protective of scope. How will you navigate that?",
+      "options": [
+        {
+          "id": "fd-t5-a",
+          "personaTag": "consulting_clone",
+          "text": "I'll map the informal org before the formal one. The reorg probably created gaps and overlaps that haven't been officially resolved — I want to understand where people feel their territory is before I walk into anything. I won't touch contested scope without buy-in first.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 5,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -6
+          },
+          "characterThinks": "He said 'informal org before formal org.' He's been through a reorg before. Good."
+        },
+        {
+          "id": "fd-t5-b",
+          "personaTag": "pm_newsletter",
+          "text": "I'll be explicit about my mandate and leave room for people to tell me where the edges are fuzzy. Ambiguity about ownership is usually the actual source of conflict — I try to surface it rather than work around it.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -3
+          },
+          "characterThinks": "Making scope explicit is the right move. He's got his head on straight."
+        },
+        {
+          "id": "fd-t5-c",
+          "personaTag": "startup_billionaire",
+          "text": "I'll find the person who lost the most in the reorg and make sure they know I'm not a threat to what they care about. Usually one key relationship changes the whole dynamic of a team transition.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 4,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 9,
+            "suspicion": -2
+          },
+          "characterThinks": "Find the wounded party and signal non-aggression. That's a savvy political read for day one."
+        },
+        {
+          "id": "fd-t5-d",
+          "personaTag": "student_athlete",
+          "text": "I'll just put my head down and focus on doing good work — I find that politics usually sort themselves out if you're just consistently useful and stay out of the drama.",
+          "flavorBadge": "glazed",
+          "metricDeltas": {
+            "aura": 1,
+            "socialFooting": 0,
+            "plausibility": 1,
+            "larpContinuity": 0,
+            "respect": 1
+          },
+          "meterDeltas": {
+            "impressed": 1,
+            "suspicion": 5
+          },
+          "characterThinks": "'Politics sort themselves out' — this is a man who has never lost a scope war. Not yet."
+        },
+        {
+          "id": "fd-t5-e",
+          "personaTag": "liberal_arts",
+          "text": "I think reorg scar tissue is actually a useful diagnostic — the things people are most protective of reveal what the organization actually values versus what it says it values. I'll pay attention to that gap.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 6,
+            "socialFooting": 2,
+            "plausibility": 3,
+            "larpContinuity": 2,
+            "respect": 4
+          },
+          "meterDeltas": {
+            "impressed": 5,
+            "suspicion": 3
+          },
+          "characterThinks": "Interesting framing. Slightly anthropological for week one but the observation is correct."
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "characterLine": "That's smart. I'll add: the person you want to be close to fast is Maya in Product — she controls the data roadmap and she's been here since pre-Series A. She's skeptical of new hires by default. How do you build trust with someone who's pre-disposed to doubt you?",
+      "options": [
+        {
+          "id": "fd-t6-a",
+          "personaTag": "consulting_clone",
+          "text": "I'd find something she's working on that I can make genuinely easier — not to score points, but to get in the habit of being useful. People who are skeptical of new hires are usually skeptical because past new hires haven't delivered. I'll change the prior by delivering.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "Change the prior by delivering. He thinks in terms of evidence, not charm. Maya is going to like him."
+        },
+        {
+          "id": "fd-t6-b",
+          "personaTag": "startup_billionaire",
+          "text": "I'd ask her to help me understand something I'm confused about — people who are pre-Series A are usually proud of the institutional knowledge they have. Giving her a chance to be the expert earns more than trying to impress her.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 5,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -4
+          },
+          "characterThinks": "He's going to make Maya feel like an expert. That's the right move and he's not being manipulative about it."
+        },
+        {
+          "id": "fd-t6-c",
+          "personaTag": "ai_founder",
+          "text": "I'd try to have a real technical conversation with her early — not a relationship-building coffee chat, an actual working session where she sees how I think under uncertainty. That's faster than social trust.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 3,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 9,
+            "suspicion": -2
+          },
+          "characterThinks": "Skip the relationship preamble, go straight to work. Risky but high-ROI if he can actually deliver."
+        },
+        {
+          "id": "fd-t6-d",
+          "personaTag": "vc_intern",
+          "text": "I'd be direct with her — tell her that I know she's skeptical of new hires and that I want to earn the relationship rather than assume it. Naming the dynamic usually defuses it.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 5,
+            "socialFooting": 2,
+            "plausibility": 2,
+            "larpContinuity": 2,
+            "respect": 3
+          },
+          "meterDeltas": {
+            "impressed": 4,
+            "suspicion": 4
+          },
+          "characterThinks": "Naming the dynamic directly is either brilliant or incredibly weird. Maya will decide which."
+        },
+        {
+          "id": "fd-t6-e",
+          "personaTag": "crypto_philosopher",
+          "text": "Honestly, I'd just show up as myself and not try to manage the perception. Skeptics usually see through performance faster than they see through authenticity. If she doesn't trust me eventually, that's data too.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -2,
+            "socialFooting": -2,
+            "plausibility": -1,
+            "larpContinuity": -2,
+            "respect": -1
+          },
+          "meterDeltas": {
+            "impressed": -1,
+            "suspicion": 9
+          },
+          "characterThinks": "'If she doesn't trust me that's data too.' Maya controls the data roadmap. This is not the right posture."
+        }
+      ]
+    },
+    {
+      "turn": 7,
+      "characterLine": "Yeah, Maya responds to evidence. Good instinct. One more thing before I hand you off to IT — what are you most worried about getting wrong in the first 90 days? Not the polished answer. The real one.",
+      "options": [
+        {
+          "id": "fd-t7-a",
+          "personaTag": "consulting_clone",
+          "text": "Optimizing for looking competent before I've actually earned it. There's a version of 'asking good questions' that's really just performing curiosity, and I'm aware of that trap in myself. My real risk is confusing the optics of a good onboarding with an actual good onboarding.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "He identified his own performance trap accurately on day one. That's the most self-aware first-day answer I've heard in seven years. I'm going to flag him."
+        },
+        {
+          "id": "fd-t7-b",
+          "personaTag": "startup_billionaire",
+          "text": "Moving too fast. I have a bad habit of proposing solutions before I've fully understood the problem context, especially when I can see an obvious path forward. I'll need to sit on my hands a bit.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -4
+          },
+          "characterThinks": "Self-aware about a real pattern that new hires actually exhibit. He's clearly done some reflection."
+        },
+        {
+          "id": "fd-t7-c",
+          "personaTag": "liberal_arts",
+          "text": "Misreading the culture and stepping on something that seems fine from the outside but carries a lot of history I don't have access to yet. I've done that before and the cost is high.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 9,
+            "suspicion": -3
+          },
+          "characterThinks": "He knows that organizations carry ghosts. The reorg answer earlier makes more sense now."
+        },
+        {
+          "id": "fd-t7-d",
+          "personaTag": "student_athlete",
+          "text": "Honestly — burning out by trying to do too much too fast. I know myself and when I'm energized I tend to over-commit, and that creates reliability issues down the line. I need to pace better.",
+          "flavorBadge": "glazed",
+          "metricDeltas": {
+            "aura": 3,
+            "socialFooting": 2,
+            "plausibility": 3,
+            "larpContinuity": 2,
+            "respect": 2
+          },
+          "meterDeltas": {
+            "impressed": 3,
+            "suspicion": 2
+          },
+          "characterThinks": "Burnout prevention is not the worst answer. It's also not the most interesting one."
+        },
+        {
+          "id": "fd-t7-e",
+          "personaTag": "homeless_cs",
+          "text": "Not building the right relationships early enough. I tend to be heads-down on the work, and I sometimes underestimate how much of this job is about creating the conditions for the work rather than just doing it.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 8,
+            "socialFooting": 3,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 8,
+            "suspicion": -2
+          },
+          "characterThinks": "He knows his blind spot is relationship investment. Self-aware. Actionable. I'll remind him about this in week three."
+        }
+      ]
+    },
+    {
+      "turn": 8,
+      "characterLine": "That kind of self-awareness is going to serve you well here. Okay — one last thing and then I'll get out of your hair. If you had to guess, what's the most common mistake new hires make in their first month that gets them written off?",
+      "options": [
+        {
+          "id": "fd-t8-a",
+          "personaTag": "consulting_clone",
+          "text": "They try to establish their value by pointing out what's broken before they understand why it exists. Every system has a reason. The new hire who walks in and says 'this process is inefficient' in week one is the person who didn't ask why the process was built that way.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "He just described the exact pattern that got our last two new hires quietly managed out. He's either been warned or he's genuinely wise. Either way, good."
+        },
+        {
+          "id": "fd-t8-b",
+          "personaTag": "pm_newsletter",
+          "text": "Over-communicating their work before the work is actually good. There's a version of visibility that creates more liability than credibility — people notice when the updates don't match the output.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -4
+          },
+          "characterThinks": "Updates that don't match output. That's a specific and correct observation. I have three direct reports who do this."
+        },
+        {
+          "id": "fd-t8-c",
+          "personaTag": "startup_billionaire",
+          "text": "They optimize for the relationship with their manager and neglect the peer network. The manager can protect you for a while but if your peers don't vouch for you, the manager has nothing to work with.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -3
+          },
+          "characterThinks": "Correct read of the political dynamics. He's going to be fine if he applies this."
+        },
+        {
+          "id": "fd-t8-d",
+          "personaTag": "finance_bro",
+          "text": "They don't track their wins. Nobody is keeping score for you — you have to build your own evidence base of what you've contributed. The people who get written off are the ones who did good work invisibly.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 6,
+            "socialFooting": 2,
+            "plausibility": 3,
+            "larpContinuity": 2,
+            "respect": 3
+          },
+          "meterDeltas": {
+            "impressed": 5,
+            "suspicion": 3
+          },
+          "characterThinks": "Tracking wins is real but slightly mercenary framing for a first-day conversation. I'll file it."
+        },
+        {
+          "id": "fd-t8-e",
+          "personaTag": "crypto_philosopher",
+          "text": "They mistake the official org chart for the actual power structure and end up making requests through the wrong channels. The formal hierarchy is a lagging indicator of where influence actually lives.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 7,
+            "socialFooting": 3,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 4
+          },
+          "meterDeltas": {
+            "impressed": 6,
+            "suspicion": 2
+          },
+          "characterThinks": "Correct observation. Slightly over-articulated. He'll be fine if he applies it more quietly."
+        }
+      ]
+    }
+  ]
+}
