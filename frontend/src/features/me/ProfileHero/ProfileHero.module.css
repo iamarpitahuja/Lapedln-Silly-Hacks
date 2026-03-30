@@ -1,5 +1,5 @@
 .card {
-  background: var(--bg-card);
+  background: rgba(10, 20, 12, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
@@ -15,7 +15,7 @@
 
 .coverPhoto {
   height: 160px;
-  background: linear-gradient(135deg, #0d0a1a 0%, #150e28 50%, #1e1040 100%);
+  background: linear-gradient(135deg, #001a08 0%, #002d10 50%, #004a1a 100%);
   background-size: cover;
   background-position: center;
   position: relative;
@@ -127,6 +127,26 @@
   background: rgba(167, 139, 250, 0.15);
   transform: translateY(-1px);
   box-shadow: var(--glow-sm);
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  background: rgba(242, 137, 168, 0.08);
+  color: var(--accent-rose);
+  border: 1px solid rgba(242, 137, 168, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.removeBtn:hover {
+  background: rgba(242, 137, 168, 0.18);
+  transform: translateY(-1px);
 }
 
 .hiddenInput {

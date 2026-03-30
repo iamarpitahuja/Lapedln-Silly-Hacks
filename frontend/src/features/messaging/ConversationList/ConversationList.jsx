@@ -33,7 +33,7 @@ export default function ConversationList({
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
-        <h2 className={styles.heading}>Slidin'</h2>
+        <h2 className={styles.heading}>Messaging</h2>
         <button className={styles.newBtn} onClick={onNewMessage} title="New message">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75z"/>
@@ -44,7 +44,7 @@ export default function ConversationList({
       <div className={styles.searchWrap}>
         <input
           className={styles.searchInput}
-          placeholder="search conversations"
+          placeholder="Search messages"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -54,7 +54,7 @@ export default function ConversationList({
         {/* 1:1 Messages section */}
         {filteredConvs.length > 0 && (
           <>
-            <p className={styles.sectionLabel}>DMs</p>
+            <p className={styles.sectionLabel}>Messages</p>
             <ul className={styles.section}>
               {filteredConvs.map((conv, index) => {
                 const user = conv.other_user
@@ -97,7 +97,7 @@ export default function ConversationList({
         {/* Groups section */}
         {filteredGroups.length > 0 && (
           <>
-            <p className={styles.sectionLabel}>Group Chats</p>
+            <p className={styles.sectionLabel}>Groups</p>
             <ul className={styles.section}>
               {filteredGroups.map((group, index) => {
                 const isActive = activeGroupId === group.id
@@ -136,7 +136,7 @@ export default function ConversationList({
 
         {filteredConvs.length === 0 && filteredGroups.length === 0 && (
           <p className={styles.empty}>
-            {search ? 'No results. Check your spelling.' : 'No conversations yet. Hit the pencil to start one.'}
+            {search ? 'No conversations match your search.' : 'No conversations yet. Click the pencil to start one.'}
           </p>
         )}
       </div>

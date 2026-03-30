@@ -95,6 +95,7 @@ function adaptBackendPost(post) {
     ai_glazes: post.ai_glazes ?? [],
     glazes: post.glazes ?? [],
     buzzword_score: post.buzzword_score ?? 0,
+    roastMemeUrl: post.roast_meme_url ?? null,
     has_user_relarped: Boolean(post.has_user_relarped),
     has_user_liked: Boolean(post.has_user_liked),
     has_user_loved: Boolean(post.has_user_loved),
@@ -140,7 +141,7 @@ export default function Feed() {
     <div className={styles.feed}>
       <StartPost />
       {loading ? (
-        <p className={styles.loadingText}>loading the feed…</p>
+        <p className={styles.loadingText}>Recalculating prestige hierarchy…</p>
       ) : (
         <Motion.div className={styles.posts}>
           <AnimatePresence initial={false}>

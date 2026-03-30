@@ -268,6 +268,16 @@ export async function fetchNotifications({ limit = 25 } = {}) {
   return authFetch(`${API_BASE}/notifications?limit=${limit}`)
 }
 
+// ── Games ───────────────────────────────────────────────────────────────────
+
+export async function claimGameReward(game) {
+  return authFetch(`${API_BASE}/games/claim-reward`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ game }),
+  })
+}
+
 // ── LarpMaxxer ───────────────────────────────────────────────────────────────
 
 export async function fetchLarpmaxxerBootstrap() {

@@ -146,14 +146,14 @@ export default function ProfileHero({ onNotice }) {
               <LarpRatingBadge rating={larpRating} size="small" />
             </div>
             <p className={styles.recruiterStat}>
-              {stats.recruiterViews} recruiters are locked in on your trajectory.
+              {stats.recruiterViews} recruiters are monitoring your trajectory.
             </p>
           </div>
         ) : (
           <div className={styles.editorWrapper}>
             <form className={styles.form} onSubmit={handleFormSubmit}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Display Name</label>
+                <label className={styles.formLabel}>Real Name</label>
                 <input
                   type="text"
                   className={styles.input}
@@ -165,17 +165,17 @@ export default function ProfileHero({ onNotice }) {
                 />
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Current Title</label>
+                <label className={styles.formLabel}>Current Larp Job</label>
                 <input
                   type="text"
                   className={styles.input}
                   value={job}
                   readOnly
-                  placeholder="Update from the J*bs page"
+                  placeholder="Update this from the J*bs page"
                 />
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Profile Photo</label>
+                <label className={styles.formLabel}>Profile Image</label>
                 <div className={styles.inputWithAction}>
                   <input
                     type="text"
@@ -196,6 +196,15 @@ export default function ProfileHero({ onNotice }) {
                       onChange={e => handleFileUpload(e, 'avatar')}
                     />
                   </label>
+                  {formValues.avatar && (
+                    <button
+                      type="button"
+                      className={styles.removeBtn}
+                      onClick={() => setFormValues(existing => ({ ...existing, avatar: '' }))}
+                    >
+                      <Icon name="x" size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
               <div className={styles.formGroup}>
@@ -220,6 +229,15 @@ export default function ProfileHero({ onNotice }) {
                       onChange={e => handleFileUpload(e, 'cover')}
                     />
                   </label>
+                  {formValues.coverPhoto && (
+                    <button
+                      type="button"
+                      className={styles.removeBtn}
+                      onClick={() => setFormValues(existing => ({ ...existing, coverPhoto: '' }))}
+                    >
+                      <Icon name="x" size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
               <div className={styles.formActions}>

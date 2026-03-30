@@ -6,7 +6,6 @@ import { useAuth } from '../../context/AuthContext'
 import { getInitials } from '../../utils/strings'
 import { fetchConversations } from '../../services/api'
 import { springSnap } from '../../lib/motion'
-import { initializeTheme, setTheme as applyTheme } from '../../lib/theme'
 import styles from './TopNav.module.css'
 
 const NAV_ITEMS = [
@@ -76,12 +75,20 @@ export default function TopNav() {
   const [theme, setTheme] = useState('dark')
 
   useEffect(() => {
-    setTheme(initializeTheme())
+    const storedTheme = window.localStorage.getItem('theme')
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
+    const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
+      ? storedTheme
+      : (prefersLight ? 'light' : 'dark')
+    document.documentElement.setAttribute('data-theme', initialTheme)
+    setTheme(initialTheme)
   }, [])
 
   const toggleTheme = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(applyTheme(nextTheme))
+    document.documentElement.setAttribute('data-theme', nextTheme)
+    window.localStorage.setItem('theme', nextTheme)
+    setTheme(nextTheme)
   }
 
   useEffect(() => {
@@ -99,7 +106,7 @@ export default function TopNav() {
         {/* Left: Logo + Search */}
         <div className={styles.left}>
           <NavLink to="/" className={styles.logo}>
-            <img src="/logo.png" alt="LarpedIn" className={styles.logoImg} />
+            <img src={theme === 'light' ? '/logoLightMode.png' : '/logoDarkMode.png'} alt="LarpedIn" className={styles.logoImg} />
             <span className={styles.logoText}>LarpedIn</span>
           </NavLink>
           <div className={styles.searchWrap}>

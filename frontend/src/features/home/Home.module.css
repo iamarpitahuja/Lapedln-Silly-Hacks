@@ -31,16 +31,7 @@
   min-width: 0;
 }
 
-@media (max-width: 1080px) {
-  .layout {
-    grid-template-columns: 225px 1fr;
-  }
-  .right {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .layout {
     grid-template-columns: 1fr;
   }

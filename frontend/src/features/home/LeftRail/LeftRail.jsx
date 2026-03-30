@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useMockData } from '../../../context/MockDataContext'
 import LarpRatingBadge from '../../../components/LarpRatingBadge/LarpRatingBadge'
 import Icon from '../../../components/Icon/Icon'
@@ -66,7 +67,7 @@ export default function LeftRail() {
         </div>
       </div>
 
-      {/* who's on ur glazing arc rn */}
+      {/* Who's glazing you */}
       <div className={styles.card}>
         <div className={styles.widgetHeader}>
           <h3 className={styles.widgetTitle}>Who&apos;s glazing you</h3>
@@ -91,17 +92,17 @@ export default function LeftRail() {
         </div>
       </div>
 
-      {/* Weekly aura speedrun */}
+      {/* Weekly aura growth */}
       <div className={styles.card}>
         <div className={styles.widgetHeader}>
-          <h3 className={styles.widgetTitle}>Weekly aura speedrun</h3>
+          <h3 className={styles.widgetTitle}>Weekly aura growth</h3>
           <button className={styles.moreBtn} aria-label="More">
             <Icon name="more" size={16} />
           </button>
         </div>
         <div className={styles.auraRow}>
           <div>
-            <p className={styles.auraLabel}>Weekly aura speedrun</p>
+            <p className={styles.auraLabel}>Weekly aura growth</p>
           </div>
           <div className={styles.auraValues}>
             <span className={styles.auraNumber}>{stats.weeklyAuraGrowth}</span>
@@ -111,6 +112,22 @@ export default function LeftRail() {
         <button className={styles.seeMore}>
           See more <Icon name="arrowRight" size={14} />
         </button>
+      </div>
+
+      {/* LarpMaxxer quick access */}
+      <div className={styles.card}>
+        <div className={styles.larpmaxxerCard}>
+          <div className={styles.larpmaxxerHeader}>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16" className={styles.larpmaxxerIcon}>
+              <path d="M10 2l2.5 5.5L18 8.5l-4 4 1 5.5L10 15.5 4.5 18l1-5.5-4-4 5.5-1z" />
+            </svg>
+            <span className={styles.larpmaxxerTitle}>LarpMaxxer</span>
+          </div>
+          <p className={styles.larpmaxxerSub}>Train your corporate persona</p>
+          <Link to="/larpmaxxer" className={styles.larpmaxxerBtn}>
+            Enter Training
+          </Link>
+        </div>
       </div>
     </div>
   )

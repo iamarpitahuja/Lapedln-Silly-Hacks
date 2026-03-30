@@ -1,0 +1,81 @@
+.title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.tiles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  text-align: left;
+}
+
+.tile:hover {
+  border-color: var(--border-md);
+  box-shadow: var(--glow-sm);
+}
+
+.tileIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--neon-faint);
+  color: var(--neon);
+  flex-shrink: 0;
+}
+
+.tileIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tileInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.tileName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.tileTagline {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.tileStatus {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon);
+  font-family: 'Sora', sans-serif;
+  flex-shrink: 0;
+}
+
+.tileDone {
+  color: var(--accent-cyan);
+}

@@ -143,7 +143,7 @@ export default function ChatWindow({ otherUser, group, currentUserId }) {
   if (!otherUser && !group) {
     return (
       <div className={styles.empty}>
-        <p>pick a convo and start the slide</p>
+        <p>Select a conversation to start messaging</p>
       </div>
     )
   }
@@ -180,12 +180,12 @@ export default function ChatWindow({ otherUser, group, currentUserId }) {
       </div>
 
       <div className={styles.messages}>
-        {loading && <p className={styles.state}>loading the tea…</p>}
+        {loading && <p className={styles.state}>Loading messages…</p>}
         {!loading && messages.length === 0 && (
           <p className={styles.state}>
             {isGroup
-              ? 'no tea yet. cook something up.'
-              : 'No messages yet. Say something.'}
+              ? 'No messages yet. Start the group conversation.'
+              : 'No messages yet. Break the ice with some synergy.'}
           </p>
         )}
         {messages.map(msg => (
@@ -202,7 +202,7 @@ export default function ChatWindow({ otherUser, group, currentUserId }) {
       <div className={styles.inputBar}>
         <textarea
           className={styles.input}
-          placeholder="slide something in… (Enter to send)"
+          placeholder="Write a message… (Enter to send)"
           value={draft}
           onChange={e => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}

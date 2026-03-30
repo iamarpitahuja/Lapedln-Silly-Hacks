@@ -1,0 +1,85 @@
+<h2>What does "claiming a job" look like?</h2>
+<p class="subtitle">Three flavors of theatrical — pick the one that fits the vibe.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="offer-letter" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0a1a; padding:16px; font-family: 'Georgia', serif;">
+      <div style="background:#13102a; border:1px solid rgba(167,139,250,0.25); border-radius:8px; padding:16px; max-width:280px; margin:0 auto;">
+        <div style="text-align:center; margin-bottom:12px;">
+          <div style="font-size:11px; letter-spacing:0.15em; color:#a78bfa; text-transform:uppercase; font-weight:700;">Nimbus Dynamics</div>
+          <div style="font-size:9px; color:#5a4e7a; margin-top:2px;">Synergizing Tomorrow, Today™</div>
+          <div style="border-bottom:1px solid rgba(167,139,250,0.2); margin-top:10px;"></div>
+        </div>
+        <div style="font-size:11px; color:#c4b5e0; line-height:1.6;">
+          <p style="margin-bottom:8px;">Dear <span style="color:#f0e6ff; font-weight:600;">Aspiring Thought Leader</span>,</p>
+          <p style="margin-bottom:8px;">It is our immense pleasure to extend an offer for the role of <span style="color:#a78bfa; font-weight:700;">Chief Vibe Architect</span>.</p>
+          <p style="margin-bottom:8px;">Compensation: <span style="color:#f1c75b;">$800k base</span> + 0.0001% equity + unlimited aura days.</p>
+          <p style="color:#7c6b9e; font-size:10px; margin-bottom:12px;">This offer expires in 2 minutes. The ecosystem is waiting.</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button style="flex:1; background:#a78bfa; color:#0d0a1a; border:none; border-radius:6px; padding:8px; font-size:11px; font-weight:800; cursor:pointer;">✅ Accept Offer</button>
+          <button style="flex:1; background:transparent; color:#5a4e7a; border:1px solid #2a2040; border-radius:6px; padding:8px; font-size:11px; cursor:pointer;">Decline</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Fake Offer Letter Modal</h3>
+      <p>Clicking "Apply" instantly pops up a formal-looking (but absurd) offer letter from the fake company. User clicks "Accept" to claim the role. Fast, funny, one step.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hiring-pipeline" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0a1a; padding:16px;">
+      <div style="max-width:280px; margin:0 auto;">
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
+          <div style="width:24px; height:24px; border-radius:50%; background:#a78bfa; display:flex; align-items:center; justify-content:center; font-size:11px; color:#0d0a1a; font-weight:800; flex-shrink:0;">✓</div>
+          <div style="flex:1; height:3px; background:#a78bfa; border-radius:2px;"></div>
+          <div style="width:24px; height:24px; border-radius:50%; background:#a78bfa; display:flex; align-items:center; justify-content:center; font-size:11px; color:#0d0a1a; font-weight:800; flex-shrink:0;">✓</div>
+          <div style="flex:1; height:3px; background:#a78bfa; border-radius:2px;"></div>
+          <div style="width:24px; height:24px; border-radius:50%; background:rgba(167,139,250,0.3); border:2px solid #a78bfa; display:flex; align-items:center; justify-content:center; font-size:11px; color:#a78bfa; font-weight:800; flex-shrink:0; animation: pulse 1s infinite;">3</div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:9px; color:#7c6b9e; margin-bottom:14px;">
+          <span>Applied</span><span>Screened</span><span style="color:#a78bfa;">Offer</span>
+        </div>
+        <div style="background:#13102a; border:1px solid rgba(90,215,193,0.3); border-radius:8px; padding:12px; text-align:center;">
+          <div style="font-size:20px; margin-bottom:4px;">🎉</div>
+          <div style="font-size:13px; font-weight:800; color:#5ad7c1; margin-bottom:4px;">You're Hired!</div>
+          <div style="font-size:10px; color:#7c9e97; margin-bottom:10px;">Nimbus Dynamics wants your full bandwidth</div>
+          <button style="background:#5ad7c1; color:#0d1a18; border:none; border-radius:6px; padding:7px 16px; font-size:11px; font-weight:800; cursor:pointer;">🚀 Start LARPing</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Fake Hiring Pipeline</h3>
+      <p>A 3-step progress animation plays instantly: "Applied → Screened → Hired 🎉". Each step flashes for ~600ms before auto-advancing. Ends with a "You're Hired!" celebration. Slightly more cinematic but still fast.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="email-chain" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d0a1a; padding:16px; font-family:monospace;">
+      <div style="max-width:280px; margin:0 auto; display:flex; flex-direction:column; gap:6px;">
+        <div style="background:#13102a; border:1px solid rgba(167,139,250,0.2); border-radius:6px; padding:10px; border-left:3px solid #a78bfa;">
+          <div style="font-size:9px; color:#7c6b9e; margin-bottom:2px;">From: recruiting@nimbusdynamics.vc</div>
+          <div style="font-size:10px; color:#f0e6ff; font-weight:600; margin-bottom:4px;">Re: Your Application — Exciting Update!</div>
+          <div style="font-size:10px; color:#a78bfa; font-style:italic;">"We were impressed by your aura metrics and strategic ambiguity score..."</div>
+        </div>
+        <div style="background:#13102a; border:1px solid rgba(241,199,91,0.2); border-radius:6px; padding:10px; border-left:3px solid #f1c75b; margin-left:12px;">
+          <div style="font-size:9px; color:#7c6b9e; margin-bottom:2px;">From: ceo@nimbusdynamics.vc</div>
+          <div style="font-size:10px; color:#f0e6ff; font-weight:600; margin-bottom:4px;">A personal note 🙏</div>
+          <div style="font-size:10px; color:#f1c75b; font-style:italic;">"I rarely reach out directly, but your LinkedIn presence moved me..."</div>
+        </div>
+        <div style="background:#13102a; border:1px solid rgba(90,215,193,0.2); border-radius:6px; padding:10px; border-left:3px solid #5ad7c1; margin-left:24px;">
+          <div style="font-size:9px; color:#7c6b9e; margin-bottom:2px;">Offer Letter Attached 📎</div>
+          <div style="font-size:10px; color:#5ad7c1; font-weight:600;">"Welcome to the ecosystem."</div>
+          <button style="margin-top:6px; background:#5ad7c1; color:#0d1a18; border:none; border-radius:4px; padding:4px 10px; font-size:9px; font-weight:800; cursor:pointer;">Accept + Join</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Fake Email Chain</h3>
+      <p>A cascade of 3 satirical emails slides in one by one: recruiter email → CEO "personal note" → offer letter. Each line is absurd corporate speak. Most cinematic option, most content to write.</p>
+    </div>
+  </div>
+
+</div>

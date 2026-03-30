@@ -1,0 +1,49 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.key {
+  min-width: 30px;
+  height: 42px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.keyWide {
+  min-width: 56px;
+  font-size: 11px;
+}
+
+.keyCorrect {
+  background: var(--neon);
+  color: var(--text-on-accent);
+}
+
+.keyPresent {
+  background: var(--accent-amber);
+  color: var(--text-on-accent);
+}
+
+.keyAbsent {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+}

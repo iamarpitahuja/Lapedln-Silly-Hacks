@@ -1,5 +1,5 @@
 .card {
-  background: var(--bg-card);
+  background: rgba(10, 20, 12, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
@@ -83,8 +83,6 @@
 
 .actions {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   gap: 12px;
 }
 
@@ -200,23 +198,23 @@
   border: 1px solid var(--border-md);
 }
 
-.trainingBtn {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-md);
-  color: var(--text-secondary);
+.btnTrain {
+  background: var(--neon-faint);
+  border: 1px solid var(--neon);
+  color: var(--neon);
   padding: 6px 16px;
   border-radius: 18px;
-  font-weight: 600;
-  font-size: 14px;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: all var(--transition-fast);
 }
 
-.trainingBtn:hover {
-  border-color: var(--neon);
-  color: var(--neon);
-  background: rgba(167, 139, 250, 0.1);
+.btnTrain:hover {
+  background: rgba(167, 139, 250, 0.12);
+  box-shadow: var(--glow-sm);
 }
 
 .emptyState {

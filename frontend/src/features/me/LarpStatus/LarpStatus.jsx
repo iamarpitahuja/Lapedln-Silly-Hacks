@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useMockData } from '../../../context/MockDataContext'
 import Icon from '../../../components/Icon/Icon'
 import styles from './LarpStatus.module.css'
@@ -52,7 +53,7 @@ export default function LarpStatus({ onNotice }) {
         <div className={styles.bannerHeader}>
           <div className={styles.headerInfo}>
             <span className={styles.dot} />
-            <h2 className={styles.title}>Actively Larping</h2>
+            <h2 className={styles.title}>Open to Larping</h2>
           </div>
           {!isEditing && (
             <button className={styles.editBtn} aria-label="Edit status" onClick={handleOpenEditor}>
@@ -65,27 +66,24 @@ export default function LarpStatus({ onNotice }) {
           <div className={styles.displayArea}>
             {job
               ? <p className={styles.persona}>{job}</p>
-              : <p className={styles.emptyState}>No active larp set. Define your current character.</p>
+              : <p className={styles.emptyState}>No active persona set. Define the role you are currently performing.</p>
             }
             <div className={styles.pills}>
               {opportunities.length > 0
                 ? opportunities.map(type => (
                     <span key={type} className={styles.pill}>{type}</span>
                   ))
-                : <p className={styles.emptyState}>no target arcs listed. what bag u tryna fake?</p>
+                : <p className={styles.emptyState}>No opportunity types listed. Add what roles you are open to.</p>
               }
             </div>
             <div className={styles.actions}>
               <span className={styles.btnOutlined}>Current larp is managed from J*bs</span>
               <button className={styles.btnFilled} onClick={handleOpenEditor}>
-                Edit Target Bags
+                Edit Target Larps
               </button>
-              <button
-                className={styles.trainingBtn}
-                onClick={() => window.location.assign('/persona-select')}
-              >
-                Enter the Dojo
-              </button>
+              <Link to="/larpmaxxer" className={styles.btnTrain}>
+                Train Your Larp
+              </Link>
             </div>
           </div>
         ) : (

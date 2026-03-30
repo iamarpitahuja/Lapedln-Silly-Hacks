@@ -10,7 +10,7 @@ import { easeOutQuint } from '../../lib/motion'
 import UserCard from './UserCard/UserCard'
 import styles from './Network.module.css'
 
-const TABS = ['Suggestions', 'Pending', 'Connections']
+const TABS = ['Suggestions', 'Aura Farmers', 'Pending', 'My Connections']
 
 export default function Network() {
   const [activeTab, setActiveTab] = useState('Suggestions')
@@ -38,13 +38,30 @@ export default function Network() {
           .then(o => setOutgoing(o.outgoing ?? []))
           .catch(() => {})
       } catch {
-        setError('Could not load network data. Try again.')
+        setError('Failed to load network data. Is the backend running?')
       } finally {
         setLoading(false)
       }
     }
     load()
   }, [])
+
+  function handleNetworkChange(user, newStatus, newConnectionId) {
+    if (newStatus === 'pending_sent') {
+      setSuggestions(prev => prev.filter(u => u.id !== user.id))
+      setOutgoing(prev => [...prev, { id: newConnectionId, addressee: user }])
+    } else if (newStatus === 'accepted') {
+      setOutgoing(prev => prev.filter(c => c.id !== newConnectionId))
+      setPending(prev => prev.filter(c => c.id !== newConnectionId))
+      setConnections(prev => [...prev, { id: newConnectionId, profile: user }])
+    } else if (newStatus === 'declined') {
+      setPending(prev => prev.filter(c => c.id !== newConnectionId))
+    } else if (newStatus === 'none') {
+      setOutgoing(prev => prev.filter(c => c.addressee?.id !== user.id))
+      setConnections(prev => prev.filter(c => c.profile?.id !== user.id))
+      setSuggestions(prev => prev.some(u => u.id === user.id) ? prev : [...prev, user])
+    }
+  }
 
   return (
     <div className={styles.page}>
@@ -59,14 +76,17 @@ export default function Network() {
               onClick={() => setActiveTab(tab)}
             >
               {tab}
-              {tab === 'Waiting' && pending.length > 0 && (
+              {tab === 'Pending' && pending.length > 0 && (
                 <span className={styles.badge}>{pending.length}</span>
+              )}
+              {tab === 'Aura Farmers' && outgoing.length > 0 && (
+                <span className={styles.badge}>{outgoing.length}</span>
               )}
             </button>
           ))}
         </div>
 
-        {loading && <p className={styles.state}>Loading…</p>}
+        {loading && <p className={styles.state}>Loading your network…</p>}
         {error && <p className={styles.stateError}>{error}</p>}
 
         {!loading && !error && (
@@ -85,27 +105,42 @@ export default function Network() {
                   animate="show"
                   variants={{ show: { transition: { staggerChildren: 0.05 } } }}
                 >
-                  {suggestions.length === 0 && outgoing.length === 0 ? (
-                    <p className={styles.empty}>No suggestions right now.</p>
+                  {suggestions.length === 0 ? (
+                    <p className={styles.empty}>No suggestions right now. You know everyone!</p>
                   ) : (
-                    <>
+                    suggestions.map(user => (
+                      <Motion.div key={user.id} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
+                        <UserCard user={user} initialStatus="none" onNetworkChange={handleNetworkChange} />
+                      </Motion.div>
+                    ))
+                  )}
+                </Motion.div>
+              )}
+
+              {activeTab === 'Aura Farmers' && (
+                <div>
+                  {outgoing.length === 0 ? (
+                    <p className={styles.empty}>No one is farming your aura. Your network is reciprocated… for now.</p>
+                  ) : (
+                    <Motion.div
+                      className={styles.grid}
+                      initial="hidden"
+                      animate="show"
+                      variants={{ show: { transition: { staggerChildren: 0.05 } } }}
+                    >
                       {outgoing.map(conn => (
                         <Motion.div key={conn.id} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
                           <UserCard
                             user={conn.addressee}
                             initialStatus="pending_sent"
                             connectionId={conn.id}
+                            onNetworkChange={handleNetworkChange}
                           />
                         </Motion.div>
                       ))}
-                      {suggestions.map(user => (
-                        <Motion.div key={user.id} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
-                          <UserCard user={user} initialStatus="none" />
-                        </Motion.div>
-                      ))}
-                    </>
+                    </Motion.div>
                   )}
-                </Motion.div>
+                </div>
               )}
 
               {activeTab === 'Pending' && (
@@ -125,6 +160,7 @@ export default function Network() {
                             user={conn.requester}
                             initialStatus="pending_received"
                             connectionId={conn.id}
+                            onNetworkChange={handleNetworkChange}
                           />
                         </Motion.div>
                       ))}
@@ -133,7 +169,7 @@ export default function Network() {
                 </div>
               )}
 
-              {activeTab === 'Connections' && (
+              {activeTab === 'My Connections' && (
                 <Motion.div
                   className={styles.grid}
                   initial="hidden"
@@ -141,7 +177,7 @@ export default function Network() {
                   variants={{ show: { transition: { staggerChildren: 0.05 } } }}
                 >
                   {connections.length === 0 ? (
-                    <p className={styles.empty}>No connections yet.</p>
+                    <p className={styles.empty}>No connections yet. Start connecting!</p>
                   ) : (
                     connections.map(conn => (
                       <Motion.div key={conn.id} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
@@ -149,6 +185,7 @@ export default function Network() {
                           user={conn.profile}
                           initialStatus="accepted"
                           connectionId={conn.id}
+                          onNetworkChange={handleNetworkChange}
                         />
                       </Motion.div>
                     ))
