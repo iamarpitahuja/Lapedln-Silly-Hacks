@@ -1,0 +1,727 @@
+{
+  "scenarioId": "startup-billionaire",
+  "briefDescription": "Elena had a $1.4B exit three years ago. She's at this mixer for twenty minutes and was walking toward the door when something made her stop. You have roughly 90 seconds before she finds a reason to leave.",
+  "openingLine": "You look like you're here for a reason. What is it?",
+  "dialogueNodes": [
+    {
+      "turn": 1,
+      "characterLine": "Okay. And what's the part of it that keeps you up at night?",
+      "options": [
+        {
+          "id": "sb-t1-a",
+          "personaTag": "startup_billionaire",
+          "text": "Whether the timing is actually right or whether we're two years early. Being early is indistinguishable from being wrong for a long time.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 10
+          },
+          "meterDeltas": {
+            "impressed": 16,
+            "suspicion": -10
+          },
+          "characterThinks": "She has thought about that exact thing. She knows what that answer feels like."
+        },
+        {
+          "id": "sb-t1-b",
+          "personaTag": "stanford_dropout",
+          "text": "Whether the problem is as big as I think it is, or whether I've been inside it so long I've lost perspective on the actual scale.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 5,
+            "larpContinuity": 4,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -8
+          },
+          "characterThinks": "Proximity bias as a fear. That's a real founder's answer."
+        },
+        {
+          "id": "sb-t1-c",
+          "personaTag": "vc_intern",
+          "text": "Honestly the competitive landscape moves so fast — there are so many well-funded players now and it's hard to stay differentiated.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -4,
+            "socialFooting": -2,
+            "plausibility": -2,
+            "larpContinuity": -3,
+            "respect": -4
+          },
+          "meterDeltas": {
+            "impressed": -6,
+            "suspicion": 14
+          },
+          "characterThinks": "Competitive landscape anxiety. This isn't someone who's found their footing yet."
+        },
+        {
+          "id": "sb-t1-d",
+          "personaTag": "ai_founder",
+          "text": "The capability gap between what we can promise and what the infrastructure can currently deliver. We're selling a future that exists in six months, not today.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 12,
+            "suspicion": -6
+          },
+          "characterThinks": "Infrastructure honesty. Elena has been in that gap. She knows it."
+        },
+        {
+          "id": "sb-t1-e",
+          "personaTag": "performative_uni",
+          "text": "I worry a lot about team culture as we scale — making sure we don't lose what makes us special.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -6,
+            "socialFooting": -2,
+            "plausibility": -3,
+            "larpContinuity": -3,
+            "respect": -6
+          },
+          "meterDeltas": {
+            "impressed": -10,
+            "suspicion": 18
+          },
+          "characterThinks": "Culture preservation anxiety. She hears this at every mixer. She is now actively looking for the exit."
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "characterLine": "What would you do differently if you had to start over today — knowing everything you know now?",
+      "options": [
+        {
+          "id": "sb-t2-a",
+          "personaTag": "startup_billionaire",
+          "text": "Fire faster. The decisions I delayed on people cost me 18 months I'll never get back. Everything else I'd probably do roughly the same.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 16,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 11
+          },
+          "meterDeltas": {
+            "impressed": 17,
+            "suspicion": -12
+          },
+          "characterThinks": "That's the same answer she'd give. She trusts this."
+        },
+        {
+          "id": "sb-t2-b",
+          "personaTag": "stanford_dropout",
+          "text": "I'd care less about what the smart people in the room thought was the right move. Most of the things that worked were the things I couldn't explain to an investor.",
+          "flavorBadge": "unhinged",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "Contrarian instinct over consensus. Elena has been in that room."
+        },
+        {
+          "id": "sb-t2-c",
+          "personaTag": "ai_founder",
+          "text": "Focus narrower, earlier. We spent twelve months trying to be the horizontal platform before we found the vertical where we actually had leverage.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 12,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -6
+          },
+          "characterThinks": "Horizontal to vertical pivot lesson. She's heard this one before but he said it specifically."
+        },
+        {
+          "id": "sb-t2-d",
+          "personaTag": "pm_newsletter",
+          "text": "I think I'd invest more in building in public earlier. The community we could have built would have compressed a lot of the sales cycle.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -5,
+            "socialFooting": -2,
+            "plausibility": -3,
+            "larpContinuity": -3,
+            "respect": -5
+          },
+          "meterDeltas": {
+            "impressed": -8,
+            "suspicion": 16
+          },
+          "characterThinks": "'Building in public.' She did not build in public. This is not going to resonate."
+        }
+      ]
+    },
+    {
+      "turn": 3,
+      "characterLine": "How do you think about failure? Not the public narrative version — the real one.",
+      "options": [
+        {
+          "id": "sb-t3-a",
+          "personaTag": "startup_billionaire",
+          "text": "There were six months where I genuinely didn't know if we were going to make it and I didn't tell anyone. Not my board, not my co-founder. That silence cost me more than the failure itself would have.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 18,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 12
+          },
+          "meterDeltas": {
+            "impressed": 18,
+            "suspicion": -14
+          },
+          "characterThinks": "That is a real answer. She has not heard that answer tonight and she has been to three of these."
+        },
+        {
+          "id": "sb-t3-b",
+          "personaTag": "stanford_dropout",
+          "text": "I've stopped trying to learn from it in the moment. You can't see what failed clearly until eighteen months later. Everything in real time is just survival.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -9
+          },
+          "characterThinks": "Time-delay on failure processing. That's hard-earned wisdom."
+        },
+        {
+          "id": "sb-t3-c",
+          "personaTag": "consulting_clone",
+          "text": "I always do a post-mortem — structured retrospective on what we could have done differently. Documentation is key to organizational learning.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -6,
+            "socialFooting": -2,
+            "plausibility": -3,
+            "larpContinuity": -4,
+            "respect": -6
+          },
+          "meterDeltas": {
+            "impressed": -10,
+            "suspicion": 20
+          },
+          "characterThinks": "Post-mortem documentation as a failure philosophy. Elena has exited the conversation mentally."
+        },
+        {
+          "id": "sb-t3-d",
+          "personaTag": "ai_founder",
+          "text": "I separate technical failure from judgment failure. Technical failures are fine — they're information. Judgment failures are the ones I still wake up about.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "Technical vs judgment failure distinction. She makes this same distinction."
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "characterLine": "What do you want that you don't have yet?",
+      "options": [
+        {
+          "id": "sb-t4-a",
+          "personaTag": "startup_billionaire",
+          "text": "More time. Not on the company — on the thinking. I spend all my time executing on a thesis I haven't had a clear week to actually stress-test in a year.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 16,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 11
+          },
+          "meterDeltas": {
+            "impressed": 17,
+            "suspicion": -11
+          },
+          "characterThinks": "He wants thinking time, not money or distribution. She remembers that feeling."
+        },
+        {
+          "id": "sb-t4-b",
+          "personaTag": "stanford_dropout",
+          "text": "A person who's been through a scale moment in this exact problem space who will actually tell me what broke. Not the polished version. The one they don't tell at conferences.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 4,
+            "respect": 10
+          },
+          "meterDeltas": {
+            "impressed": 16,
+            "suspicion": -10
+          },
+          "characterThinks": "He just described what she could give him. She notices he didn't ask for it."
+        },
+        {
+          "id": "sb-t4-c",
+          "personaTag": "vc_intern",
+          "text": "Honestly, access to the right network. The people I need to be talking to are hard to get to from where we are right now.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -5,
+            "socialFooting": -2,
+            "plausibility": -3,
+            "larpContinuity": -3,
+            "respect": -5
+          },
+          "meterDeltas": {
+            "impressed": -8,
+            "suspicion": 18
+          },
+          "characterThinks": "He wants her network. She knew this was coming. She's putting her glass down."
+        },
+        {
+          "id": "sb-t4-d",
+          "personaTag": "ai_founder",
+          "text": "Better signal on whether the problem is as acute for the customer as it is in my head. The validation we have is real but I want more of it faster.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 1,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 12,
+            "suspicion": -5
+          },
+          "characterThinks": "Customer signal hunger. Real founder behavior."
+        }
+      ]
+    },
+    {
+      "turn": 5,
+      "characterLine": "What's your relationship with money now versus when you started?",
+      "options": [
+        {
+          "id": "sb-t5-a",
+          "personaTag": "startup_billionaire",
+          "text": "It's a tool now. It used to feel like the point. That shift happened somewhere around the first time I had enough and still felt the same as before.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 16,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 10
+          },
+          "meterDeltas": {
+            "impressed": 17,
+            "suspicion": -11
+          },
+          "characterThinks": "She had that exact realization. She knows what moment he means."
+        },
+        {
+          "id": "sb-t5-b",
+          "personaTag": "stanford_dropout",
+          "text": "Honestly, less interesting than I thought it would be. The problems that felt like they'd be solved by it weren't.",
+          "flavorBadge": "unhinged",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "He said money is less interesting. She's deciding if that's honest or performed."
+        },
+        {
+          "id": "sb-t5-c",
+          "personaTag": "finance_bro",
+          "text": "I think about it in terms of runway now — how much optionality does it buy me for the next move.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 4,
+            "socialFooting": 0,
+            "plausibility": 2,
+            "larpContinuity": 1,
+            "respect": 2
+          },
+          "meterDeltas": {
+            "impressed": 5,
+            "suspicion": 5
+          },
+          "characterThinks": "Runway metaphor at a philosophical question. He retreated into the safe frame."
+        },
+        {
+          "id": "sb-t5-d",
+          "personaTag": "performative_uni",
+          "text": "I've become a lot more intentional about aligning my financial decisions with my values — making sure the capital goes where the impact is.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -6,
+            "socialFooting": -2,
+            "plausibility": -4,
+            "larpContinuity": -4,
+            "respect": -6
+          },
+          "meterDeltas": {
+            "impressed": -9,
+            "suspicion": 20
+          },
+          "characterThinks": "Impact-aligned capital. She invested in a carbon credit company once. She doesn't talk about it."
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "characterLine": "If you could ask me one question — knowing I probably won't answer it — what would it be?",
+      "options": [
+        {
+          "id": "sb-t6-a",
+          "personaTag": "startup_billionaire",
+          "text": "What was the moment you knew it was actually going to work? Not the data point — the moment in your body.",
+          "flavorBadge": "unhinged",
+          "metricDeltas": {
+            "aura": 18,
+            "socialFooting": 3,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 12
+          },
+          "meterDeltas": {
+            "impressed": 18,
+            "suspicion": -12
+          },
+          "characterThinks": "That is the only question that matters and she has never been asked it this way."
+        },
+        {
+          "id": "sb-t6-b",
+          "personaTag": "stanford_dropout",
+          "text": "What did you have to stop caring about to get to where you are?",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 16,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 4,
+            "respect": 11
+          },
+          "meterDeltas": {
+            "impressed": 17,
+            "suspicion": -10
+          },
+          "characterThinks": "Loss framing on success. She thinks about this question a lot."
+        },
+        {
+          "id": "sb-t6-c",
+          "personaTag": "vc_intern",
+          "text": "Do you think you could be an early advisor to what we're building? I think your experience would be incredibly valuable.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -8,
+            "socialFooting": -3,
+            "plausibility": -5,
+            "larpContinuity": -5,
+            "respect": -8
+          },
+          "meterDeltas": {
+            "impressed": -14,
+            "suspicion": 28
+          },
+          "characterThinks": "He asked for the advisor role. At a hypothetical question. She is walking away."
+        },
+        {
+          "id": "sb-t6-d",
+          "personaTag": "ai_founder",
+          "text": "What's the decision you're proudest of that nobody knows about?",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "Hidden decision question. Specific enough. She'll answer this one."
+        }
+      ]
+    },
+    {
+      "turn": 7,
+      "characterLine": "You're more interesting than most people in this room. I don't say that a lot.",
+      "options": [
+        {
+          "id": "sb-t7-a",
+          "personaTag": "startup_billionaire",
+          "text": "I'll take it. Most rooms aren't worth the effort of being interesting in.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 16,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 10
+          },
+          "meterDeltas": {
+            "impressed": 17,
+            "suspicion": -10
+          },
+          "characterThinks": "He didn't thank her. He matched her energy. She likes this."
+        },
+        {
+          "id": "sb-t7-b",
+          "personaTag": "stanford_dropout",
+          "text": "The bar is pretty low tonight.",
+          "flavorBadge": "unhinged",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 16,
+            "suspicion": -8
+          },
+          "characterThinks": "He made her laugh. She didn't expect to laugh. This is going well."
+        },
+        {
+          "id": "sb-t7-c",
+          "personaTag": "vc_intern",
+          "text": "Thank you so much — that genuinely means so much coming from you. You've been such an inspiration to so many people in the ecosystem.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -8,
+            "socialFooting": -3,
+            "plausibility": -5,
+            "larpContinuity": -5,
+            "respect": -8
+          },
+          "meterDeltas": {
+            "impressed": -14,
+            "suspicion": 25
+          },
+          "characterThinks": "Inspiration. Ecosystem. He said both of those words back-to-back. She is looking for the exit."
+        },
+        {
+          "id": "sb-t7-d",
+          "personaTag": "ai_founder",
+          "text": "I'm trying to be. It's harder than it used to be — the pressure to say the expected thing is higher the further along you get.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "He named the social pressure to perform. She knows that pressure well."
+        }
+      ]
+    },
+    {
+      "turn": 8,
+      "characterLine": "I have to find my way out of this room. But send me something — not a deck. Something worth reading.",
+      "options": [
+        {
+          "id": "sb-t8-a",
+          "personaTag": "startup_billionaire",
+          "text": "I'll send you the memo I wrote for myself about why this is worth doing when I'm not sure it is. It's about a thousand words and it's not for investors.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 18,
+            "socialFooting": 3,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 12
+          },
+          "meterDeltas": {
+            "impressed": 18,
+            "suspicion": -12
+          },
+          "characterThinks": "The founder memo. That's the thing she actually wants to read."
+        },
+        {
+          "id": "sb-t8-b",
+          "personaTag": "stanford_dropout",
+          "text": "I'll send you the thing we almost didn't build. That's more interesting than what we did build.",
+          "flavorBadge": "unhinged",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 10
+          },
+          "meterDeltas": {
+            "impressed": 16,
+            "suspicion": -9
+          },
+          "characterThinks": "The near-miss framing. Unexpected enough to be memorable."
+        },
+        {
+          "id": "sb-t8-c",
+          "personaTag": "vc_intern",
+          "text": "I'll send the deck and the one-pager — both are really tight and I think give a good overview of the whole opportunity.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -7,
+            "socialFooting": -3,
+            "plausibility": -4,
+            "larpContinuity": -4,
+            "respect": -7
+          },
+          "meterDeltas": {
+            "impressed": -12,
+            "suspicion": 22
+          },
+          "characterThinks": "She said not a deck. He is sending the deck."
+        },
+        {
+          "id": "sb-t8-d",
+          "personaTag": "ai_founder",
+          "text": "I'll send you the technical writeup we did before we raised. It's written for someone who wants to understand the problem, not the business.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "Pre-raise technical doc. She wants to read that."
+        }
+      ]
+    },
+    {
+      "turn": 9,
+      "characterLine": "What's your email?",
+      "options": [
+        {
+          "id": "sb-t9-a",
+          "personaTag": "startup_billionaire",
+          "text": "I'll find yours. You're not hard to reach if you actually want to be found.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 18,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 12
+          },
+          "meterDeltas": {
+            "impressed": 18,
+            "suspicion": -12
+          },
+          "characterThinks": "He didn't give it. She's genuinely impressed. She's going to remember this."
+        },
+        {
+          "id": "sb-t9-b",
+          "personaTag": "stanford_dropout",
+          "text": "[gives email] — it's the old one. I don't check the new one enough to give it out.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "The 'old one' detail. Specific enough to be real."
+        },
+        {
+          "id": "sb-t9-c",
+          "personaTag": "vc_intern",
+          "text": "Yes! It's [rattles off email very fast]. And my LinkedIn is there too. And my Twitter if you use that. We should also connect on —",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -8,
+            "socialFooting": -3,
+            "plausibility": -5,
+            "larpContinuity": -5,
+            "respect": -8
+          },
+          "meterDeltas": {
+            "impressed": -14,
+            "suspicion": 25
+          },
+          "characterThinks": "He's listing his social platforms. Elena has left the building."
+        },
+        {
+          "id": "sb-t9-d",
+          "personaTag": "ai_founder",
+          "text": "[gives email] — I'll send you something this week. Not waiting for the follow-up to feel right.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 2,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "Proactive close. He's not waiting to be chased. She respects that."
+        }
+      ]
+    }
+  ]
+}

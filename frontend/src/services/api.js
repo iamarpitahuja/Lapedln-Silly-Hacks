@@ -277,3 +277,25 @@ export async function claimGameReward(game) {
     body: JSON.stringify({ game }),
   })
 }
+
+// ── LarpMaxxer ───────────────────────────────────────────────────────────────
+
+export async function fetchLarpmaxxerBootstrap() {
+  return authFetch(`${API_BASE}/larpmaxxer/bootstrap`)
+}
+
+export async function fetchLarpmaxxerScenarioContent(scenarioId) {
+  return authFetch(`${API_BASE}/larpmaxxer/scenarios/${scenarioId}/content`)
+}
+
+export async function fetchLarpmaxxerProgress() {
+  return authFetch(`${API_BASE}/larpmaxxer/progress`)
+}
+
+export async function patchLarpmaxxerProgress(payload) {
+  return authFetch(`${API_BASE}/larpmaxxer/progress`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}
