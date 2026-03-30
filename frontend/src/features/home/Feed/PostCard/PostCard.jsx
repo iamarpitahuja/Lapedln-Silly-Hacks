@@ -490,7 +490,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             whileHover={{ y: -1 }}
           >
             <Icon name="heart" size={18} />
-            <span>{isLoved ? 'Obsessed' : 'Slay'}</span>
+            <span>{isLoved ? 'Loved' : 'Love'}</span>
           </Motion.button>
         ) : null}
         {!blockReactions ? (
@@ -560,7 +560,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                 transition={{ duration: 0.2, delay: 0.1 }}
               >
                 <form className={styles.relarpComposer} onSubmit={handleRelarpSubmit}>
-                  <p className={styles.relarpTitle}>cook ur Re-Larp</p>
+                  <p className={styles.relarpTitle}>Drop your Re-Larp</p>
                   <textarea
                     className={styles.relarpInput}
                     value={relarpDraft}
@@ -726,7 +726,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                       </AnimatePresence>
                     </ul>
                   ) : (
-                    <p className={styles.emptyComments}>no yaps yet. be the first to glaze bestie.</p>
+                    <p className={styles.emptyComments}>no yaps yet. be the first to comment.</p>
                   )}
 
                   <form className={styles.commentComposer} onSubmit={handleCommentSubmit}>
@@ -748,7 +748,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                         onKeyDown={handleCommentKeyDown}
                         maxLength={MAX_COMMENT_LENGTH}
                         rows={2}
-                        placeholder="drop ur most unhinged take..."
+                        placeholder="drop ur take..."
                       />
                       <div className={styles.commentComposerMeta}>
                         <p className={styles.commentHint}>Ctrl/Cmd + Enter to yap</p>

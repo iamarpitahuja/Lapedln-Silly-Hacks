@@ -153,7 +153,7 @@ export default function ProfileHero({ onNotice }) {
           <div className={styles.editorWrapper}>
             <form className={styles.form} onSubmit={handleFormSubmit}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Government Name</label>
+                <label className={styles.formLabel}>Display Name</label>
                 <input
                   type="text"
                   className={styles.input}
@@ -161,21 +161,21 @@ export default function ProfileHero({ onNotice }) {
                   onChange={event =>
                     setFormValues(existing => ({ ...existing, name: event.target.value }))
                   }
-                  placeholder="what ur mom calls u"
+                  placeholder="Your name"
                 />
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Current Bag You're Faking</label>
+                <label className={styles.formLabel}>Current Title</label>
                 <input
                   type="text"
                   className={styles.input}
                   value={job}
                   readOnly
-                  placeholder="Update this from the J*bs page"
+                  placeholder="Update from the J*bs page"
                 />
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Profile Pic (make it bussin)</label>
+                <label className={styles.formLabel}>Profile Photo</label>
                 <div className={styles.inputWithAction}>
                   <input
                     type="text"
@@ -199,7 +199,7 @@ export default function ProfileHero({ onNotice }) {
                 </div>
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Banner (set the vibe)</label>
+                <label className={styles.formLabel}>Banner Image</label>
                 <div className={styles.inputWithAction}>
                   <input
                     type="text"

@@ -97,7 +97,7 @@ export default function ProfilePopup({ author, clickPos, onClose }) {
             navigate(`/profile/${author.id}`)
           }}
         >
-          Check the Lore
+          View Profile
         </button>
         <button
           className={styles.dmBtn}
@@ -106,7 +106,7 @@ export default function ProfilePopup({ author, clickPos, onClose }) {
             navigate(`/messaging?userId=${encodeURIComponent(author.id)}`)
           }}
         >
-          Slide In
+          Message
         </button>
       </div>
     </div>,

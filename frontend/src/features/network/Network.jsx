@@ -10,10 +10,10 @@ import { easeOutQuint } from '../../lib/motion'
 import UserCard from './UserCard/UserCard'
 import styles from './Network.module.css'
 
-const TABS = ['Who to Add', 'Waiting', 'My Guys']
+const TABS = ['Suggestions', 'Pending', 'Connections']
 
 export default function Network() {
-  const [activeTab, setActiveTab] = useState('Who to Add')
+  const [activeTab, setActiveTab] = useState('Suggestions')
   const [suggestions, setSuggestions] = useState([])
   const [pending, setPending] = useState([])
   const [outgoing, setOutgoing] = useState([])
@@ -38,7 +38,7 @@ export default function Network() {
           .then(o => setOutgoing(o.outgoing ?? []))
           .catch(() => {})
       } catch {
-        setError('backend is cooked rn. try again in a sec.')
+        setError('Could not load network data. Try again.')
       } finally {
         setLoading(false)
       }
@@ -49,7 +49,7 @@ export default function Network() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <h1 className={styles.heading}>My Circle</h1>
+        <h1 className={styles.heading}>My Network</h1>
 
         <div className={styles.tabs}>
           {TABS.map(tab => (
@@ -66,7 +66,7 @@ export default function Network() {
           ))}
         </div>
 
-        {loading && <p className={styles.state}>loading ur circle…</p>}
+        {loading && <p className={styles.state}>Loading…</p>}
         {error && <p className={styles.stateError}>{error}</p>}
 
         {!loading && !error && (
@@ -78,7 +78,7 @@ export default function Network() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18, ease: easeOutQuint }}
             >
-              {activeTab === 'Who to Add' && (
+              {activeTab === 'Suggestions' && (
                 <Motion.div
                   className={styles.grid}
                   initial="hidden"
@@ -86,7 +86,7 @@ export default function Network() {
                   variants={{ show: { transition: { staggerChildren: 0.05 } } }}
                 >
                   {suggestions.length === 0 && outgoing.length === 0 ? (
-                    <p className={styles.empty}>you know everyone. kinda unhinged tbh.</p>
+                    <p className={styles.empty}>No suggestions right now.</p>
                   ) : (
                     <>
                       {outgoing.map(conn => (
@@ -108,10 +108,10 @@ export default function Network() {
                 </Motion.div>
               )}
 
-              {activeTab === 'Waiting' && (
+              {activeTab === 'Pending' && (
                 <div>
                   {pending.length === 0 ? (
-                    <p className={styles.empty}>inbox empty. nobody's sliding yet.</p>
+                    <p className={styles.empty}>No pending requests.</p>
                   ) : (
                     <Motion.div
                       className={styles.grid}
@@ -133,7 +133,7 @@ export default function Network() {
                 </div>
               )}
 
-              {activeTab === 'My Guys' && (
+              {activeTab === 'Connections' && (
                 <Motion.div
                   className={styles.grid}
                   initial="hidden"
@@ -141,7 +141,7 @@ export default function Network() {
                   variants={{ show: { transition: { staggerChildren: 0.05 } } }}
                 >
                   {connections.length === 0 ? (
-                    <p className={styles.empty}>no connections. touch grass and meet someone irl first maybe.</p>
+                    <p className={styles.empty}>No connections yet.</p>
                   ) : (
                     connections.map(conn => (
                       <Motion.div key={conn.id} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
