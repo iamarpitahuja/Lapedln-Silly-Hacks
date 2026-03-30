@@ -44,6 +44,9 @@ export function LarpMaxxer({ onExitTraining }) {
     confirmLabel: 'Confirm',
     action: null,
   })
+  const logoSrc = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
+    ? '/logoLightMode.png'
+    : '/logoDarkMode.png'
 
   function openConfirm({ title, message, confirmLabel = 'Confirm', action }) {
     setConfirmState({
@@ -240,7 +243,7 @@ export function LarpMaxxer({ onExitTraining }) {
       <div className={styles.topBar}>
         <div className={styles.topLeft}>
           <Link to="/" className={styles.logoWrap}>
-            <img src="/logo.png" alt="LarpedIn" className={styles.logoImg} />
+            <img src={logoSrc} alt="LarpedIn logo" className={styles.logoImg} />
             <span className={styles.logo}>LarpedIn</span>
           </Link>
           <span className={styles.mode}>Training Mode</span>

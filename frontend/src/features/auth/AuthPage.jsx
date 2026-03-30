@@ -18,6 +18,9 @@ export default function AuthPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirmSent, setConfirmSent] = useState(false)
+  const logoSrc = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
+    ? '/logoLightMode.png'
+    : '/logoDarkMode.png'
 
   const tagline = TAGLINES[Math.floor(Date.now() / 60000) % TAGLINES.length]
 
@@ -55,7 +58,7 @@ export default function AuthPage() {
         <div className={styles.backdrop} />
         <div className={styles.card}>
           <div className={styles.logoBlock}>
-            <img src="/logo.png" alt="LarpedIn" className={styles.logo} />
+            <img src={logoSrc} alt="LarpedIn logo" className={styles.logo} />
             <span className={styles.logoText}>LarpedIn</span>
           </div>
           <div className={styles.confirmBox}>
@@ -83,7 +86,7 @@ export default function AuthPage() {
 
       <div className={styles.card}>
         <div className={styles.logoBlock}>
-          <img src="/logo.png" alt="LarpedIn" className={styles.logo} />
+          <img src={logoSrc} alt="LarpedIn logo" className={styles.logo} />
           <span className={styles.logoText}>LarpedIn</span>
         </div>
 

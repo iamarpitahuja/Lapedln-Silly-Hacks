@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { MotionConfig, AnimatePresence, motion as Motion } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { UserProvider } from './context/UserContext'
@@ -15,7 +16,27 @@ import AuthPage from './features/auth/AuthPage'
 import { LarpMaxxer } from './features/larpmaxxer/index'
 import PersonaSelect from './pages/PersonaSelect'
 import { easeOutQuint } from './lib/motion'
+import { fetchProfile } from './services/api'
+import OnboardingPage from './features/onboarding/OnboardingPage'
 import styles from './App.module.css'
+
+const FORCE_ONBOARDING_KEY = 'larpedin.forceOnboarding'
+
+function isOnboardingIncomplete(profile) {
+  if (!profile || typeof profile !== 'object') return true
+  if (profile.onboarding_completed_at) return false
+
+  const displayName = String(profile.display_name ?? '').trim()
+  const job = String(profile?.job ?? profile?.title ?? '').trim()
+  const bio = String(profile?.bio ?? '').trim()
+  const skills = Array.isArray(profile?.skills) ? profile.skills : []
+  const experience = Array.isArray(profile?.experience) ? profile.experience : []
+  const hasDefaultName = !displayName || displayName === 'Anonymous Larper'
+  const hasDefaultJob = !job || job === 'Aspiring Thought Leader'
+  const hasNoProfileSignal = bio.length === 0 && skills.length === 0 && experience.length === 0
+
+  return hasDefaultName || (hasDefaultJob && hasNoProfileSignal)
+}
 
 function LarpMaxxerPage() {
   const navigate = useNavigate()
@@ -25,8 +46,59 @@ function LarpMaxxerPage() {
 function AppRoutes() {
   const { session, loading } = useAuth()
   const location = useLocation()
+  const bypassOnboardingCheck = location.pathname === '/larpmaxxer' || location.pathname === '/persona-select'
+  const [isNewUser, setIsNewUser] = useState(null)
+  const [forceOnboarding, setForceOnboarding] = useState(false)
 
-  if (loading) {
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const raw = params.get('onboarding')?.toLowerCase()
+    const isForce = raw === '1' || raw === 'true' || raw === 'force'
+    const isClear = raw === '0' || raw === 'false' || raw === 'off'
+
+    if (isForce) {
+      window.localStorage.setItem(FORCE_ONBOARDING_KEY, '1')
+      setForceOnboarding(true)
+      return
+    }
+
+    if (isClear) {
+      window.localStorage.removeItem(FORCE_ONBOARDING_KEY)
+      setForceOnboarding(false)
+      return
+    }
+
+    setForceOnboarding(window.localStorage.getItem(FORCE_ONBOARDING_KEY) === '1')
+  }, [location.search])
+
+  useEffect(() => {
+    if (!session) {
+      setIsNewUser(false)
+      return
+    }
+
+    if (forceOnboarding) {
+      setIsNewUser(false)
+      return
+    }
+
+    if (bypassOnboardingCheck) {
+      setIsNewUser(false)
+      return
+    }
+
+    fetchProfile()
+      .then(profile => {
+        setIsNewUser(isOnboardingIncomplete(profile))
+      })
+      .catch(err => {
+        const message = String(err?.message ?? '')
+        const isMissingProfile = /404|406|not found|0 rows/i.test(message)
+        setIsNewUser(isMissingProfile)
+      })
+  }, [session, bypassOnboardingCheck, forceOnboarding])
+
+  if (loading || (!forceOnboarding && !bypassOnboardingCheck && isNewUser === null)) {
     return <div className={styles.loading}>Synergizing your session...</div>
   }
 
@@ -34,11 +106,35 @@ function AppRoutes() {
     return <AuthPage />
   }
 
+  if (forceOnboarding && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />
+  }
+
+  if (!forceOnboarding && isNewUser && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />
+  }
+
+  if (!forceOnboarding && !isNewUser && location.pathname === '/onboarding') {
+    return <Navigate to="/" replace />
+  }
+
   return (
     <UserProvider>
       <MockDataProvider>
         <Routes>
           {/* Full-screen routes — no TopNav */}
+          <Route
+            path="/onboarding"
+            element={
+              <OnboardingPage
+                onComplete={() => {
+                  setIsNewUser(false)
+                  window.localStorage.removeItem(FORCE_ONBOARDING_KEY)
+                  setForceOnboarding(false)
+                }}
+              />
+            }
+          />
           <Route path="/larpmaxxer" element={<LarpMaxxerPage />} />
           <Route path="/persona-select" element={<PersonaSelect />} />
 

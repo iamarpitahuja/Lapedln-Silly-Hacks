@@ -19,6 +19,46 @@ function toArray(val) {
   return Array.isArray(val) ? val : []
 }
 
+function normalizeExperience(raw) {
+  return toArray(raw)
+    .map(entry => {
+      if (!entry || typeof entry !== 'object') return null
+      const title = String(entry.title ?? '').trim()
+      const company = String(entry.company ?? '').trim()
+      const dates = String(entry.dates ?? '').trim()
+      const description = String(entry.description ?? '').trim()
+      if (!title && !company && !dates && !description) return null
+      return {
+        id: String(entry.id ?? `${company}-${title}`),
+        title,
+        company,
+        dates,
+        description,
+      }
+    })
+    .filter(Boolean)
+}
+
+function normalizeSkills(raw) {
+  return toArray(raw)
+    .map(skill => {
+      if (typeof skill === 'string') {
+        const name = skill.trim()
+        if (!name) return null
+        return { id: name, name, endorsements: 0 }
+      }
+      if (!skill || typeof skill !== 'object') return null
+      const name = String(skill.name ?? '').trim()
+      if (!name) return null
+      return {
+        id: String(skill.id ?? name),
+        name,
+        endorsements: Number(skill.endorsements ?? 0),
+      }
+    })
+    .filter(Boolean)
+}
+
 export default function PublicProfile() {
   const { userId } = useParams()
   const navigate = useNavigate()
@@ -76,9 +116,9 @@ export default function PublicProfile() {
   const coverPhoto = profile.cover_photo_url || null
   const larpRating = Number(profile.larp_rating ?? 0)
   const stats = profile.stats ?? {}
-  const experience = toArray(profile.experience)
+  const experience = normalizeExperience(profile.experience)
   const education = toArray(profile.education)
-  const skills = toArray(profile.skills)
+  const skills = normalizeSkills(profile.skills)
   const larpHistory = toArray(profile.larp_history)
   const glazesReceived = toArray(profile.glazes_received)
 

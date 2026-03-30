@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     elevenlabs_api_key: str = ""
     memelord_api_key: str = ""
+    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173"
 
     # Defaults
     gemini_model: str = "gemini-2.0-flash"
@@ -25,6 +26,10 @@ class Settings(BaseSettings):
     def skip_auth(self) -> bool:
         """Skip JWT verification. Set DEV_MODE=true to bypass auth."""
         return self.dev_mode
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
     model_config = {"env_file": str(_ROOT / ".env"), "env_file_encoding": "utf-8", "extra": "ignore"}
 

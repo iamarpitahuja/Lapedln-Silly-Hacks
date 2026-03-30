@@ -1,0 +1,40 @@
+.entryCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  margin-bottom: 0.5rem;
+}
+
+.entryInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.dates {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.draftForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px dashed var(--border-strong);
+  background: color-mix(in srgb, var(--bg-card) 80%, transparent);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.dateRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}

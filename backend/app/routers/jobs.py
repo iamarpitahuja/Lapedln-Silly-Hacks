@@ -29,6 +29,14 @@ class JobUpdate(BaseModel):
     job: str
 
 
+def _first_row(data):
+    if isinstance(data, list):
+        return data[0] if data else None
+    if isinstance(data, dict):
+        return data
+    return None
+
+
 @router.get("/jobs/options")
 async def list_job_options():
     return {"options": JOB_OPTIONS}
@@ -51,7 +59,22 @@ async def update_job(
         .eq("id", user_id)
         .execute()
     )
-    updated = result.data[0]
+    updated = _first_row(result.data)
+    if not updated:
+        upsert_result = (
+            supabase.table("profiles")
+            .upsert(
+                {
+                    "id": user_id,
+                    "display_name": "Anonymous Larper",
+                    "job": job,
+                },
+                on_conflict="id",
+            )
+            .execute()
+        )
+        updated = _first_row(upsert_result.data) or {"job": job}
+
     return {
         "job": updated["job"],
         "message": "Professional delusion updated.",

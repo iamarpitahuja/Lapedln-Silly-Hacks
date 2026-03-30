@@ -34,6 +34,9 @@ export default function PersonaSelect() {
   const { personaId, setPersona } = useUser()
   const navigate = useNavigate()
   const [personas, setPersonas] = useState(PERSONAS)
+  const logoSrc = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
+    ? '/logoLightMode.png'
+    : '/logoDarkMode.png'
 
   useEffect(() => {
     if (personaId) navigate('/larpmaxxer', { replace: true })
@@ -66,7 +69,7 @@ export default function PersonaSelect() {
     <div className={styles.page}>
       <header className={styles.header}>
         <Link to="/" className={styles.logoWrap}>
-          <img src="/logo.png" alt="LarpedIn" className={styles.logoImg} />
+          <img src={logoSrc} alt="LarpedIn logo" className={styles.logoImg} />
           <span className={styles.logo}>LarpedIn</span>
         </Link>
       </header>

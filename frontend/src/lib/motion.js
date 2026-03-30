@@ -14,3 +14,5 @@ export const springSnap = {
   mass: 0.85,
 }
 
+export const easeInOutQuint = [0.83, 0, 0.17, 1]
+

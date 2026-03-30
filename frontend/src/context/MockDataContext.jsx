@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useMemo, useState, useEffect } from 'react'
+import { createContext, useContext, useMemo, useState, useEffect, useCallback } from 'react'
 import { useAuth } from './AuthContext'
 import {
   createPost as apiCreatePost,
@@ -161,6 +161,46 @@ function toArray(value) {
   return Array.isArray(value) ? value : []
 }
 
+function normalizeExperienceEntries(value) {
+  return toArray(value)
+    .map(entry => {
+      if (!entry || typeof entry !== 'object') return null
+      const title = String(entry.title ?? '').trim()
+      const company = String(entry.company ?? '').trim()
+      const dates = String(entry.dates ?? '').trim()
+      const description = String(entry.description ?? '').trim()
+      if (!title && !company && !dates && !description) return null
+      return {
+        id: String(entry.id ?? makeEntityId()),
+        title,
+        company,
+        dates,
+        description,
+      }
+    })
+    .filter(Boolean)
+}
+
+function normalizeSkillEntries(value) {
+  return toArray(value)
+    .map(skill => {
+      if (typeof skill === 'string') {
+        const name = skill.trim()
+        if (!name) return null
+        return { id: makeEntityId(), name, endorsements: 0 }
+      }
+      if (!skill || typeof skill !== 'object') return null
+      const name = String(skill.name ?? '').trim()
+      if (!name) return null
+      return {
+        id: String(skill.id ?? makeEntityId()),
+        name,
+        endorsements: Number(skill.endorsements ?? 0),
+      }
+    })
+    .filter(Boolean)
+}
+
 function adaptProfile(row) {
   if (!row || typeof row !== 'object') return { ...EMPTY_PROFILE }
   const stats = row.stats ?? {}
@@ -184,9 +224,9 @@ function adaptProfile(row) {
     larpStatus: {
       opportunities: toArray(larpStatus.opportunities).map(v => String(v)),
     },
-    experience: toArray(row.experience),
+    experience: normalizeExperienceEntries(row.experience),
     education: toArray(row.education),
-    skills: toArray(row.skills),
+    skills: normalizeSkillEntries(row.skills),
     larpHistory: toArray(row.larp_history),
     glazesReceived: toArray(row.glazes_received),
   }
@@ -235,9 +275,9 @@ function toProfilePatch(profile) {
     stats: profile.stats,
     glazers: profile.glazers,
     larp_status: profile.larpStatus,
-    experience: profile.experience,
+    experience: normalizeExperienceEntries(profile.experience),
     education: profile.education,
-    skills: profile.skills,
+    skills: normalizeSkillEntries(profile.skills),
     larp_history: profile.larpHistory,
     glazes_received: profile.glazesReceived,
   }
@@ -268,27 +308,43 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     }
   }
 
+  const refreshProfile = useCallback(async () => {
+    if (testMode) return { ok: true }
+    try {
+      const data = await fetchProfile()
+      setProfile(adaptProfile(data))
+      return { ok: true }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : 'Profile fetch failed.' }
+    }
+  }, [testMode])
+
   useEffect(() => {
     if (testMode) return
 
     fetchJobOptions()
       .then(data => setJobOptions(data.options ?? []))
       .catch(() => setJobOptions([]))
-    fetchProfile()
-      .then(data => setProfile(adaptProfile(data)))
-      .catch(() => setProfile({ ...EMPTY_PROFILE }))
-    fetchFeed({ limit: 50, offset: 0 })
-      .then(data => {
-        setAllPosts((data.posts ?? []).map(adaptBackendPost))
-        setTrendingDelusions(data.trending_delusions ?? [])
-        setBuzzwords(data.buzzwords ?? [])
+    refreshProfile()
+      .then(result => {
+        if (!result.ok) setProfile({ ...EMPTY_PROFILE })
       })
-      .catch(() => {
-        setAllPosts([])
-        setTrendingDelusions([])
-        setBuzzwords([])
-      })
-  }, [testMode])
+    loadFeedData()
+  }, [testMode, refreshProfile])
+
+  useEffect(() => {
+    if (testMode || typeof window === 'undefined') return
+
+    const handleProfileRefresh = () => {
+      void refreshProfile()
+      void loadFeedData()
+    }
+
+    window.addEventListener('profile:refresh', handleProfileRefresh)
+    return () => {
+      window.removeEventListener('profile:refresh', handleProfileRefresh)
+    }
+  }, [testMode, refreshProfile])
 
   async function persistProfile(nextProfile) {
     if (testMode) {
@@ -823,6 +879,7 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     updateAbout,
     updateCurrentJob,
     updateLarpStatus,
+    refreshProfile,
     addExperience,
     updateExperience,
     removeExperience,

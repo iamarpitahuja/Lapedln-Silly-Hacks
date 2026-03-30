@@ -1,0 +1,92 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  color: var(--text-primary);
+}
+
+.panel {
+  width: 100%;
+  max-width: 560px;
+  padding: clamp(1.5rem, 3.5vw, 2.25rem);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+  box-shadow: var(--glow-md);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+}
+
+.logo {
+  width: 88px;
+  height: auto;
+  object-fit: contain;
+}
+
+.kicker {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  max-width: 22ch;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1.35rem, 4vw, 2rem);
+  line-height: 1.2;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.label {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.ratingWrap {
+  margin-bottom: 0.4rem;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-primary);
+  text-shadow: 0 8px 26px color-mix(in srgb, var(--neon) 20%, transparent);
+}
+
+.enterBtn {
+  margin-top: 0.25rem;
+  min-height: 52px;
+  width: min(100%, 360px);
+  padding: 0.85rem 1.45rem;
+  background: var(--neon);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 999px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.enterBtn:hover {
+  background: var(--neon-dark);
+  box-shadow: var(--glow-sm);
+}
+
+.enterBtn:focus-visible {
+  outline: 2px solid var(--neon);
+  outline-offset: 2px;
+}

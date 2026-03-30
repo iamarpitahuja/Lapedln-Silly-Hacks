@@ -1,0 +1,63 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg-deep);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 72% 58% at 50% 0%, var(--neon-faint) 0%, transparent 58%),
+    radial-gradient(ellipse 55% 40% at 82% 100%, color-mix(in srgb, var(--accent-cyan) 12%, transparent) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -2;
+}
+
+.page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      color-mix(in srgb, var(--neon) 6%, transparent) 3px,
+      color-mix(in srgb, var(--neon) 6%, transparent) 4px
+    );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.stepArea {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.stepFrame {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+}
+
+.saveError {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  z-index: 5;
+  margin: 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #ff6f6f 75%, transparent);
+  background: color-mix(in srgb, #2f0f12 88%, transparent);
+  color: #ffc8c8;
+  font-size: 0.85rem;
+  box-shadow: 0 10px 24px color-mix(in srgb, #000 35%, transparent);
+}

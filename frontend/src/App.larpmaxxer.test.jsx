@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
 // Minimal session stub
@@ -10,6 +10,10 @@ vi.mock('./context/AuthContext', () => ({
   useAuth: () => fakeAuth,
 }))
 
+vi.mock('./services/api', () => ({
+  fetchProfile: () => Promise.resolve({ display_name: 'Test User', larp_rating: 0 }),
+}))
+
 // Mock heavy features so the test stays fast
 vi.mock('./features/home/Home', () => ({ default: () => <div>Home</div> }))
 vi.mock('./features/larpmaxxer/index', () => ({ LarpMaxxer: () => <div>LarpMaxxer</div> }))
@@ -18,6 +22,10 @@ vi.mock('./pages/PersonaSelect', () => ({ default: () => <div>PersonaSelect</div
 import App from './App'
 
 describe('App routing', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
   it('renders /larpmaxxer without TopNav', () => {
     window.history.pushState({}, '', '/larpmaxxer')
     render(<App />)
