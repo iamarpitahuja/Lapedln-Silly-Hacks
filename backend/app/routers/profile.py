@@ -62,7 +62,7 @@ async def update_me(
     supabase=Depends(get_service_client),
 ):
     """Patch the current user's profile fields used by the frontend."""
-    updates = body.model_dump(exclude_none=True)
+    updates = body.model_dump(exclude_unset=True)
     if not updates:
         result = (
             supabase.table("profiles")

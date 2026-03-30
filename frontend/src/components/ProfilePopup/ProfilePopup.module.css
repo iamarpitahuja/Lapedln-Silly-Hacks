@@ -1,9 +1,10 @@
 .popup {
   position: fixed;
   z-index: 2147483647;
-  background: #fff;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-md);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--glow-lg);
   padding: 16px;
   width: 280px;
   animation: popIn 0.15s ease-out;
@@ -57,7 +58,7 @@
 .name {
   font-size: 15px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.9);
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -65,7 +66,7 @@
 
 .headline {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.55);
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -88,21 +89,23 @@
 }
 
 .viewBtn {
-  background: #0a66c2;
-  color: #fff;
+  background: var(--neon);
+  color: var(--text-on-accent);
   border: none;
 }
 
 .viewBtn:hover {
-  background: #004182;
+  background: var(--neon-dark);
+  box-shadow: var(--glow-sm);
 }
 
 .dmBtn {
   background: transparent;
-  color: #0a66c2;
-  border: 1px solid #0a66c2;
+  color: var(--neon);
+  border: 1px solid var(--border-strong);
 }
 
 .dmBtn:hover {
-  background: rgba(10, 102, 194, 0.08);
+  background: var(--neon-faint);
+  border-color: var(--neon);
 }

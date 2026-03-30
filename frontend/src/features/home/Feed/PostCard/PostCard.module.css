@@ -865,3 +865,39 @@
   background: rgba(167, 139, 250, 0.3);
   cursor: not-allowed;
 }
+
+.avatarClickable {
+  cursor: pointer;
+}
+
+.avatarClickable:hover {
+  opacity: 0.85;
+  outline: 2px solid var(--neon);
+  outline-offset: 2px;
+}
+
+.iconBtnDanger:hover {
+  color: #f87171;
+}
+
+.roastMemeWrap {
+  margin-top: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.roastMemeLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 6px 10px;
+  background: var(--surface-2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.roastMeme {
+  width: 100%;
+  display: block;
+}

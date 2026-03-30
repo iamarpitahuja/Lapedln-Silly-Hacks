@@ -289,3 +289,13 @@ export async function patchLarpmaxxerProgress(payload) {
     body: JSON.stringify(payload),
   })
 }
+
+// ── Games ───────────────────────────────────────────────────────────────────
+
+export async function claimGameReward(game) {
+  return authFetch(`${API_BASE}/games/claim-reward`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ game }),
+  })
+}

@@ -8,6 +8,7 @@ from app.config import settings
 from app.routers import (
     connections,
     feed,
+    games,
     jobs,
     larpmaxxer,
     messages,
@@ -49,6 +50,7 @@ app.include_router(messages.router, prefix="/api")
 app.include_router(notifications.router, prefix="/api")
 app.include_router(relarps.router, prefix="/api")
 app.include_router(larpmaxxer.router, prefix="/api")
+app.include_router(games.router)
 
 
 @app.get("/health")

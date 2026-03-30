@@ -95,6 +95,7 @@ function adaptBackendPost(post) {
     ai_glazes: post.ai_glazes ?? [],
     glazes: post.glazes ?? [],
     buzzword_score: post.buzzword_score ?? 0,
+    roastMemeUrl: post.roast_meme_url ?? null,
     has_user_relarped: Boolean(post.has_user_relarped),
     has_user_liked: Boolean(post.has_user_liked),
     has_user_loved: Boolean(post.has_user_loved),

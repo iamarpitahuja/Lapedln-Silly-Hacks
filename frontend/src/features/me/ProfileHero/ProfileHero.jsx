@@ -196,6 +196,15 @@ export default function ProfileHero({ onNotice }) {
                       onChange={e => handleFileUpload(e, 'avatar')}
                     />
                   </label>
+                  {formValues.avatar && (
+                    <button
+                      type="button"
+                      className={styles.removeBtn}
+                      onClick={() => setFormValues(existing => ({ ...existing, avatar: '' }))}
+                    >
+                      <Icon name="x" size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
               <div className={styles.formGroup}>
@@ -220,6 +229,15 @@ export default function ProfileHero({ onNotice }) {
                       onChange={e => handleFileUpload(e, 'cover')}
                     />
                   </label>
+                  {formValues.coverPhoto && (
+                    <button
+                      type="button"
+                      className={styles.removeBtn}
+                      onClick={() => setFormValues(existing => ({ ...existing, coverPhoto: '' }))}
+                    >
+                      <Icon name="x" size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
               <div className={styles.formActions}>
