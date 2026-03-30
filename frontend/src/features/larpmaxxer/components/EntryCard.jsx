@@ -3,7 +3,6 @@ import styles from './EntryCard.module.css'
 export function EntryCard({
   larpRating,
   personaName,
-  personaIcon,
   lastScenarioName,
   onEnter,
   onEnterSimulation,
@@ -12,13 +11,12 @@ export function EntryCard({
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
-        <div className={styles.icon}>⚔️</div>
+        <p className={styles.eyebrow}>Training Suite</p>
         <h1 className={styles.title}>LarpMaxxing</h1>
         <p className={styles.subtitle}>Train for the conversations your future self deserves.</p>
 
         <div className={styles.statsRow}>
           <div className={styles.personaInfo}>
-            <span className={styles.personaIcon}>{personaIcon}</span>
             <span className={styles.personaName}>{personaName}</span>
           </div>
           <span className={styles.lrBadge}>{larpRating.toFixed(1)} LR</span>
@@ -30,11 +28,11 @@ export function EntryCard({
           </button>
           {onEnterSimulation && (
             <button className={styles.btnSecondary} onClick={onEnterSimulation}>
-              ▶ Enter Simulation{lastScenarioName ? `: ${lastScenarioName}` : ''}
+              Resume Simulation{lastScenarioName ? `: ${lastScenarioName}` : ''}
             </button>
           )}
           <button className={styles.btnGhost} onClick={onWarmUp}>
-            🔥 Warm Up Your Aura
+            Quick Warm-up
           </button>
         </div>
       </div>

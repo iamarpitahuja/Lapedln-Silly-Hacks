@@ -2,7 +2,7 @@ import { ScenarioCard } from './ScenarioCard'
 import { getUnlockRequirement } from '../engine/unlockLogic'
 import styles from './ScenarioPanel.module.css'
 
-const TIER_LABELS = { 1: 'TIER 1 — STANDARD', 2: 'TIER 2 — ADVANCED', 3: 'TIER 3 — ELITE' }
+const TIER_LABELS = { 1: 'TIER 1 - STANDARD', 2: 'TIER 2 - ADVANCED', 3: 'TIER 3 - ELITE' }
 
 export function ScenarioPanel({
   scenarios,

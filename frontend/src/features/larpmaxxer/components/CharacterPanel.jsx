@@ -1,12 +1,13 @@
 import { MeterBar } from './MeterBar'
+import { getInitials } from '../../../utils/strings'
 import styles from './CharacterPanel.module.css'
 
 const MOOD_STYLE = {
-  neutral:   { bg: '#f3f2ef', color: 'rgba(0,0,0,0.5)' },
-  curious:   { bg: '#eef3f8', color: '#0a66c2' },
-  skeptical: { bg: '#fdecea', color: '#cc1016' },
-  impressed: { bg: '#e8f5ef', color: '#057642' },
-  done:      { bg: '#fff7e6', color: '#b45309' },
+  neutral:   { bg: 'var(--bg-deep)', color: 'var(--text-muted)' },
+  curious:   { bg: 'var(--neon-faint)', color: 'var(--neon)' },
+  skeptical: { bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
+  impressed: { bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  done:      { bg: 'var(--accent-glaze-soft)', color: 'var(--accent-amber)' },
 }
 
 export function CharacterPanel({ character, meters, moodState, meterDeltas }) {
@@ -15,9 +16,9 @@ export function CharacterPanel({ character, meters, moodState, meterDeltas }) {
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
-        <div className={styles.avatar}>{character.avatar}</div>
+        <div className={styles.avatar}>{getInitials(character.name)}</div>
         <p className={styles.name}>{character.name}</p>
-        <p className={styles.role}>{character.role} · {character.company}</p>
+        <p className={styles.role}>{character.role} | {character.company}</p>
         <div className={styles.moodRow}>
           <span
             className={styles.moodBadge}
@@ -55,3 +56,4 @@ export function CharacterPanel({ character, meters, moodState, meterDeltas }) {
     </div>
   )
 }
+

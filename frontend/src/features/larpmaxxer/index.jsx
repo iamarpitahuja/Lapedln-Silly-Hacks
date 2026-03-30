@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
 import { useSimulation } from './hooks/useSimulation'
 import { useUser } from '../../context/UserContext'
 import { getUnlockedScenarios } from './engine/unlockLogic'
-import { CHARACTER_MAP } from '../../content/characters'
+import { CHARACTERS } from '../../content/characters'
 import { SCENARIOS } from '../../content/scenarios'
 import { PERSONAS } from '../../content/personas'
+import { fetchLarpmaxxerBootstrap } from '../../services/api'
 
 import { ScenarioPanel } from './components/ScenarioPanel'
 import { PreBrief } from './components/PreBrief'
@@ -14,6 +16,7 @@ import { EventCard } from './components/EventCard'
 import { SummaryScreen } from './components/SummaryScreen'
 import { CharacterPanel } from './components/CharacterPanel'
 import { EntryCard } from './components/EntryCard'
+import { ConfirmModal } from './components/ConfirmModal'
 import styles from './LarpMaxxer.module.css'
 
 export function LarpMaxxer({ onExitTraining }) {
@@ -29,13 +32,43 @@ export function LarpMaxxer({ onExitTraining }) {
 
   const [hasEntered, setHasEntered] = useState(false)
   const [selectedScenarioId, setSelectedScenarioId] = useState(null)
+  const [scenarios, setScenarios] = useState(SCENARIOS)
+  const [personas, setPersonas] = useState(PERSONAS)
+  const [characters, setCharacters] = useState(CHARACTERS)
   const prevCringeCount = useRef(0)
   const [cringeShake, setCringeShake] = useState(false)
+  const [confirmState, setConfirmState] = useState({
+    open: false,
+    title: '',
+    message: '',
+    confirmLabel: 'Confirm',
+    action: null,
+  })
+
+  function openConfirm({ title, message, confirmLabel = 'Confirm', action }) {
+    setConfirmState({
+      open: true,
+      title,
+      message,
+      confirmLabel,
+      action,
+    })
+  }
+
+  function closeConfirm() {
+    setConfirmState(prev => ({ ...prev, open: false, action: null }))
+  }
+
+  function confirmAction() {
+    const action = confirmState.action
+    closeConfirm()
+    action?.()
+  }
 
   function handleSessionEnd(delta, scenarioId, score) {
     updateLarpRating(delta)
     recordScenarioCompletion(scenarioId, score)
-    const scenarioName = SCENARIOS.find(s => s.id === scenarioId)?.name ?? scenarioId
+    const scenarioName = scenarios.find(s => s.id === scenarioId)?.name ?? scenarioId
     setLastSessionResult({ scenarioName, delta, score })
   }
 
@@ -69,19 +102,46 @@ export function LarpMaxxer({ onExitTraining }) {
     }
   }, [session?.cumulative.cringeCount])
 
+  useEffect(() => {
+    let cancelled = false
+    async function hydrateBootstrap() {
+      try {
+        const bootstrap = await fetchLarpmaxxerBootstrap()
+        if (cancelled) return
+        if (Array.isArray(bootstrap?.scenarios) && bootstrap.scenarios.length > 0) {
+          setScenarios(bootstrap.scenarios)
+        }
+        if (Array.isArray(bootstrap?.personas) && bootstrap.personas.length > 0) {
+          setPersonas(bootstrap.personas)
+        }
+        if (Array.isArray(bootstrap?.characters) && bootstrap.characters.length > 0) {
+          setCharacters(bootstrap.characters)
+        }
+      } catch {
+        // Keep bundled content when bootstrap API is unavailable.
+      }
+    }
+    hydrateBootstrap()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const characterMap = useMemo(() => new Map(characters.map(character => [character.id, character])), [characters])
+
   const activeCharacterId = session?.characterId
-    ?? SCENARIOS.find(s => s.id === selectedScenarioId)?.characterId
-  const character = activeCharacterId ? CHARACTER_MAP.get(activeCharacterId) ?? null : null
-  const persona = personaId ? PERSONAS.find(p => p.id === personaId) ?? null : null
+    ?? scenarios.find(s => s.id === selectedScenarioId)?.characterId
+  const character = activeCharacterId ? characterMap.get(activeCharacterId) ?? null : null
+  const persona = personaId ? personas.find(p => p.id === personaId) ?? null : null
   const unlockedIds = getUnlockedScenarios(completedScenarios, larpRating)
   const activeScenarioId = session?.scenarioId ?? selectedScenarioId
-  const activeScenario = SCENARIOS.find(s => s.id === activeScenarioId) ?? null
+  const activeScenario = scenarios.find(s => s.id === activeScenarioId) ?? null
 
   const lastPlayed = completedScenarios.length > 0
     ? completedScenarios[completedScenarios.length - 1] : null
   const lastPlayedScenario = lastPlayed
-    ? SCENARIOS.find(s => s.id === lastPlayed.scenarioId) ?? null : null
-  const tier1Unlocked = SCENARIOS.filter(s => s.unlockTier === 1 && unlockedIds.includes(s.id))
+    ? scenarios.find(s => s.id === lastPlayed.scenarioId) ?? null : null
+  const tier1Unlocked = scenarios.filter(s => s.unlockTier === 1 && unlockedIds.includes(s.id))
 
   function handleWarmUp() {
     const pick = tier1Unlocked[Math.floor(Math.random() * tier1Unlocked.length)]
@@ -100,8 +160,17 @@ export function LarpMaxxer({ onExitTraining }) {
 
   function handleSelectScenario(id) {
     if (session && session.status === 'active') {
-      if (!window.confirm('Abandon active simulation?')) return
-      resetSession()
+      openConfirm({
+        title: 'Switch Scenario?',
+        message: 'Your current simulation will be abandoned and progress for this run will be lost.',
+        confirmLabel: 'Switch',
+        action: () => {
+          resetSession()
+          setSelectedScenarioId(id)
+          startSession(id)
+        },
+      })
+      return
     }
     setSelectedScenarioId(id)
     startSession(id)
@@ -109,7 +178,16 @@ export function LarpMaxxer({ onExitTraining }) {
 
   function handleExitTraining() {
     if (session && (session.status === 'active' || session.status === 'prebriefing')) {
-      if (!window.confirm('Abandon active simulation and exit?')) return
+      openConfirm({
+        title: 'Exit Training?',
+        message: 'Your active simulation will be abandoned and unsaved progress in this run will be lost.',
+        confirmLabel: 'Exit',
+        action: () => {
+          resetSession()
+          onExitTraining()
+        },
+      })
+      return
     }
     resetSession()
     onExitTraining()
@@ -143,7 +221,6 @@ export function LarpMaxxer({ onExitTraining }) {
         <EntryCard
           larpRating={larpRating}
           personaName={persona?.name ?? 'No Persona'}
-          personaIcon={persona?.icon ?? '❓'}
           lastScenarioName={lastPlayedScenario?.name ?? null}
           onEnter={() => setHasEntered(true)}
           onEnterSimulation={handleEnterSimulation}
@@ -162,15 +239,18 @@ export function LarpMaxxer({ onExitTraining }) {
       {/* Top bar */}
       <div className={styles.topBar}>
         <div className={styles.topLeft}>
-          <span className={styles.logo}>LarpedIn</span>
+          <Link to="/" className={styles.logoWrap}>
+            <img src="/logo.png" alt="LarpedIn" className={styles.logoImg} />
+            <span className={styles.logo}>LarpedIn</span>
+          </Link>
           <span className={styles.mode}>Training Mode</span>
         </div>
         <div className={styles.topRight}>
           {persona && (
-            <span className={styles.personaTag}>{persona.icon} {persona.name}</span>
+            <span className={styles.personaTag}>{persona.name}</span>
           )}
           <span className={styles.lrBadge}>{larpRating.toFixed(1)} LR</span>
-          <button className={styles.exitBtn} onClick={handleExitTraining}>← Exit Training</button>
+          <button className={styles.exitBtn} onClick={handleExitTraining}>Exit Training</button>
         </div>
       </div>
 
@@ -178,7 +258,7 @@ export function LarpMaxxer({ onExitTraining }) {
       <div className={styles.panels}>
         <div className={styles.leftPanel}>
           <ScenarioPanel
-            scenarios={SCENARIOS}
+            scenarios={scenarios}
             unlockedIds={unlockedIds}
             activeScenarioId={activeScenarioId ?? null}
             completedScenarios={completedScenarios}
@@ -209,7 +289,7 @@ export function LarpMaxxer({ onExitTraining }) {
                   </div>
                 ) : (
                   <>
-                    <div className={styles.idleIcon}>⚔️</div>
+                    <div className={styles.idleIcon}>LM</div>
                     <p className={styles.idleText}>Select a scenario to begin.</p>
                   </>
                 )}
@@ -218,7 +298,7 @@ export function LarpMaxxer({ onExitTraining }) {
 
             {centerScreen === 'prebriefing' && session && activeScenario && character && (
               <Motion.div key="prebriefing" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }} style={{ height: '100%', overflowY: 'auto', background: '#f3f2ef' }}>
+                exit={{ opacity: 0, y: -12 }} style={{ height: '100%', overflowY: 'auto', background: 'var(--bg-deep)' }}>
                 <PreBrief
                   scenario={activeScenario}
                   character={character}
@@ -258,7 +338,7 @@ export function LarpMaxxer({ onExitTraining }) {
 
             {centerScreen === 'summary' && summary && activeScenario && persona && session && (
               <Motion.div key="summary" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }} style={{ height: '100%', overflowY: 'auto', background: '#f3f2ef' }}>
+                exit={{ opacity: 0, y: -16 }} style={{ height: '100%', overflowY: 'auto', background: 'var(--bg-deep)' }}>
                 <SummaryScreen
                   summary={summary}
                   scenario={activeScenario}
@@ -284,6 +364,16 @@ export function LarpMaxxer({ onExitTraining }) {
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        open={confirmState.open}
+        title={confirmState.title}
+        message={confirmState.message}
+        confirmLabel={confirmState.confirmLabel}
+        onCancel={closeConfirm}
+        onConfirm={confirmAction}
+      />
     </Motion.div>
   )
 }
+

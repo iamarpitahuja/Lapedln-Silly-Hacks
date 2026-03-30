@@ -1,0 +1,679 @@
+{
+  "scenarioId": "networking-event",
+  "briefDescription": "Priya is Head of Partnerships at a Series B SaaS company. She's been at this mixer for 40 minutes and has already collected 11 business cards. You have approximately 90 seconds before she identifies you as low-ROI and pivots.",
+  "openingLine": "Hi — Priya. Head of Partnerships at Meridian. So what do you do?",
+  "dialogueNodes": [
+    {
+      "turn": 1,
+      "characterLine": "Interesting. And what's the specific problem you're solving? I always find the 'what do you do' answer is the least useful framing — I care more about the pain point.",
+      "options": [
+        {
+          "id": "ne-t1-a",
+          "personaTag": "ai_founder",
+          "text": "We're closing the latency gap between enterprise decision-making and real-time data. Right now most ops teams are making calls on dashboards that are 48 hours stale. We fix that at the infrastructure layer.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 5,
+            "plausibility": 5,
+            "larpContinuity": 4,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -5
+          },
+          "characterThinks": "Specific problem, specific mechanism, no fluff. I'm going to stay in this conversation."
+        },
+        {
+          "id": "ne-t1-b",
+          "personaTag": "startup_billionaire",
+          "text": "We're working on the B2B data access layer — basically making it so that any non-technical operator can query their own stack without filing a ticket with engineering. The self-serve intelligence problem.",
+          "flavorBadge": "ambitious",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -2
+          },
+          "characterThinks": "Good framing. Concrete user. I know what this is. I'm moderately interested."
+        },
+        {
+          "id": "ne-t1-c",
+          "personaTag": "pm_newsletter",
+          "text": "I think about it as reducing time-to-insight for product teams. Most of the friction isn't data access, it's the translation layer between raw data and actionable signal. We're compressing that.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 7,
+            "socialFooting": 3,
+            "plausibility": 3,
+            "larpContinuity": 2,
+            "respect": 4
+          },
+          "meterDeltas": {
+            "impressed": 7,
+            "suspicion": 1
+          },
+          "characterThinks": "PM-speak but the framing is okay. I'll give it one more turn."
+        },
+        {
+          "id": "ne-t1-d",
+          "personaTag": "crypto_philosopher",
+          "text": "Fundamentally we're questioning whether centralized data ownership is the right architecture for enterprise intelligence. The problem isn't tooling — it's incentive structures.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 1,
+            "socialFooting": -2,
+            "plausibility": -3,
+            "larpContinuity": -2,
+            "respect": -1
+          },
+          "meterDeltas": {
+            "impressed": -1,
+            "suspicion": 11
+          },
+          "characterThinks": "He just said 'incentive structures' at an industry mixer. I'm going to look over his shoulder for someone useful."
+        },
+        {
+          "id": "ne-t1-e",
+          "personaTag": "liberal_arts",
+          "text": "Honestly the question of 'what problem are you solving' assumes a product-first lens that I'm not sure I buy into. We're more focused on building relationships first and letting the use case emerge organically.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -4,
+            "socialFooting": -3,
+            "plausibility": -3,
+            "larpContinuity": -4,
+            "respect": -3
+          },
+          "meterDeltas": {
+            "impressed": -4,
+            "suspicion": 13
+          },
+          "characterThinks": "He questioned the premise of my question. At a networking event. I'm leaving."
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "characterLine": "Okay, so who's the buyer? Because I've seen five companies pitch 'self-serve intelligence' this quarter and the ones who don't have a crisp buyer persona die in the enterprise sales cycle.",
+      "options": [
+        {
+          "id": "ne-t2-a",
+          "personaTag": "ai_founder",
+          "text": "Head of RevOps or VP of Data at a 200-500 person company. They have a data team but it's a bottleneck, not a service center. They're the ones filing Jira tickets to their own analysts for basic reports.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -6
+          },
+          "characterThinks": "Crisp. Title, company size, specific frustration. This person has talked to customers."
+        },
+        {
+          "id": "ne-t2-b",
+          "personaTag": "consulting_clone",
+          "text": "We've done a segmentation exercise and the highest-fit buyer is in the 'data-rich but analysis-poor' quadrant — typically a mid-market ops leader who inherited a modern data stack but doesn't have the team to leverage it.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -3
+          },
+          "characterThinks": "'Data-rich but analysis-poor' is a good line. I'm going to steal that framing."
+        },
+        {
+          "id": "ne-t2-c",
+          "personaTag": "startup_billionaire",
+          "text": "Honestly we're still validating that. We have strong signal from technical buyers but we're pressure-testing whether the budget lives with data teams or with ops. We think it's ops.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 6,
+            "socialFooting": 3,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 4
+          },
+          "meterDeltas": {
+            "impressed": 6,
+            "suspicion": 2
+          },
+          "characterThinks": "Honest about ambiguity. I respect that. But 'still validating' means you don't know your buyer."
+        },
+        {
+          "id": "ne-t2-d",
+          "personaTag": "vc_intern",
+          "text": "The buyer thesis is interesting — we've been going up-market toward the enterprise but we're seeing really strong pull from PLG motions in the mid-market. It's a positioning question more than a product question at this point.",
+          "flavorBadge": "glazed",
+          "metricDeltas": {
+            "aura": 3,
+            "socialFooting": 1,
+            "plausibility": 1,
+            "larpContinuity": 1,
+            "respect": 2
+          },
+          "meterDeltas": {
+            "impressed": 3,
+            "suspicion": 5
+          },
+          "characterThinks": "He said PLG, enterprise, and mid-market in the same breath without answering my question. Classic."
+        },
+        {
+          "id": "ne-t2-e",
+          "personaTag": "finance_bro",
+          "text": "Right now our strongest deal flow is in financial services — specifically the analytics function at mid-size asset managers who are drowning in Bloomberg data they can't operationalize. We're closing two of those this quarter.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 8,
+            "socialFooting": 3,
+            "plausibility": 3,
+            "larpContinuity": 2,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 8,
+            "suspicion": 1
+          },
+          "characterThinks": "Specific vertical, specific buyer, deal velocity. That's the most useful thing anyone's said to me tonight."
+        }
+      ]
+    },
+    {
+      "turn": 3,
+      "characterLine": "Interesting. We actually had three fintech customers churn this year over data governance issues — that sector is brutal on compliance. How are you handling the regulatory surface area?",
+      "options": [
+        {
+          "id": "ne-t3-a",
+          "personaTag": "ai_founder",
+          "text": "SOC 2 Type II, we're in process on ISO 27001, and we've built a permissioning layer that maps directly to customer data governance policies. Compliance actually became a sales asset for us — it removes the IT procurement blocker.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 13,
+            "socialFooting": 5,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 13,
+            "suspicion": -6
+          },
+          "characterThinks": "He answered a compliance question with specific certifications and a GTM insight. This is a real company."
+        },
+        {
+          "id": "ne-t3-b",
+          "personaTag": "consulting_clone",
+          "text": "We scoped the regulatory requirements by vertical early and designed our data handling to be compliant by default rather than compliant by configuration. The governance story is built into the product, not bolted on.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 9,
+            "suspicion": -2
+          },
+          "characterThinks": "'Compliant by default' is a good line. I'm still skeptical but I'm listening."
+        },
+        {
+          "id": "ne-t3-c",
+          "personaTag": "stanford_dropout",
+          "text": "We're moving fast on the product side and we have a compliance roadmap, but honestly the bigger risk is commoditization before we reach scale — regulation we can always patch in.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 2,
+            "socialFooting": -1,
+            "plausibility": -2,
+            "larpContinuity": -1,
+            "respect": 0
+          },
+          "meterDeltas": {
+            "impressed": 0,
+            "suspicion": 9
+          },
+          "characterThinks": "'Regulation we can always patch in' is genuinely alarming. Moving on."
+        },
+        {
+          "id": "ne-t3-d",
+          "personaTag": "homeless_cs",
+          "text": "Honestly we haven't hit that wall yet because we're still in early access. But we've thought about the architecture — zero-copy reads, customer-controlled encryption keys, nothing persisted on our side.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 7,
+            "socialFooting": 2,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 4
+          },
+          "meterDeltas": {
+            "impressed": 6,
+            "suspicion": 3
+          },
+          "characterThinks": "Early-stage honesty plus actual technical detail. Better than most answers I get from Series B companies."
+        },
+        {
+          "id": "ne-t3-e",
+          "personaTag": "crypto_philosopher",
+          "text": "We think the whole concept of centralized data governance is a transitory state — the long-term architecture is user-controlled data with cryptographic proofs replacing permission layers. We're building toward that.",
+          "flavorBadge": "unhinged",
+          "metricDeltas": {
+            "aura": -5,
+            "socialFooting": -3,
+            "plausibility": -4,
+            "larpContinuity": -4,
+            "respect": -3
+          },
+          "meterDeltas": {
+            "impressed": -3,
+            "suspicion": 14
+          },
+          "characterThinks": "He just described a future where my compliance problems are solved by cryptography. I need to go find someone useful."
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "characterLine": "Okay. I want to be direct — I'm building out our tech partner ecosystem and I have three slots left for Q3. What's your partnership motion look like? Are you channel, co-sell, or integration?",
+      "options": [
+        {
+          "id": "ne-t4-a",
+          "personaTag": "ai_founder",
+          "text": "Primarily integration-led — we plug into the existing data stack and create a reason to land, which makes us an easy co-sell layer for anyone already in the workflow. We've done two co-sell agreements with CRMs this year and the attach rate has been strong.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "He knows the lexicon, has proof points, and answered the actual question. He's getting a follow-up."
+        },
+        {
+          "id": "ne-t4-b",
+          "personaTag": "consulting_clone",
+          "text": "We've been mapping our partnership motion against the customer journey — net new logos come through integration discovery, but expansion is almost always co-sell. We'd want to align on where Meridian's customers are in that lifecycle.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -3
+          },
+          "characterThinks": "Good. He's thinking about my customers, not just his motion. That's the right framing."
+        },
+        {
+          "id": "ne-t4-c",
+          "personaTag": "vc_intern",
+          "text": "Honestly we're still evolving our partnership strategy — we know we want partners but we haven't locked in a formal motion. I'd love to learn from how you've structured yours.",
+          "flavorBadge": "glazed",
+          "metricDeltas": {
+            "aura": 1,
+            "socialFooting": 0,
+            "plausibility": 1,
+            "larpContinuity": -1,
+            "respect": 1
+          },
+          "meterDeltas": {
+            "impressed": 1,
+            "suspicion": 7
+          },
+          "characterThinks": "He wants to learn from me. I am not a consultant. I have three slots and six minutes left at this event."
+        },
+        {
+          "id": "ne-t4-d",
+          "personaTag": "startup_billionaire",
+          "text": "I want to be honest — we're at a stage where we're more interested in strategic relationships than formal partnership structures. I'd rather build trust before formalizing anything.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 3,
+            "socialFooting": 0,
+            "plausibility": 0,
+            "larpContinuity": -2,
+            "respect": 2
+          },
+          "meterDeltas": {
+            "impressed": 2,
+            "suspicion": 6
+          },
+          "characterThinks": "'Build trust before formalizing' is something people say when they don't have a business case. Noting that."
+        },
+        {
+          "id": "ne-t4-e",
+          "personaTag": "finance_bro",
+          "text": "Co-sell with a rev-share on sourced deals. We're disciplined about partnership economics — we track partner-attached deal velocity and partner-sourced ARR as separate metrics. Clean structure, clean attribution.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -4
+          },
+          "characterThinks": "He just pitched me a rev-share with specific metrics. Unusual for a mixer conversation. I'm into it."
+        }
+      ]
+    },
+    {
+      "turn": 5,
+      "characterLine": "The co-sell attach rate question is the first thing my VP is going to ask. What does that actually look like in a deal cycle? Give me a real example.",
+      "options": [
+        {
+          "id": "ne-t5-a",
+          "personaTag": "ai_founder",
+          "text": "Last quarter — Hartwell Capital, 180-person asset manager, found us through a CRM partner's app marketplace. Partner flagged them as a warm intro, we ran a joint demo, closed in six weeks. Partner got 15% on year one. That's the playbook.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "Company name, deal size proxy, timeline, and rev-share structure. That's more useful than my last three calls with AEs."
+        },
+        {
+          "id": "ne-t5-b",
+          "personaTag": "consulting_clone",
+          "text": "Our last two co-sell deals ran a four to six week cycle — the partner does the introduction and first-call credentialing, we take the technical eval, and we reconvene for commercial close. The partner gets visibility into every stage via a shared Slack channel.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -3
+          },
+          "characterThinks": "Specific timeline, clear handoff logic, joint communication channel. That's an actual process."
+        },
+        {
+          "id": "ne-t5-c",
+          "personaTag": "startup_billionaire",
+          "text": "We're still early in formalizing the process, but the intent is that partners own the relationship and we show up as the technical solution in whatever context they're already in.",
+          "flavorBadge": "glazed",
+          "metricDeltas": {
+            "aura": 2,
+            "socialFooting": 0,
+            "plausibility": 0,
+            "larpContinuity": -1,
+            "respect": 1
+          },
+          "meterDeltas": {
+            "impressed": 1,
+            "suspicion": 8
+          },
+          "characterThinks": "You're still early in formalizing. You said that last question. This is a pattern."
+        },
+        {
+          "id": "ne-t5-d",
+          "personaTag": "homeless_cs",
+          "text": "Honestly we don't have a polished case study yet — but I can walk you through our pipeline. We have two integration-sourced deals in late stage right now and both came through marketplace discovery without any manual BD.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 7,
+            "socialFooting": 3,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 5
+          },
+          "meterDeltas": {
+            "impressed": 7,
+            "suspicion": 2
+          },
+          "characterThinks": "No polish but real data. I can work with real data."
+        },
+        {
+          "id": "ne-t5-e",
+          "personaTag": "finance_bro",
+          "text": "I can send you our partnership deck — it has three case studies, the rev-share model, and a one-page on deal mechanics. I'm also happy to do a working session with your VP if you want to pressure-test the structure.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 4,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 9,
+            "suspicion": -2
+          },
+          "characterThinks": "He came to a mixer with a partnership deck. The preparation is slightly alarming and also exactly what I needed."
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "characterLine": "Okay. I'm going to be real with you — you're in the conversation. But I need to know one thing: why Meridian specifically? Because if this is a spray-and-pray partnership outreach I'll know in about thirty seconds.",
+      "options": [
+        {
+          "id": "ne-t6-a",
+          "personaTag": "ai_founder",
+          "text": "Because Meridian's customer base is exactly our ICP and you have distribution we don't have yet. I looked at your portfolio, three of your customers are companies we've already had discovery calls with. This isn't spray-and-pray — it's the most obvious integration in the room.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 15,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 9
+          },
+          "meterDeltas": {
+            "impressed": 15,
+            "suspicion": -8
+          },
+          "characterThinks": "He did research. He named the overlap. He made a case. This is a yes."
+        },
+        {
+          "id": "ne-t6-b",
+          "personaTag": "consulting_clone",
+          "text": "I did a quick mapping of your partner ecosystem and there's a white space in the data layer — you have CRM integrations and BI integrations but nothing handling real-time operational queries. We fit there specifically.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 12,
+            "socialFooting": 5,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 12,
+            "suspicion": -5
+          },
+          "characterThinks": "He mapped our ecosystem and identified a gap. That's more homework than most of our current partners did."
+        },
+        {
+          "id": "ne-t6-c",
+          "personaTag": "vc_intern",
+          "text": "Meridian has a great reputation in the market and I've heard really positive things about how you structure partner relationships. I think there's mutual value here.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -3,
+            "socialFooting": -2,
+            "plausibility": -2,
+            "larpContinuity": -3,
+            "respect": -2
+          },
+          "meterDeltas": {
+            "impressed": -3,
+            "suspicion": 11
+          },
+          "characterThinks": "'Great reputation' and 'mutual value.' He failed the spray-and-pray test in exactly thirty seconds."
+        },
+        {
+          "id": "ne-t6-d",
+          "personaTag": "startup_billionaire",
+          "text": "Honestly, I saw you across the room and thought you were the most operationally rigorous person here based on how you were navigating the event. I figured if I was going to have one good conversation tonight, it should be with you.",
+          "flavorBadge": "wildcard",
+          "metricDeltas": {
+            "aura": 6,
+            "socialFooting": 3,
+            "plausibility": 1,
+            "larpContinuity": 0,
+            "respect": 4
+          },
+          "meterDeltas": {
+            "impressed": 5,
+            "suspicion": 5
+          },
+          "characterThinks": "He just complimented my event navigation strategy. That is simultaneously the weirdest and most accurate thing anyone has said to me tonight."
+        },
+        {
+          "id": "ne-t6-e",
+          "personaTag": "homeless_cs",
+          "text": "You're listed as the decision-maker for tech partnerships on LinkedIn and your company stage matches our go-to-market window. I wanted to have this conversation before we're too big for a three-slot ecosystem.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 3,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -3
+          },
+          "characterThinks": "He LinkedIn-researched me, checked the company stage, and created urgency. I need to sit down."
+        }
+      ]
+    },
+    {
+      "turn": 7,
+      "characterLine": "Okay. Here's my card. I want to move this to a proper 30-minute call next week — I'll have my AE on it. One last thing: what's the one reason this doesn't work?",
+      "options": [
+        {
+          "id": "ne-t7-a",
+          "personaTag": "ai_founder",
+          "text": "Honestly? If your customers are on data stacks we don't have connectors for yet, we have a 4-6 week integration backlog. That's the technical dependency risk. We're building fast but I'd want to scope that in the first call.",
+          "flavorBadge": "prestige",
+          "metricDeltas": {
+            "aura": 14,
+            "socialFooting": 6,
+            "plausibility": 5,
+            "larpContinuity": 5,
+            "respect": 8
+          },
+          "meterDeltas": {
+            "impressed": 14,
+            "suspicion": -7
+          },
+          "characterThinks": "He named his own risk clearly and proposed a mitigation. That's partner maturity I haven't seen at his stage."
+        },
+        {
+          "id": "ne-t7-b",
+          "personaTag": "consulting_clone",
+          "text": "The risk is misaligned customer overlap — if Meridian is moving up-market toward enterprise and our sweet spot stays mid-market, the co-sell motion breaks down at the AE level. That's the fit question I'd want to stress-test in the call.",
+          "flavorBadge": "calculated",
+          "metricDeltas": {
+            "aura": 11,
+            "socialFooting": 5,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 7
+          },
+          "meterDeltas": {
+            "impressed": 11,
+            "suspicion": -5
+          },
+          "characterThinks": "Good analysis. He's protecting both sides from a bad partnership. I respect the intellectual honesty."
+        },
+        {
+          "id": "ne-t7-c",
+          "personaTag": "startup_billionaire",
+          "text": "Truthfully, I don't see a reason it doesn't work — the fit is strong and the timing is right. I'm confident this is a good partnership.",
+          "flavorBadge": "cringe_risk",
+          "metricDeltas": {
+            "aura": -2,
+            "socialFooting": -1,
+            "plausibility": -2,
+            "larpContinuity": -2,
+            "respect": -2
+          },
+          "meterDeltas": {
+            "impressed": -2,
+            "suspicion": 9
+          },
+          "characterThinks": "He said the partnership is strong without identifying any risk. I explicitly asked for risks. This is a concern."
+        },
+        {
+          "id": "ne-t7-d",
+          "personaTag": "finance_bro",
+          "text": "Rev-share attribution gets messy if your AEs are also sourcing similar deals independently — the internal politics of who gets credit can kill a partnership faster than any technical issue. We'd want clear rules of engagement up front.",
+          "flavorBadge": "alpha",
+          "metricDeltas": {
+            "aura": 10,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 3,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 10,
+            "suspicion": -4
+          },
+          "characterThinks": "He just described the exact reason our last partnership fell apart. I'm slightly unsettled by how right he is."
+        },
+        {
+          "id": "ne-t7-e",
+          "personaTag": "homeless_cs",
+          "text": "Timeline. We're moving fast and I'd rather know in the first call if your procurement process is going to be a four-month cycle — because we'd be a different company by close and that mismatch creates expectations problems.",
+          "flavorBadge": "authentic",
+          "metricDeltas": {
+            "aura": 9,
+            "socialFooting": 4,
+            "plausibility": 4,
+            "larpContinuity": 4,
+            "respect": 6
+          },
+          "meterDeltas": {
+            "impressed": 9,
+            "suspicion": -3
+          },
+          "characterThinks": "Velocity risk, clearly articulated, with a practical reason. That's a more honest answer than I usually get."
+        }
+      ]
+    }
+  ]
+}

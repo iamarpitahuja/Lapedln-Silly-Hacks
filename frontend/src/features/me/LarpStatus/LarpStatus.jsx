@@ -84,7 +84,7 @@ export default function LarpStatus({ onNotice }) {
                 className={styles.trainingBtn}
                 onClick={() => window.location.assign('/persona-select')}
               >
-                ⚔️ Start Training
+                Start Training
               </button>
             </div>
           </div>

@@ -2,9 +2,9 @@
   width: 100%;
   text-align: left;
   padding: 12px 14px;
-  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  border: 1.5px solid var(--border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--bg-card);
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
   display: flex;
@@ -13,8 +13,8 @@
 }
 
 .card:hover:not(:disabled) {
-  border-color: #0a66c2;
-  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.1);
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
 }
 
 .card:disabled {
@@ -31,7 +31,7 @@
 
 .text {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--text-primary);
   line-height: 1.5;
   flex: 1;
 }
@@ -45,3 +45,6 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+
+

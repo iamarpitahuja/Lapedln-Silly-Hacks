@@ -1,26 +1,35 @@
 import styles from './DialogueBubble.module.css'
 
 const BADGE_STYLE = {
-  prestige:    { bg: '#eef3f8', color: '#0a66c2' },
-  ambitious:   { bg: '#fff7e6', color: '#b45309' },
-  unhinged:    { bg: '#fdecea', color: '#cc1016' },
-  calculated:  { bg: '#e8f5ef', color: '#057642' },
-  wildcard:    { bg: '#f3e8ff', color: '#7c3aed' },
-  cringe_risk: { bg: '#fdecea', color: '#cc1016' },
-  alpha:       { bg: '#eef3f8', color: '#0a66c2' },
-  authentic:   { bg: '#e8f5ef', color: '#057642' },
-  glazed:      { bg: '#fff7e6', color: '#b45309' },
+  prestige:    { bg: 'var(--neon-faint)', color: 'var(--neon)' },
+  ambitious:   { bg: 'var(--accent-glaze-soft)', color: 'var(--accent-amber)' },
+  unhinged:    { bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
+  calculated:  { bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  wildcard:    { bg: 'var(--neon-faint)', color: 'var(--accent-violet)' },
+  cringe_risk: { bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
+  alpha:       { bg: 'var(--neon-faint)', color: 'var(--neon)' },
+  authentic:   { bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  glazed:      { bg: 'var(--accent-glaze-soft)', color: 'var(--accent-amber)' },
 }
 
-export function DialogueBubble({ speaker, text, flavorBadge, avatar }) {
+function initialLabel(name) {
+  if (!name) return 'NA'
+  return name
+    .split(' ')
+    .map(part => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+}
+
+export function DialogueBubble({ speaker, text, flavorBadge, speakerName }) {
   const isUser = speaker === 'user'
   const badgeStyle = flavorBadge ? BADGE_STYLE[flavorBadge] : null
+  const avatarLabel = initialLabel(speakerName ?? (isUser ? 'You' : 'Character'))
 
   return (
     <div className={`${styles.bubble} ${isUser ? styles.user : ''}`}>
-      <div className={styles.avatarWrap}>
-        {avatar ?? (isUser ? '🧑' : '🤝')}
-      </div>
+      <div className={styles.avatarWrap}>{avatarLabel}</div>
       <div className={styles.content}>
         <div className={styles.text}>{text}</div>
         {badgeStyle && (
@@ -35,3 +44,4 @@ export function DialogueBubble({ speaker, text, flavorBadge, avatar }) {
     </div>
   )
 }
+

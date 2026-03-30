@@ -29,7 +29,7 @@ export function DialogueScreen({
             speaker={entry.speaker}
             text={entry.text}
             flavorBadge={entry.flavorBadge}
-            avatar={entry.speaker === 'character' ? character.avatar : undefined}
+            speakerName={entry.speaker === 'character' ? character.name : 'You'}
           />
         ))}
         <div ref={bottomRef} />

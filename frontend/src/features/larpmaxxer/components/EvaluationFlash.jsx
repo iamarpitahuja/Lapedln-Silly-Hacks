@@ -1,18 +1,18 @@
 import styles from './EvaluationFlash.module.css'
 
 const ALIGNMENT_STYLE = {
-  perfect:      { bg: '#e8f5ef', color: '#057642', label: 'Perfect Alignment' },
-  adjacent:     { bg: '#eef3f8', color: '#0a66c2', label: 'Adjacent' },
-  neutral:      { bg: '#f3f2ef', color: 'rgba(0,0,0,0.55)', label: 'Neutral' },
-  off_persona:  { bg: '#fdecea', color: '#cc1016', label: 'Off-Persona' },
-  wildcard:     { bg: '#f3e8ff', color: '#7c3aed', label: 'Wildcard' },
+  perfect:      { bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)', label: 'Perfect Alignment' },
+  adjacent:     { bg: 'var(--neon-faint)', color: 'var(--neon)', label: 'Adjacent' },
+  neutral:      { bg: 'var(--bg-deep)', color: 'var(--text-secondary)', label: 'Neutral' },
+  off_persona:  { bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)', label: 'Off-Persona' },
+  wildcard:     { bg: 'var(--neon-faint)', color: 'var(--accent-violet)', label: 'Wildcard' },
 }
 
 function DeltaChip({ label, value }) {
   const isPos = value > 0
   const isNeg = value < 0
-  const bg = isPos ? '#e8f5ef' : isNeg ? '#fdecea' : '#f3f2ef'
-  const color = isPos ? '#057642' : isNeg ? '#cc1016' : 'rgba(0,0,0,0.4)'
+  const bg = isPos ? 'var(--accent-relarp-soft)' : isNeg ? 'var(--accent-danger-soft)' : 'var(--bg-deep)'
+  const color = isPos ? 'var(--accent-cyan)' : isNeg ? 'var(--accent-danger)' : 'var(--text-muted)'
   return (
     <span className={styles.delta} style={{ backgroundColor: bg, color }}>
       {label}: {value > 0 ? `+${value.toFixed(1)}` : value.toFixed(1)}
@@ -39,7 +39,7 @@ export function EvaluationFlash({ data, onDismiss }) {
         <DeltaChip label="Suspicion" value={data.meterDeltas.suspicion} />
       </div>
 
-      <div className={styles.larpDelta} style={{ color: data.projectedLarpDelta >= 0 ? '#057642' : '#cc1016' }}>
+      <div className={styles.larpDelta} style={{ color: data.projectedLarpDelta >= 0 ? 'var(--accent-cyan)' : 'var(--accent-danger)' }}>
         Projected LR: {data.projectedLarpDelta > 0 ? '+' : ''}{data.projectedLarpDelta.toFixed(1)}
       </div>
 
@@ -47,3 +47,4 @@ export function EvaluationFlash({ data, onDismiss }) {
     </div>
   )
 }
+

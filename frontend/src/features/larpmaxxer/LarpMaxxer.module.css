@@ -1,6 +1,6 @@
 .root {
   height: 100vh;
-  background: #f3f2ef;
+  background: var(--bg-deep);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -17,8 +17,8 @@
   justify-content: space-between;
   padding: 0 16px;
   height: 52px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
   flex-shrink: 0;
   z-index: 100;
 }
@@ -29,18 +29,30 @@
   gap: 12px;
 }
 
+.logoWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoImg {
+  height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
 .logo {
   font-weight: 900;
   font-size: 20px;
-  color: #0a66c2;
+  color: var(--neon);
   letter-spacing: -0.03em;
   font-family: Georgia, serif;
 }
 
 .mode {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.4);
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--text-muted);
+  border-left: 1px solid var(--border);
   padding-left: 12px;
 }
 
@@ -52,15 +64,15 @@
 
 .personaTag {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
 }
 
 .lrBadge {
   font-size: 12px;
   font-weight: 700;
-  color: #0a66c2;
-  background: #eef3f8;
-  border: 1px solid rgba(10, 102, 194, 0.2);
+  color: var(--neon);
+  background: var(--neon-faint);
+  border: 1px solid var(--border-md);
   border-radius: 4px;
   padding: 2px 8px;
   font-variant-numeric: tabular-nums;
@@ -68,18 +80,18 @@
 
 .exitBtn {
   background: transparent;
-  border: 1.5px solid #0a66c2;
+  border: 1.5px solid var(--neon);
   border-radius: 24px;
   padding: 5px 14px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  color: #0a66c2;
+  color: var(--neon);
   transition: background 0.15s;
 }
 
 .exitBtn:hover {
-  background: rgba(10, 102, 194, 0.05);
+  background: rgba(167, 139, 250, 0.1);
 }
 
 .panels {
@@ -94,7 +106,7 @@
   max-width: 280px;
   flex-shrink: 0;
   overflow: hidden;
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-right: 1px solid var(--border);
 }
 
 .centerPanel {
@@ -109,7 +121,7 @@
   max-width: 280px;
   flex-shrink: 0;
   overflow: hidden;
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 1px solid var(--border);
 }
 
 .idleState {
@@ -119,25 +131,35 @@
   justify-content: center;
   flex-direction: column;
   padding: 32px;
-  background: #f3f2ef;
+  background: var(--bg-deep);
   gap: 8px;
 }
 
 .idleIcon {
-  font-size: 32px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  color: var(--neon);
   margin-bottom: 4px;
 }
 
 .idleText {
   font-size: 15px;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   font-style: italic;
 }
 
 .errorCard {
   max-width: 360px;
-  background: #ffffff;
-  border: 1px solid rgba(204, 16, 22, 0.3);
+  background: var(--bg-card);
+  border: 1px solid rgba(242, 137, 168, 0.35);
   border-radius: 8px;
   padding: 24px;
   text-align: center;
@@ -145,7 +167,7 @@
 
 .errorMsg {
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-secondary);
   margin-bottom: 16px;
   line-height: 1.5;
 }
@@ -157,8 +179,8 @@
 }
 
 .btnSmPrimary {
-  background: #0a66c2;
-  color: #ffffff;
+  background: var(--neon);
+  color: var(--text-on-accent);
   border: none;
   border-radius: 18px;
   padding: 7px 16px;
@@ -169,11 +191,14 @@
 
 .btnSmSecondary {
   background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-md);
   border-radius: 18px;
   padding: 7px 16px;
   font-size: 13px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
   cursor: pointer;
 }
+
+
+

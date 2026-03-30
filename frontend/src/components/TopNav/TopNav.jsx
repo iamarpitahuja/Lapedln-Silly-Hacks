@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 import { getInitials } from '../../utils/strings'
 import { fetchConversations } from '../../services/api'
 import { springSnap } from '../../lib/motion'
+import { initializeTheme, setTheme as applyTheme } from '../../lib/theme'
 import styles from './TopNav.module.css'
 
 const NAV_ITEMS = [
@@ -75,20 +76,12 @@ export default function TopNav() {
   const [theme, setTheme] = useState('dark')
 
   useEffect(() => {
-    const storedTheme = window.localStorage.getItem('theme')
-    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
-    const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
-      ? storedTheme
-      : (prefersLight ? 'light' : 'dark')
-    document.documentElement.setAttribute('data-theme', initialTheme)
-    setTheme(initialTheme)
+    setTheme(initializeTheme())
   }, [])
 
   const toggleTheme = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light'
-    document.documentElement.setAttribute('data-theme', nextTheme)
-    window.localStorage.setItem('theme', nextTheme)
-    setTheme(nextTheme)
+    setTheme(applyTheme(nextTheme))
   }
 
   useEffect(() => {

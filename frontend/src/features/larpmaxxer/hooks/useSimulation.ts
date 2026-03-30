@@ -17,10 +17,20 @@ import { getAlignmentTier } from '../engine/personaAlignment'
 import { isCringeIncident, computeProjectedDelta, computeSummaryMetrics } from '../engine/scoring'
 import { SCENARIO_MAP } from '../../../content/scenarios'
 import { CHARACTER_MAP } from '../../../content/characters'
+import { fetchLarpmaxxerScenarioContent } from '../../../services/api'
 
 // ─── Dynamic scenario content loader ─────────────────────────────────────────
 
 async function loadScenarioContent(scenarioId: string) {
+  try {
+    const content = await fetchLarpmaxxerScenarioContent(scenarioId)
+    if (content?.scenarioId === scenarioId) {
+      return content as import('../types').ScenarioContent
+    }
+  } catch {
+    // Fall back to bundled content when API content is unavailable.
+  }
+
   const modules: Record<string, () => Promise<{ scenarioContent: import('../types').ScenarioContent }>> = {
     'coffee-chat': () => import('../../../content/scenarios/coffee-chat'),
     'networking-event': () => import('../../../content/scenarios/networking-event'),

@@ -9,7 +9,7 @@ const mockCharacter = {
   role: 'Director',
   company: 'MegaCorp',
   subtext: '',
-  avatar: '🧑‍💼',
+  avatar: 'TC',
   personalityTraits: ['analytical', 'skeptical'],
   personaAffinities: {},
   catchphrases: [],
@@ -28,6 +28,6 @@ describe('CharacterPanel', () => {
       />
     )
     expect(screen.getByText('Test Character')).toBeTruthy()
-    expect(screen.getByText('Director · MegaCorp')).toBeTruthy()
+    expect(screen.getByText('Director | MegaCorp')).toBeTruthy()
   })
 })

@@ -2,7 +2,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: var(--bg-card);
   overflow: hidden;
   position: relative;
 }
@@ -16,10 +16,12 @@
 .flashOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(9, 7, 15, 0.78);
   backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
 }
+
+

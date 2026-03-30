@@ -4,24 +4,19 @@
   align-items: center;
   justify-content: center;
   padding: 32px 24px;
-  background: #f3f2ef;
+  background: var(--bg-deep);
 }
 
 .card {
   max-width: 480px;
   width: 100%;
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 32px 28px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px var(--border);
   text-align: center;
-}
-
-.icon {
-  font-size: 40px;
-  margin-bottom: 16px;
 }
 
 .type {
@@ -37,7 +32,7 @@
 
 .characterLine {
   font-size: 16px;
-  color: rgba(0, 0, 0, 0.8);
+  color: var(--text-primary);
   font-style: italic;
   line-height: 1.6;
   margin-bottom: 20px;
@@ -51,13 +46,13 @@
 
 .progress {
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   margin-bottom: 24px;
 }
 
 .continueBtn {
-  background: #0a66c2;
-  color: #ffffff;
+  background: var(--neon);
+  color: var(--text-on-accent);
   border: none;
   border-radius: 24px;
   padding: 10px 28px;
@@ -68,5 +63,8 @@
 }
 
 .continueBtn:hover {
-  background: #004182;
+  background: var(--neon-dark);
 }
+
+
+

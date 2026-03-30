@@ -1,11 +1,11 @@
 import styles from './ScenarioCard.module.css'
 
 const DIFFICULTY_BADGE = {
-  easy:        { label: 'Easy',       bg: '#e8f5ef', color: '#057642' },
-  easy_medium: { label: 'E–M',        bg: '#e8f5ef', color: '#057642' },
-  medium:      { label: 'Medium',     bg: '#fff7e6', color: '#b45309' },
-  hard:        { label: 'Hard',       bg: '#fdecea', color: '#cc1016' },
-  very_hard:   { label: 'Very Hard',  bg: '#fdecea', color: '#cc1016' },
+  easy:        { label: 'Easy',       bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  easy_medium: { label: 'E-M',        bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  medium:      { label: 'Medium',     bg: 'var(--accent-glaze-soft)', color: 'var(--accent-amber)' },
+  hard:        { label: 'Hard',       bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
+  very_hard:   { label: 'Very Hard',  bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
 }
 
 export function ScenarioCard({ scenario, isUnlocked, isActive, bestScore, unlockRequirement, onSelect }) {
@@ -29,8 +29,9 @@ export function ScenarioCard({ scenario, isUnlocked, isActive, bestScore, unlock
         <div className={styles.score}>Best: {Math.round(bestScore)}%</div>
       )}
       {!isUnlocked && unlockRequirement && (
-        <div className={styles.lockHint}>🔒 {unlockRequirement}</div>
+        <div className={styles.lockHint}>Locked: {unlockRequirement}</div>
       )}
     </button>
   )
 }
+

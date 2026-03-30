@@ -6,7 +6,7 @@ export function ResponseOptions({ options, onSelect, isTyping }) {
     return (
       <div className={styles.wrap}>
         <div className={styles.typing}>
-          <span>●●●</span>
+          <span>...</span>
           <span>Thinking...</span>
         </div>
       </div>

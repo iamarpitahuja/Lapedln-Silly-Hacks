@@ -15,12 +15,15 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #f3f2ef;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--neon);
 }
 
 .content {
@@ -30,18 +33,18 @@
 }
 
 .text {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px 14px;
   font-size: 14px;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--text-primary);
   line-height: 1.55;
 }
 
 .bubble.user .text {
-  background: #eef3f8;
-  border-color: rgba(10, 102, 194, 0.15);
+  background: var(--neon-faint);
+  border-color: var(--border-md);
 }
 
 .badge {
@@ -57,3 +60,6 @@
 .bubble.user .badge {
   align-self: flex-end;
 }
+
+
+

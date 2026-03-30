@@ -1,19 +1,19 @@
 import styles from './ResponseCard.module.css'
 
 const BADGE_STYLE = {
-  prestige:    { bg: '#eef3f8', color: '#0a66c2' },
-  ambitious:   { bg: '#fff7e6', color: '#b45309' },
-  unhinged:    { bg: '#fdecea', color: '#cc1016' },
-  calculated:  { bg: '#e8f5ef', color: '#057642' },
-  wildcard:    { bg: '#f3e8ff', color: '#7c3aed' },
-  cringe_risk: { bg: '#fdecea', color: '#cc1016' },
-  alpha:       { bg: '#eef3f8', color: '#0a66c2' },
-  authentic:   { bg: '#e8f5ef', color: '#057642' },
-  glazed:      { bg: '#fff7e6', color: '#b45309' },
+  prestige:    { bg: 'var(--neon-faint)', color: 'var(--neon)' },
+  ambitious:   { bg: 'var(--accent-glaze-soft)', color: 'var(--accent-amber)' },
+  unhinged:    { bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
+  calculated:  { bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  wildcard:    { bg: 'var(--neon-faint)', color: 'var(--accent-violet)' },
+  cringe_risk: { bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
+  alpha:       { bg: 'var(--neon-faint)', color: 'var(--neon)' },
+  authentic:   { bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  glazed:      { bg: 'var(--accent-glaze-soft)', color: 'var(--accent-amber)' },
 }
 
 export function ResponseCard({ option, onSelect, disabled }) {
-  const badgeStyle = BADGE_STYLE[option.flavorBadge] ?? { bg: '#f3f2ef', color: 'rgba(0,0,0,0.5)' }
+  const badgeStyle = BADGE_STYLE[option.flavorBadge] ?? { bg: 'var(--bg-deep)', color: 'var(--text-muted)' }
 
   return (
     <button className={styles.card} onClick={() => onSelect(option)} disabled={disabled}>
@@ -26,3 +26,4 @@ export function ResponseCard({ option, onSelect, disabled }) {
     </button>
   )
 }
+

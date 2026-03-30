@@ -5,12 +5,12 @@ function StatBar({ label, value, isInteger, isInverseGood, max = 100 }) {
     ? Math.min(100, (value / Math.max(1, max)) * 100)
     : Math.min(100, Math.max(0, value))
   const displayVal = Math.round(value)
-  let color = '#0a66c2'
+  let color = 'var(--neon)'
   if (!isInteger) {
-    color = value >= 70 ? '#057642' : value >= 40 ? '#0a66c2' : '#b45309'
+    color = value >= 70 ? 'var(--accent-cyan)' : value >= 40 ? 'var(--neon)' : 'var(--accent-amber)'
   }
   if (isInverseGood) {
-    color = value === 0 ? '#057642' : value <= 2 ? '#b45309' : '#cc1016'
+    color = value === 0 ? 'var(--accent-cyan)' : value <= 2 ? 'var(--accent-amber)' : 'var(--accent-danger)'
   }
 
   return (
@@ -28,9 +28,9 @@ function StatBar({ label, value, isInteger, isInverseGood, max = 100 }) {
 
 export function SummaryScreen({ summary, scenario, persona, session, onReplay, onNewScenario, onExit }) {
   const score = Math.round(summary.performanceScore)
-  const scoreBg = score >= 70 ? '#e8f5ef' : score >= 40 ? '#eef3f8' : '#fdecea'
-  const scoreColor = score >= 70 ? '#057642' : score >= 40 ? '#0a66c2' : '#cc1016'
-  const deltaColor = summary.larpRatingDelta >= 0 ? '#057642' : '#cc1016'
+  const scoreBg = score >= 70 ? 'var(--accent-relarp-soft)' : score >= 40 ? 'var(--neon-faint)' : 'var(--accent-danger-soft)'
+  const scoreColor = score >= 70 ? 'var(--accent-cyan)' : score >= 40 ? 'var(--neon)' : 'var(--accent-danger)'
+  const deltaColor = summary.larpRatingDelta >= 0 ? 'var(--accent-cyan)' : 'var(--accent-danger)'
 
   return (
     <div className={styles.wrap}>
@@ -40,8 +40,7 @@ export function SummaryScreen({ summary, scenario, persona, session, onReplay, o
           <div>
             <p className={styles.scenarioName}>{scenario.name}</p>
             <div className={styles.personaRow}>
-              <span>{persona.icon}</span>
-              <span>{persona.name}</span>
+              <span>Persona: {persona.name}</span>
             </div>
           </div>
           <span className={styles.scoreBadge} style={{ backgroundColor: scoreBg, color: scoreColor }}>
@@ -76,7 +75,7 @@ export function SummaryScreen({ summary, scenario, persona, session, onReplay, o
           <div className={styles.moments}>
             {summary.notableMoments.map((m, i) => (
               <div key={i} className={`${styles.moment} ${m.type === 'positive' ? styles.positive : styles.negative}`}>
-                <span>{m.type === 'positive' ? '✓' : '✗'}</span>
+                <span>{m.type === 'positive' ? 'PASS' : 'MISS'}</span>
                 <span>{m.annotation}</span>
               </div>
             ))}
@@ -86,10 +85,11 @@ export function SummaryScreen({ summary, scenario, persona, session, onReplay, o
 
       {/* Actions */}
       <div className={styles.actions}>
-        <button className={styles.btnPrimary} onClick={onReplay}>↺ Replay</button>
+        <button className={styles.btnPrimary} onClick={onReplay}>Replay Session</button>
         <button className={styles.btnSecondary} onClick={onNewScenario}>New Scenario</button>
         <button className={styles.btnGhost} onClick={onExit}>Exit</button>
       </div>
     </div>
   )
 }
+

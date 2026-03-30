@@ -5,12 +5,12 @@
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 28px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.08);
   margin-bottom: 16px;
 }
 
@@ -24,7 +24,7 @@
 .scenarioName {
   font-size: 18px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.9);
+  color: var(--text-primary);
   margin: 0 0 4px;
 }
 
@@ -33,7 +33,7 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
 }
 
 .scoreBadge {
@@ -47,20 +47,20 @@
 .verdict {
   font-size: 15px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-secondary);
   font-style: italic;
   line-height: 1.5;
   margin-bottom: 20px;
   padding: 12px 16px;
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(167, 139, 250, 0.08);
   border-radius: 8px;
-  border-left: 3px solid #0a66c2;
+  border-left: 3px solid var(--neon);
 }
 
 .sectionTitle {
   font-size: 11px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin: 0 0 12px;
@@ -75,18 +75,18 @@
 
 .statLabel {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-secondary);
 }
 
 .statValue {
   font-size: 12px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.8);
+  color: var(--text-primary);
 }
 
 .track {
   height: 5px;
-  background: rgba(0, 0, 0, 0.07);
+  background: rgba(167, 139, 250, 0.12);
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 10px;
@@ -114,13 +114,13 @@
 }
 
 .moment.positive {
-  background: #e8f5ef;
-  color: #057642;
+  background: var(--accent-relarp-soft);
+  color: var(--accent-cyan);
 }
 
 .moment.negative {
-  background: #fdecea;
-  color: #cc1016;
+  background: var(--accent-danger-soft);
+  color: var(--accent-danger);
 }
 
 .actions {
@@ -132,8 +132,8 @@
 .btnPrimary {
   flex: 1;
   min-width: 120px;
-  background: #0a66c2;
-  color: #ffffff;
+  background: var(--neon);
+  color: var(--text-on-accent);
   border: none;
   border-radius: 24px;
   padding: 10px 20px;
@@ -143,14 +143,14 @@
   transition: background 0.15s;
 }
 
-.btnPrimary:hover { background: #004182; }
+.btnPrimary:hover { background: var(--neon-dark); }
 
 .btnSecondary {
   flex: 1;
   min-width: 120px;
-  background: #eef3f8;
-  color: #0a66c2;
-  border: 1px solid rgba(10, 102, 194, 0.2);
+  background: var(--neon-faint);
+  color: var(--neon);
+  border: 1px solid var(--border-md);
   border-radius: 24px;
   padding: 10px 20px;
   font-size: 14px;
@@ -159,21 +159,21 @@
   transition: background 0.15s;
 }
 
-.btnSecondary:hover { background: #dce8f5; }
+.btnSecondary:hover { background: rgba(167, 139, 250, 0.16); }
 
 .btnGhost {
   background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--border-md);
   border-radius: 24px;
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.55);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: border-color 0.15s;
 }
 
-.btnGhost:hover { border-color: rgba(0, 0, 0, 0.3); }
+.btnGhost:hover { border-color: var(--border-strong); }
 
 .lrDelta {
   font-size: 24px;
@@ -184,7 +184,10 @@
 
 .lrLabel {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
   text-align: center;
   margin-bottom: 20px;
 }
+
+
+

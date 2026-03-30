@@ -1,11 +1,12 @@
 import styles from './PreBrief.module.css'
+import { getInitials } from '../../../utils/strings'
 
 const DIFFICULTY_BADGE = {
-  easy:        { label: 'Easy',      bg: '#e8f5ef', color: '#057642' },
-  easy_medium: { label: 'Easy–Med',  bg: '#e8f5ef', color: '#057642' },
-  medium:      { label: 'Medium',    bg: '#fff7e6', color: '#b45309' },
-  hard:        { label: 'Hard',      bg: '#fdecea', color: '#cc1016' },
-  very_hard:   { label: 'Very Hard', bg: '#fdecea', color: '#cc1016' },
+  easy:        { label: 'Easy',      bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  easy_medium: { label: 'Easy-Med',  bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' },
+  medium:      { label: 'Medium',    bg: 'var(--accent-glaze-soft)', color: 'var(--accent-amber)' },
+  hard:        { label: 'Hard',      bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
+  very_hard:   { label: 'Very Hard', bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' },
 }
 
 export function PreBrief({ scenario, character, personaId, openingLine, onConfirm, onBack }) {
@@ -14,10 +15,10 @@ export function PreBrief({ scenario, character, personaId, openingLine, onConfir
   const isBestFit = scenario.bestPersonas.includes(personaId)
   const isToughFit = scenario.toughPersonas.includes(personaId)
   const personaFit = isBestFit
-    ? { label: '✓ Strong fit for your persona', bg: '#e8f5ef', color: '#057642' }
+    ? { label: 'Strong fit for your persona', bg: 'var(--accent-relarp-soft)', color: 'var(--accent-cyan)' }
     : isToughFit
-    ? { label: '⚠ Tough match for your persona', bg: '#fdecea', color: '#cc1016' }
-    : { label: '~ Neutral fit for your persona', bg: '#f3f2ef', color: 'rgba(0,0,0,0.55)' }
+    ? { label: 'Tough match for your persona', bg: 'var(--accent-danger-soft)', color: 'var(--accent-danger)' }
+    : { label: 'Neutral fit for your persona', bg: 'var(--bg-deep)', color: 'var(--text-secondary)' }
 
   return (
     <div className={styles.wrap}>
@@ -36,10 +37,10 @@ export function PreBrief({ scenario, character, personaId, openingLine, onConfir
         </div>
 
         <div className={styles.characterRow}>
-          <div className={styles.charAvatar}>{character.avatar}</div>
+          <div className={styles.charAvatar}>{getInitials(character.name)}</div>
           <div>
             <p className={styles.charName}>{character.name}</p>
-            <p className={styles.charRole}>{character.role} · {character.company}</p>
+            <p className={styles.charRole}>{character.role} | {character.company}</p>
           </div>
         </div>
 
@@ -56,7 +57,7 @@ export function PreBrief({ scenario, character, personaId, openingLine, onConfir
           <p className={styles.objectivesTitle}>Objectives</p>
           {scenario.objectives.map((obj, i) => (
             <div key={i} className={styles.objectiveItem}>
-              <span>›</span>
+              <span>{'>'}</span>
               <span>{obj}</span>
             </div>
           ))}
@@ -64,9 +65,10 @@ export function PreBrief({ scenario, character, personaId, openingLine, onConfir
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.btnBack} onClick={onBack}>← Back</button>
-        <button className={styles.btnConfirm} onClick={onConfirm}>Enter Simulation →</button>
+        <button className={styles.btnBack} onClick={onBack}>Back</button>
+        <button className={styles.btnConfirm} onClick={onConfirm}>Enter Simulation</button>
       </div>
     </div>
   )
 }
+
