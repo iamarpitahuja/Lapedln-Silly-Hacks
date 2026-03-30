@@ -1,0 +1,94 @@
+<h2>Jobs Page — Which Direction?</h2>
+<p class="subtitle">The current page is just a title-picker. Here are three ways to take it much further.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="fake" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #1a0e2e, #2d1b4e); padding: 20px; font-family: monospace; font-size: 12px; color: #a78bfa;">
+      <div style="border: 1px solid rgba(167,139,250,0.3); border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="font-weight:700; color:#f0e6ff; margin-bottom:4px;">Chief Disruption Architect</div>
+        <div style="color:#a78bfa; margin-bottom:4px;">Nimbus Dynamics · Stealth · 🌍 Remote-First Synergy Zone</div>
+        <div style="color:#7c6b9e; font-size:11px;">$400k–$1.2M + 0.001% equity + unlimited aura days</div>
+        <div style="margin-top:8px; padding-top:8px; border-top: 1px solid rgba(167,139,250,0.15); color:#c4b5e0; font-size:11px;">
+          We are disrupting disruption itself. Must have 15+ years experience with technologies invented 3 years ago.
+        </div>
+        <button style="margin-top:10px; background:#a78bfa; color:#1a0e2e; border:none; border-radius:20px; padding:5px 14px; font-size:11px; font-weight:700; cursor:pointer;">✨ Claim This Role</button>
+      </div>
+      <div style="border: 1px solid rgba(167,139,250,0.3); border-radius: 8px; padding: 12px; opacity:0.7;">
+        <div style="font-weight:700; color:#f0e6ff; margin-bottom:4px;">Head of Vibe Strategy</div>
+        <div style="color:#a78bfa; margin-bottom:4px;">TouchGrass Capital · Series B · 💫 Prestige-First Culture</div>
+        <div style="color:#7c6b9e; font-size:11px;">$0 + massive upside exposure (theoretical)</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Pure Fake Job Board</h3>
+      <p>Gemini generates an infinite feed of satirical job listings — absurd companies, nonsense requirements, made-up salaries. One-click "Claim This Role" updates your LARP title and adds it to your career history. No real jobs anywhere.</p>
+      <div class="pros-cons" style="margin-top:12px;">
+        <div class="pros"><h4>Pros</h4><ul><li>100% on-theme satire</li><li>Infinite content via AI</li><li>No external APIs or scraping</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>No real-world utility</li><li>Pure comedy, not dual-purpose</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="real" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #0e1a2e, #1b2d4e); padding: 20px; font-family: monospace; font-size: 12px; color: #7db5ff;">
+      <div style="border: 1px solid rgba(125,181,255,0.3); border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="font-weight:700; color:#e6f0ff; margin-bottom:4px;">Software Engineer, Growth</div>
+        <div style="color:#7db5ff; margin-bottom:4px;">Stripe · Series G · 📍 San Francisco</div>
+        <div style="color:#6b7c9e; font-size:11px;">$180k–$250k · Posted 2h ago</div>
+        <div style="margin-top:8px; padding-top:8px; border-top: 1px solid rgba(125,181,255,0.15); color:#c4d5e0; font-size:11px;">
+          Build infrastructure for the global economy. 5+ years required.
+        </div>
+        <button style="margin-top:10px; background:#7db5ff; color:#0e1a2e; border:none; border-radius:20px; padding:5px 14px; font-size:11px; font-weight:700; cursor:pointer;">🔗 Apply on LinkedIn</button>
+      </div>
+      <div style="border: 1px solid rgba(125,181,255,0.3); border-radius: 8px; padding: 12px; opacity:0.7;">
+        <div style="font-weight:700; color:#e6f0ff; margin-bottom:4px;">Product Manager, Platform</div>
+        <div style="color:#7db5ff; margin-bottom:4px;">Figma · Series E · 📍 NYC</div>
+        <div style="color:#6b7c9e; font-size:11px;">$160k–$210k · Posted 1d ago</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Real Job Feed</h3>
+      <p>Pull real job listings from a public API (Adzuna, The Muse, Remotive for remote) and surface them on the page. Users can browse real openings and click out to apply externally. Genuinely useful but breaks the satirical tone.</p>
+      <div class="pros-cons" style="margin-top:12px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Actually useful to users</li><li>No scraping, uses legit APIs</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Kills the satire vibe</li><li>Requires external API key</li><li>Off-theme for a LARP platform</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #1a1a0e, #2e2d1b); padding: 20px; font-family: monospace; font-size: 12px; color: #f1c75b;">
+      <div style="border: 1px solid rgba(241,199,91,0.3); border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div>
+            <div style="font-weight:700; color:#fff8e6; margin-bottom:2px;">Senior Staff Engineer</div>
+            <div style="color:#f1c75b; font-size:11px;">Google · $220k · San Francisco</div>
+          </div>
+          <span style="background:rgba(241,199,91,0.15); color:#f1c75b; font-size:10px; padding:2px 6px; border-radius:4px; border:1px solid rgba(241,199,91,0.3);">REAL</span>
+        </div>
+        <div style="margin-top:8px; background:rgba(241,199,91,0.08); border-radius:6px; padding:8px; border-left: 2px solid #f1c75b; color:#e0d090; font-size:11px; font-style:italic;">
+          🤖 LARP-O-METER: "Another Big Tech role demanding 'ownership mindset' while deleting your PRs."
+        </div>
+      </div>
+      <div style="border: 1px solid rgba(167,139,250,0.3); border-radius: 8px; padding: 12px; opacity:0.85;">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div>
+            <div style="font-weight:700; color:#f0e6ff; margin-bottom:2px;">VP of Synergy Realignment</div>
+            <div style="color:#a78bfa; font-size:11px;">Disruptocorp · $800k + equity dreams</div>
+          </div>
+          <span style="background:rgba(167,139,250,0.15); color:#a78bfa; font-size:10px; padding:2px 6px; border-radius:4px; border:1px solid rgba(167,139,250,0.3);">LARP</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Hybrid: Real Jobs + Satirical Layer</h3>
+      <p>Mix real job listings (from a free API) with AI-generated fake ones. Real jobs get roasted by Gemini with satirical commentary. Users can either apply externally or "LARP as hired" for a fake one. Best of both worlds but more complex to build.</p>
+      <div class="pros-cons" style="margin-top:12px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Funny AND useful</li><li>Satire on real corporate jobs lands harder</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>More complex to build</li><li>Requires external API + Gemini calls</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>

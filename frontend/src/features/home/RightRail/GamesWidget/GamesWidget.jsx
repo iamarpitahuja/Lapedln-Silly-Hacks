@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { springBouncy } from '../../../../lib/motion';
+import { localDateStr } from '../../../games/data/dailySeed';
 import s from './GamesWidget.module.css';
 
 const GAMES = [
@@ -10,7 +11,7 @@ const GAMES = [
 ];
 
 function getTodayKey() {
-  return new Date().toISOString().slice(0, 10);
+  return localDateStr();
 }
 
 function getClaimedGames() {
