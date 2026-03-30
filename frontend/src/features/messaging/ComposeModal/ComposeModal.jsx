@@ -92,7 +92,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
         transition={springSnap}
       >
         <div className={styles.header}>
-          <h3 className={styles.title}>New message</h3>
+          <h3 className={styles.title}>New Slide</h3>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
             &times;
           </button>
@@ -119,7 +119,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
           <input
             ref={searchRef}
             className={styles.searchInput}
-            placeholder="Search people..."
+            placeholder="search for ur target…"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -130,7 +130,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
 
           {!loading && filteredConnections.length > 0 && (
             <>
-              <p className={styles.sectionLabel}>Connections</p>
+              <p className={styles.sectionLabel}>Ur Guys</p>
               {filteredConnections.map(user => (
                 <button
                   key={user.id}
@@ -154,7 +154,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
 
           {!loading && filteredOthers.length > 0 && (
             <>
-              <p className={styles.sectionLabel}>Others</p>
+              <p className={styles.sectionLabel}>Other Ppl</p>
               {filteredOthers.map(user => (
                 <button
                   key={user.id}
@@ -184,7 +184,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
         <div className={styles.footer}>
           <span className={styles.footerHint}>
             {selected.length === 0
-              ? 'Select people to message'
+              ? 'pick who ur sliding to'
               : selected.length === 1
                 ? `DM ${selected[0].display_name}`
                 : `Group with ${selected.length} people`}

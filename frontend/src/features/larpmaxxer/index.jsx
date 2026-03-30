@@ -243,14 +243,14 @@ export function LarpMaxxer({ onExitTraining }) {
             <img src="/logo.png" alt="LarpedIn" className={styles.logoImg} />
             <span className={styles.logo}>LarpedIn</span>
           </Link>
-          <span className={styles.mode}>Training Mode</span>
+          <span className={styles.mode}>Larp Dojo</span>
         </div>
         <div className={styles.topRight}>
           {persona && (
             <span className={styles.personaTag}>{persona.name}</span>
           )}
           <span className={styles.lrBadge}>{larpRating.toFixed(1)} LR</span>
-          <button className={styles.exitBtn} onClick={handleExitTraining}>Exit Training</button>
+          <button className={styles.exitBtn} onClick={handleExitTraining}>Tap Out</button>
         </div>
       </div>
 
@@ -290,7 +290,7 @@ export function LarpMaxxer({ onExitTraining }) {
                 ) : (
                   <>
                     <div className={styles.idleIcon}>LM</div>
-                    <p className={styles.idleText}>Select a scenario to begin.</p>
+                    <p className={styles.idleText}>pick a scenario and lock in.</p>
                   </>
                 )}
               </Motion.div>

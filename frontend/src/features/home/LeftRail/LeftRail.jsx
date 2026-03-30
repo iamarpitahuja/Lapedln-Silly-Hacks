@@ -66,7 +66,7 @@ export default function LeftRail() {
         </div>
       </div>
 
-      {/* Who's glazing you */}
+      {/* who's on ur glazing arc rn */}
       <div className={styles.card}>
         <div className={styles.widgetHeader}>
           <h3 className={styles.widgetTitle}>Who&apos;s glazing you</h3>
@@ -91,17 +91,17 @@ export default function LeftRail() {
         </div>
       </div>
 
-      {/* Weekly aura growth */}
+      {/* Weekly aura speedrun */}
       <div className={styles.card}>
         <div className={styles.widgetHeader}>
-          <h3 className={styles.widgetTitle}>Weekly aura growth</h3>
+          <h3 className={styles.widgetTitle}>Weekly aura speedrun</h3>
           <button className={styles.moreBtn} aria-label="More">
             <Icon name="more" size={16} />
           </button>
         </div>
         <div className={styles.auraRow}>
           <div>
-            <p className={styles.auraLabel}>Weekly aura growth</p>
+            <p className={styles.auraLabel}>Weekly aura speedrun</p>
           </div>
           <div className={styles.auraValues}>
             <span className={styles.auraNumber}>{stats.weeklyAuraGrowth}</span>

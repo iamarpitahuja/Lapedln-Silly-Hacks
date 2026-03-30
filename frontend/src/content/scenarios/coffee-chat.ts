@@ -3,7 +3,7 @@ import type { ScenarioContent } from '../../features/larpmaxxer/types'
 export const scenarioContent: ScenarioContent = {
   scenarioId: 'coffee-chat',
   briefDescription:
-    'Jordan from Deloitte agreed to a 30-minute informational interview. He has a Google Doc of questions and a genuine desire to help. You need to seem like someone worth helping.',
+    'Jordan from Deloitte agreed to a 30-minute informational interview. He has a Google Doc of questions, a color-coded notes template, and a genuine desire to help. You need to convince him you\'re worth the referral he\'s already mentally drafting.',
   openingLine:
     "Hey! So glad we could make this work — I actually blocked off 45 minutes just in case because I feel like these conversations always go longer than expected, which is a good thing. I want to make sure you get everything you need out of this. I have some thoughts but honestly, tell me a little about yourself first?",
   dialogueNodes: [
@@ -46,7 +46,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'wildcard',
           metricDeltas: { aura: 3, socialFooting: -1, plausibility: -2, larpContinuity: -1, respect: 1 },
           meterDeltas: { impressed: 2, suspicion: 6 },
-          characterThinks: "He just called my entire career a construct. We have 38 minutes left.",
+          characterThinks: "He just called the strategy-implementation divide a 'construct.' I do strategy-implementation work. We have 38 minutes left of this.",
         },
         {
           id: 'cc-t1-e',
@@ -150,7 +150,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'wildcard',
           metricDeltas: { aura: 3, socialFooting: -1, plausibility: -1, larpContinuity: -2, respect: 1 },
           meterDeltas: { impressed: 2, suspicion: 8 },
-          characterThinks: "He just told me my job is going away. We have 22 minutes left.",
+          characterThinks: "He informed me that my job is going away, as part of his pitch to get my help finding a job. We have 22 minutes left.",
         },
         {
           id: 'cc-t3-e',
@@ -254,7 +254,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'unhinged',
           metricDeltas: { aura: -5, socialFooting: -3, plausibility: -3, larpContinuity: -4, respect: -3 },
           meterDeltas: { impressed: -2, suspicion: 13 },
-          characterThinks: "He is asking me for help getting into an industry he thinks is dying. The audacity is almost impressive.",
+          characterThinks: "He is literally asking me to help him get a job in an industry he just told me is dying. I'm going to refer him anyway out of pure professional respect for the audacity.",
         },
         {
           id: 'cc-t5-e',

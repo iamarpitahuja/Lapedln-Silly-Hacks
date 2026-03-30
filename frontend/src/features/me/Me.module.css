@@ -34,3 +34,71 @@
 .noticeVisible {
   opacity: 1;
 }
+
+.larpmaxxCard {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.18) 0%, rgba(99, 60, 210, 0.28) 100%);
+  border: 1.5px solid rgba(167, 139, 250, 0.45);
+  border-radius: 16px;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 0 24px rgba(167, 139, 250, 0.15), 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.larpmaxxCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(167, 139, 250, 0.8);
+  box-shadow: 0 0 36px rgba(167, 139, 250, 0.3), 0 8px 28px rgba(0, 0, 0, 0.4);
+}
+
+.larpmaxxCard:active {
+  transform: translateY(0);
+}
+
+.larpmaxxCardInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px;
+  gap: 16px;
+}
+
+.larpmaxxCardText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.larpmaxxCardEyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.7);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+}
+
+.larpmaxxCardTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  line-height: 1.2;
+}
+
+.larpmaxxCardSubtitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--neon, #a78bfa);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  margin-top: 4px;
+}
+
+.larpmaxxCardEmoji {
+  font-size: 48px;
+  line-height: 1;
+  flex-shrink: 0;
+}

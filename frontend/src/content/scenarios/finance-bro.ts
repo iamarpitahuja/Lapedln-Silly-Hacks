@@ -3,7 +3,7 @@ import type { ScenarioContent } from '../../features/larpmaxxer/types'
 export const scenarioContent: ScenarioContent = {
   scenarioId: 'finance-bro',
   briefDescription:
-    'Bryce is a second-year IB analyst at Blackrock Capital. It is 11 PM on a Wednesday. He has been awake for 19 hours. His fleece vest is from a deal tombstone. He will judge every sentence you say.',
+    'Bryce is a second-year IB analyst at Blackrock Capital. It\'s 11 PM on a Wednesday. He\'s been awake for 19 hours, just closed a $2.4B restructuring, and his Patagonia vest is from a deal tombstone. He will absolutely judge every single sentence you say — and he will remember.',
   openingLine:
     "Dude, we just closed the most insane restructuring deal — $2.4B, healthcare services, was a nightmare for like six weeks straight. I'm still basically running on adrenaline and Red Bull. So what do you do? You in finance?",
   dialogueNodes: [
@@ -46,7 +46,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'wildcard',
           metricDeltas: { aura: 2, socialFooting: -1, plausibility: -1, larpContinuity: -2, respect: 0 },
           meterDeltas: { impressed: 1, suspicion: 8 },
-          characterThinks: "He said tokenization and fixed income in the same sentence. We are at a bar at 11 PM. I'm evaluating whether to walk away.",
+          characterThinks: "He said 'tokenization' and 'fixed income' in the same sentence. We are at a bar. It's 11 PM. I have been awake since 4. I'm evaluating whether to physically leave.",
         },
         {
           id: 'fb-t1-e',
@@ -98,7 +98,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'unhinged',
           metricDeltas: { aura: -5, socialFooting: -4, plausibility: -3, larpContinuity: -5, respect: -3 },
           meterDeltas: { impressed: -3, suspicion: 14 },
-          characterThinks: "He just asked if financial modeling is epistemically valid. At 11 PM. After I've been awake for 19 hours. I'm done.",
+          characterThinks: "He just questioned the epistemic validity of financial modeling. At 11 PM. To an analyst who has not slept. I am going to signal to my colleague to come rescue me.",
         },
         {
           id: 'fb-t2-e',
@@ -202,7 +202,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'cringe_risk',
           metricDeltas: { aura: -4, socialFooting: -3, plausibility: -2, larpContinuity: -4, respect: -3 },
           meterDeltas: { impressed: -3, suspicion: 12 },
-          characterThinks: "He just told me he wants to do 'broader social context' work at 11 PM after I spent six weeks on a restructuring deal. I need another drink.",
+          characterThinks: "He said 'broader social context' in a direct response to me describing six weeks on a billion-dollar restructuring. I am going to get another drink right now. Immediately.",
         },
         {
           id: 'fb-t4-e',
@@ -306,7 +306,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'unhinged',
           metricDeltas: { aura: -3, socialFooting: -2, plausibility: -1, larpContinuity: -3, respect: -1 },
           meterDeltas: { impressed: -1, suspicion: 10 },
-          characterThinks: "Philosophy of economics as a hobby. I've been awake for 19 hours and this man is going deeper.",
+          characterThinks: "Philosophy of economics as a hobby. Academic philosophy. At a bar. I have been awake for 19 hours and this man is somehow going deeper than me right now.",
         },
         {
           id: 'fb-t6-e',
@@ -367,7 +367,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'unhinged',
           metricDeltas: { aura: -5, socialFooting: -3, plausibility: -3, larpContinuity: -4, respect: -3 },
           meterDeltas: { impressed: -2, suspicion: 13 },
-          characterThinks: "Money as social technology at 11 PM. He's going to be so interesting and so unemployable.",
+          characterThinks: "Money as social technology backed by trust not math. At 11 PM. This guy is going to be wildly interesting at dinner parties and completely unemployable in any institution I would respect.",
         },
       ],
     },

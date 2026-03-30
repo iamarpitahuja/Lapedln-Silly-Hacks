@@ -1,11 +1,11 @@
 import styles from './LarpRatingBadge.module.css'
 
 function getTier(rating) {
-  if (rating >= 95) return 'Post-human'
+  if (rating >= 95) return 'NPC evolved'
   if (rating >= 85) return 'Mythic'
-  if (rating >= 70) return 'Terminally employable'
-  if (rating >= 50) return 'Aspirational'
-  return 'Regional'
+  if (rating >= 70) return 'chronically online'
+  if (rating >= 50) return 'delulu phase'
+  return 'local NPC'
 }
 
 function getTierColor(rating) {

@@ -72,9 +72,9 @@ export default function PersonaSelect() {
       </header>
       <main className={styles.main}>
         <div className={styles.heroCard}>
-          <div className={styles.badge}>Profile Setup</div>
-          <h1 className={styles.heading}>Choose your professional identity.</h1>
-          <p className={styles.subheading}>Select the persona you'll be performing across all simulations.</p>
+          <div className={styles.badge}>Arc Setup</div>
+          <h1 className={styles.heading}>pick ur character. this is ur whole personality now.</h1>
+          <p className={styles.subheading}>choose the larp u'll be running across the whole app.</p>
         </div>
         <div className={styles.grid}>
           {personas.map(persona => (

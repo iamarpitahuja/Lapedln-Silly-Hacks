@@ -7,7 +7,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 24,
     role: 'Associate',
     company: 'Deloitte',
-    subtext: 'Genuinely trying to help, somehow still threatening',
+    subtext: 'Wants to help. Will accidentally humble-brag about his own journey.',
     avatar: '🧑‍💼',
     personalityTraits: ['earnest', 'mildly anxious', 'over-prepared', 'genuinely helpful'],
     personaAffinities: {
@@ -16,9 +16,9 @@ export const CHARACTERS: CharacterProfile[] = [
       finance_bro: { impressed: 5, suspicion: 0 },
     },
     catchphrases: [
-      "That's really interesting — how did you get into that?",
-      "I want to make sure I'm giving you actually useful advice here.",
-      "So what are you hoping to get out of this chat?",
+      "That's really interesting — my journey was kind of similar actually.",
+      "Happy to help — I basically cold emailed my way into Deloitte so I get it.",
+      "So what are you hoping to get out of this chat? Also can I grab your LinkedIn?",
     ],
   },
   {
@@ -27,7 +27,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 27,
     role: 'Head of Partnerships',
     company: 'Series B startup',
-    subtext: 'Networking as contact sport',
+    subtext: 'Has a follow-up template drafted before you finish your sentence',
     avatar: '👩‍💼',
     personalityTraits: ['efficient', 'strategic', 'politely transactional', 'time-conscious'],
     personaAffinities: {
@@ -37,9 +37,9 @@ export const CHARACTERS: CharacterProfile[] = [
       performative_uni: { impressed: -5, suspicion: 10 },
     },
     catchphrases: [
-      "So what's the actual ask here?",
-      "I have five minutes. What do you need?",
-      "Walk me through the value prop quickly.",
+      "Cool, cool — so what's the actual ask?",
+      "I have literally five minutes before my next call. What do you need?",
+      "Walk me through the value prop. Quickly.",
     ],
   },
   {
@@ -48,7 +48,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 38,
     role: 'Senior Director',
     company: 'Your new company',
-    subtext: 'Knows you don\'t know what you\'re doing',
+    subtext: 'Has seen twelve versions of you. Knows exactly which one you are.',
     avatar: '👨‍💼',
     personalityTraits: ['measured', 'quietly skeptical', 'experienced', 'patient up to a point'],
     personaAffinities: {
@@ -57,9 +57,9 @@ export const CHARACTERS: CharacterProfile[] = [
       startup_billionaire: { impressed: -10, suspicion: 20 },
     },
     catchphrases: [
-      "Why don't you walk me through how you'd approach this.",
-      "What does success look like to you in the first 90 days?",
-      "I like the enthusiasm. Now tell me something specific.",
+      "Walk me through exactly how you'd handle that. Specifically.",
+      "What does success look like to you in the first 90 days? And I mean measurable success.",
+      "I like the enthusiasm. Every new hire does. Tell me something specific.",
     ],
   },
   {
@@ -68,7 +68,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 45,
     role: 'VP of Talent',
     company: 'The company interviewing you',
-    subtext: 'Has a rubric. You are not scoring well on it.',
+    subtext: 'Has seen this exact performance before. Marked you down before you sat down.',
     avatar: '👩‍💼',
     personalityTraits: ['methodical', 'pattern-matching', 'professionally warm', 'unfoolable'],
     personaAffinities: {
@@ -77,9 +77,9 @@ export const CHARACTERS: CharacterProfile[] = [
       student_athlete: { impressed: 5, suspicion: -5 },
     },
     catchphrases: [
-      "Tell me about a time you navigated ambiguity.",
-      "What's a failure you've had and what did you learn?",
-      "Help me understand the gap here.",
+      "Tell me about a time you navigated ambiguity. And use the STAR method please.",
+      "What's a failure you've had and what did you learn from it?",
+      "Help me understand this gap in the timeline.",
     ],
   },
   {
@@ -88,7 +88,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 23,
     role: 'IB Analyst',
     company: 'Morgan Stanley (allegedly)',
-    subtext: 'Measures everything in basis points',
+    subtext: 'Slept 4 hours, crushed the gym at 5am, and is somehow the most annoying person at this bar',
     avatar: '🤵',
     personalityTraits: ['jargon-dense', 'competitive', 'sleep-deprived but thriving', 'hierarchy-aware'],
     personaAffinities: {
@@ -98,9 +98,9 @@ export const CHARACTERS: CharacterProfile[] = [
       homeless_cs: { impressed: -5, suspicion: 10 },
     },
     catchphrases: [
-      "What's your coverage universe?",
-      "We were modeling until 3am. It was actually kind of fun.",
-      "The IRR on this conversation is unclear.",
+      "What's your coverage universe? Wait — do you even have one?",
+      "We were modeling until 3am last night. Honestly kind of loved it.",
+      "The IRR on this conversation is not looking great ngl.",
     ],
   },
   {
@@ -109,7 +109,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 22,
     role: 'Philosophy / Critical Theory double major',
     company: 'University',
-    subtext: 'Will Derrida this conversation',
+    subtext: 'Will dismantle your entire worldview using a 1974 essay you haven\'t read',
     avatar: '🧑‍🎓',
     personalityTraits: ['theoretically rigorous', 'politely confrontational', 'citation-heavy', 'genuinely curious'],
     personaAffinities: {
@@ -130,7 +130,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 20,
     role: 'Dropout, building in public',
     company: 'Technically homeless',
-    subtext: 'Knows more than you. Has no shoes.',
+    subtext: 'Shipped more in a week than you have in your career. Uses a library bag as a laptop case.',
     avatar: '🧑‍💻',
     personalityTraits: ['bluntly precise', 'zero-pretense', 'systems thinker', 'unimpressed by credentials'],
     personaAffinities: {
@@ -140,9 +140,9 @@ export const CHARACTERS: CharacterProfile[] = [
       vc_intern: { impressed: -15, suspicion: 25 },
     },
     catchphrases: [
-      "What's the actual architecture?",
-      "That's a marketing answer. What does it do?",
-      "I give it six months before the incentive structure breaks.",
+      "What's the actual architecture? Not the pitch — the architecture.",
+      "That's a marketing answer. What does it literally do?",
+      "Give it six months before the incentive structure eats itself.",
     ],
   },
   {
@@ -151,7 +151,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 40,
     role: 'Principal',
     company: 'Family office',
-    subtext: 'Does not discuss money, only outcomes',
+    subtext: 'Wealth so old it\'s boring to him. Will ask about your outcomes, not your logo.',
     avatar: '🧔',
     personalityTraits: ['calm', 'outcome-oriented', 'discretely evaluating everything', 'genuinely unimpressed by names'],
     personaAffinities: {
@@ -161,9 +161,9 @@ export const CHARACTERS: CharacterProfile[] = [
       vc_intern: { impressed: -10, suspicion: 15 },
     },
     catchphrases: [
-      "What are you actually trying to accomplish?",
-      "Numbers are less interesting than the pattern behind them.",
-      "I've heard that framing before. Tell me something specific.",
+      "What are you actually trying to accomplish? Not the pitch version.",
+      "Numbers are less interesting to me than the pattern behind them.",
+      "I've heard that framing from about thirty different people. Tell me something specific.",
     ],
   },
   {
@@ -172,7 +172,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 26,
     role: 'Creative Director',
     company: 'Culture-adjacent agency',
-    subtext: 'References you won\'t know. Clocks it immediately.',
+    subtext: 'Drops a reference per sentence. Keeps a mental score of how many you miss.',
     avatar: '👩‍🎨',
     personalityTraits: ['effortlessly cool', 'culturally fluent', 'reference-dense', 'generous if you keep up'],
     personaAffinities: {
@@ -182,9 +182,9 @@ export const CHARACTERS: CharacterProfile[] = [
       finance_bro: { impressed: -10, suspicion: 15 },
     },
     catchphrases: [
-      "Did you catch that show at the Shed last month?",
-      "The aesthetic is very... 2019 Williamsburg, you know?",
-      "I don't really do LinkedIn, but here we are.",
+      "Did you catch that show at the Shed last month? The second one, not the opener.",
+      "The vibe is very 2019 Williamsburg. Which I mean as a neutral observation.",
+      "I literally don't have LinkedIn but here we are, at this thing.",
     ],
   },
   {
@@ -193,7 +193,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 34,
     role: 'General Partner',
     company: 'Threshold Ventures',
-    subtext: 'Has heard your pitch before',
+    subtext: 'Has a sixth sense for founders who googled "AI startup pitch" this morning',
     avatar: '🧑‍💼',
     personalityTraits: ['pattern-matching', 'efficiently skeptical', 'genuinely curious under the surface', 'time-scarce'],
     personaAffinities: {
@@ -204,9 +204,9 @@ export const CHARACTERS: CharacterProfile[] = [
       pm_newsletter: { impressed: -10, suspicion: 15 },
     },
     catchphrases: [
-      "What's the differentiated angle here?",
-      "I've seen fourteen decks this week that say the same thing.",
-      "Walk me through the unit economics.",
+      "What's the differentiated angle? Because I'm not hearing it yet.",
+      "I've seen fourteen decks this week with the same thesis.",
+      "Walk me through the unit economics. All of them.",
     ],
   },
   {
@@ -215,7 +215,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 22,
     role: 'Returning intern (3rd summer)',
     company: 'Prestige firm',
-    subtext: 'Territorial feelings about this breakroom',
+    subtext: 'Third summer. Already acts like he manages the managing directors.',
     avatar: '🧑',
     personalityTraits: ['subtly territorial', 'status-aware', 'casually gatekeeping', 'internally competitive'],
     personaAffinities: {
@@ -225,9 +225,9 @@ export const CHARACTERS: CharacterProfile[] = [
       liberal_arts: { impressed: -8, suspicion: 15 },
     },
     catchphrases: [
-      "Oh interesting, which office are you in?",
-      "Yeah this is my third summer. It's a different energy when you know the culture.",
-      "The coffee machine on the 14th floor is way better, just FYI.",
+      "Oh nice — which school are you coming from? Which office?",
+      "Third summer here. It's genuinely a different experience when you know how things actually work.",
+      "Tip: the coffee machine on the 14th floor is way better. You're welcome.",
     ],
   },
   {
@@ -236,7 +236,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 31,
     role: 'Founder & CEO',
     company: 'Pre-IPO startup',
-    subtext: 'Tolerates this dinner for the deal flow',
+    subtext: 'Attending this dinner as a tax write-off for her soul',
     avatar: '👩‍💼',
     personalityTraits: ['decisive', 'low-patience for performance', 'authentic detector', 'quietly powerful'],
     personaAffinities: {
@@ -246,9 +246,9 @@ export const CHARACTERS: CharacterProfile[] = [
       performative_uni: { impressed: -20, suspicion: 25 },
     },
     catchphrases: [
-      "What do you actually do?",
-      "I've heard the pitch. Tell me what's broken.",
-      "Skip the positioning. What's the real story?",
+      "What do you actually do though? Like day to day.",
+      "I've heard the pitch version. Tell me what's actually broken.",
+      "Skip the positioning. What's the real story here?",
     ],
   },
   {
@@ -257,7 +257,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 34,
     role: 'General Partner',
     company: 'Threshold Ventures',
-    subtext: 'Will ask about your CAC in 90 seconds',
+    subtext: 'Will ask about your CAC in 90 seconds. Then your LTV. Then your churn. Then your soul.',
     avatar: '🧑‍💼',
     personalityTraits: ['technically literate', 'deal-hungry but disciplined', 'CS background', 'time-scarce'],
     personaAffinities: {
@@ -268,9 +268,9 @@ export const CHARACTERS: CharacterProfile[] = [
       pm_newsletter: { impressed: -15, suspicion: 20 },
     },
     catchphrases: [
-      "What's your CAC look like?",
-      "I have a CS background — walk me through the technical moat.",
-      "Everyone says AI-native. What does that actually mean for your architecture?",
+      "What's your CAC look like right now? Blended?",
+      "I have a CS background — walk me through the actual technical moat.",
+      "Everyone says AI-native. What does that mean for your architecture specifically?",
     ],
   },
   {
@@ -279,7 +279,7 @@ export const CHARACTERS: CharacterProfile[] = [
     age: 36,
     role: 'Post-exit founder',
     company: '$1.4B outcome, now advising',
-    subtext: 'Curious. Not impressed. Yet.',
+    subtext: 'Exited at $1.4B. Still drives a 2019 Prius. Curious what you\'re actually about.',
     avatar: '👩‍💼',
     personalityTraits: ['genuinely curious', 'subtly testing everything', 'wealth-invisible', 'authenticity radar'],
     personaAffinities: {
@@ -290,9 +290,9 @@ export const CHARACTERS: CharacterProfile[] = [
       performative_uni: { impressed: -25, suspicion: 35 },
     },
     catchphrases: [
-      "What are you actually working on right now?",
-      "Interesting. What made you decide that?",
-      "Most people in your position would have taken the safe path. Why didn't you?",
+      "What are you actually working on right now? Not the elevator pitch — the real thing.",
+      "Okay interesting. What made you decide that over the obvious move?",
+      "Most people in your position would have just taken the safe path. Why didn't you?",
     ],
   },
 ]

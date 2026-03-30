@@ -146,14 +146,14 @@ export default function ProfileHero({ onNotice }) {
               <LarpRatingBadge rating={larpRating} size="small" />
             </div>
             <p className={styles.recruiterStat}>
-              {stats.recruiterViews} recruiters are monitoring your trajectory.
+              {stats.recruiterViews} recruiters are locked in on your trajectory.
             </p>
           </div>
         ) : (
           <div className={styles.editorWrapper}>
             <form className={styles.form} onSubmit={handleFormSubmit}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Real Name</label>
+                <label className={styles.formLabel}>Government Name</label>
                 <input
                   type="text"
                   className={styles.input}
@@ -161,11 +161,11 @@ export default function ProfileHero({ onNotice }) {
                   onChange={event =>
                     setFormValues(existing => ({ ...existing, name: event.target.value }))
                   }
-                  placeholder="Your name"
+                  placeholder="what ur mom calls u"
                 />
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Current Larp Job</label>
+                <label className={styles.formLabel}>Current Bag You're Faking</label>
                 <input
                   type="text"
                   className={styles.input}
@@ -175,7 +175,7 @@ export default function ProfileHero({ onNotice }) {
                 />
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Profile Image</label>
+                <label className={styles.formLabel}>Profile Pic (make it bussin)</label>
                 <div className={styles.inputWithAction}>
                   <input
                     type="text"
@@ -199,7 +199,7 @@ export default function ProfileHero({ onNotice }) {
                 </div>
               </div>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Banner Image</label>
+                <label className={styles.formLabel}>Banner (set the vibe)</label>
                 <div className={styles.inputWithAction}>
                   <input
                     type="text"

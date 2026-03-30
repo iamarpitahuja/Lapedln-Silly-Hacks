@@ -10,10 +10,10 @@ import { easeOutQuint } from '../../lib/motion'
 import UserCard from './UserCard/UserCard'
 import styles from './Network.module.css'
 
-const TABS = ['Suggestions', 'Pending', 'My Connections']
+const TABS = ['Who to Add', 'Waiting', 'My Guys']
 
 export default function Network() {
-  const [activeTab, setActiveTab] = useState('Suggestions')
+  const [activeTab, setActiveTab] = useState('Who to Add')
   const [suggestions, setSuggestions] = useState([])
   const [pending, setPending] = useState([])
   const [outgoing, setOutgoing] = useState([])
@@ -38,7 +38,7 @@ export default function Network() {
           .then(o => setOutgoing(o.outgoing ?? []))
           .catch(() => {})
       } catch {
-        setError('Failed to load network data. Is the backend running?')
+        setError('backend is cooked rn. try again in a sec.')
       } finally {
         setLoading(false)
       }
@@ -49,7 +49,7 @@ export default function Network() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <h1 className={styles.heading}>My Network</h1>
+        <h1 className={styles.heading}>My Circle</h1>
 
         <div className={styles.tabs}>
           {TABS.map(tab => (
@@ -59,14 +59,14 @@ export default function Network() {
               onClick={() => setActiveTab(tab)}
             >
               {tab}
-              {tab === 'Pending' && pending.length > 0 && (
+              {tab === 'Waiting' && pending.length > 0 && (
                 <span className={styles.badge}>{pending.length}</span>
               )}
             </button>
           ))}
         </div>
 
-        {loading && <p className={styles.state}>Loading your network…</p>}
+        {loading && <p className={styles.state}>loading ur circle…</p>}
         {error && <p className={styles.stateError}>{error}</p>}
 
         {!loading && !error && (
@@ -78,7 +78,7 @@ export default function Network() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18, ease: easeOutQuint }}
             >
-              {activeTab === 'Suggestions' && (
+              {activeTab === 'Who to Add' && (
                 <Motion.div
                   className={styles.grid}
                   initial="hidden"
@@ -86,7 +86,7 @@ export default function Network() {
                   variants={{ show: { transition: { staggerChildren: 0.05 } } }}
                 >
                   {suggestions.length === 0 && outgoing.length === 0 ? (
-                    <p className={styles.empty}>No suggestions right now. You know everyone!</p>
+                    <p className={styles.empty}>you know everyone. kinda unhinged tbh.</p>
                   ) : (
                     <>
                       {outgoing.map(conn => (
@@ -108,10 +108,10 @@ export default function Network() {
                 </Motion.div>
               )}
 
-              {activeTab === 'Pending' && (
+              {activeTab === 'Waiting' && (
                 <div>
                   {pending.length === 0 ? (
-                    <p className={styles.empty}>No pending requests.</p>
+                    <p className={styles.empty}>inbox empty. nobody's sliding yet.</p>
                   ) : (
                     <Motion.div
                       className={styles.grid}
@@ -133,7 +133,7 @@ export default function Network() {
                 </div>
               )}
 
-              {activeTab === 'My Connections' && (
+              {activeTab === 'My Guys' && (
                 <Motion.div
                   className={styles.grid}
                   initial="hidden"
@@ -141,7 +141,7 @@ export default function Network() {
                   variants={{ show: { transition: { staggerChildren: 0.05 } } }}
                 >
                   {connections.length === 0 ? (
-                    <p className={styles.empty}>No connections yet. Start connecting!</p>
+                    <p className={styles.empty}>no connections. touch grass and meet someone irl first maybe.</p>
                   ) : (
                     connections.map(conn => (
                       <Motion.div key={conn.id} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>

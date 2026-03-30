@@ -52,7 +52,7 @@ export default function LarpStatus({ onNotice }) {
         <div className={styles.bannerHeader}>
           <div className={styles.headerInfo}>
             <span className={styles.dot} />
-            <h2 className={styles.title}>Open to Larping</h2>
+            <h2 className={styles.title}>Actively Larping</h2>
           </div>
           {!isEditing && (
             <button className={styles.editBtn} aria-label="Edit status" onClick={handleOpenEditor}>
@@ -65,26 +65,26 @@ export default function LarpStatus({ onNotice }) {
           <div className={styles.displayArea}>
             {job
               ? <p className={styles.persona}>{job}</p>
-              : <p className={styles.emptyState}>No active persona set. Define the role you are currently performing.</p>
+              : <p className={styles.emptyState}>no active larp set. define ur current character bestie.</p>
             }
             <div className={styles.pills}>
               {opportunities.length > 0
                 ? opportunities.map(type => (
                     <span key={type} className={styles.pill}>{type}</span>
                   ))
-                : <p className={styles.emptyState}>No opportunity types listed. Add what roles you are open to.</p>
+                : <p className={styles.emptyState}>no target arcs listed. what bag u tryna fake?</p>
               }
             </div>
             <div className={styles.actions}>
               <span className={styles.btnOutlined}>Current larp is managed from J*bs</span>
               <button className={styles.btnFilled} onClick={handleOpenEditor}>
-                Edit Target Larps
+                Edit Target Bags
               </button>
               <button
                 className={styles.trainingBtn}
                 onClick={() => window.location.assign('/persona-select')}
               >
-                Start Training
+                Enter the Dojo
               </button>
             </div>
           </div>

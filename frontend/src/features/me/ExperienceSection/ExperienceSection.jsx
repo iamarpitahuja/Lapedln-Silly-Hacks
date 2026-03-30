@@ -110,7 +110,7 @@ export default function ExperienceSection({ onNotice }) {
                 onChange={event => setNewDraft(existing => ({ ...existing, dates: event.target.value }))}
               />
               <textarea
-                placeholder="Describe your deeds and achievements..."
+                placeholder="what did you even do there..."
                 value={newDraft.description}
                 onChange={event =>
                   setNewDraft(existing => ({ ...existing, description: event.target.value }))
@@ -118,7 +118,7 @@ export default function ExperienceSection({ onNotice }) {
               />
               <div className={styles.editorActions}>
                 <button type="submit" className={styles.primaryBtn}>
-                  Save Experience
+                  Save the W
                 </button>
                 <button
                   type="button"
@@ -137,7 +137,7 @@ export default function ExperienceSection({ onNotice }) {
       </AnimatePresence>
       <div className={styles.roles}>
         {currentUser.experience.length === 0 && (
-          <p className={styles.emptyState}>No career milestones yet. Add your first synergy-driven role.</p>
+          <p className={styles.emptyState}>no W's logged yet. add ur first fake role.</p>
         )}
         {currentUser.experience.map(role => (
           <article key={role.id} className={styles.role}>

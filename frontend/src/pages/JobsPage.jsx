@@ -48,7 +48,7 @@ export default function JobsPage() {
           <input
             type="text"
             className={styles.input}
-            placeholder="Enter your new fake profession..."
+            placeholder="type ur fake bag here…"
             value={job}
             onChange={e => setJob(e.target.value)}
           />
@@ -73,7 +73,7 @@ export default function JobsPage() {
               exit={{ opacity: 0, scale: 0.9 }}
               transition={springBouncy}
             >
-              Job updated. You are now larping as &ldquo;{lastJob}&rdquo;.
+              arc updated. u are now larping as &ldquo;{lastJob}&rdquo;.
             </Motion.p>
           )}
           {status === 'error' && (
@@ -85,13 +85,13 @@ export default function JobsPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
-              Job update failed. Your delusion did not persist.
+              update flopped. ur delusion did not persist fr.
             </Motion.p>
           )}
         </AnimatePresence>
 
         <div className={styles.suggestions}>
-          <p className={styles.suggestionsLabel}>Need inspiration? Pick a prebuilt larp:</p>
+          <p className={styles.suggestionsLabel}>need inspo? steal one of these arcs:</p>
           <div className={styles.pills}>
             {jobOptions.map(t => (
               <button key={t} className={styles.pill} onClick={() => handleSuggestion(t)}>

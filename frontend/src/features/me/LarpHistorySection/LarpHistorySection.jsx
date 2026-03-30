@@ -15,7 +15,7 @@ export default function LarpHistorySection() {
       </div>
       <div className={styles.timeline}>
         {larpHistory.length === 0 && (
-          <p className={styles.emptyState}>No persona transitions recorded yet.</p>
+          <p className={styles.emptyState}>no arc transitions yet. still in the origin arc. respect.</p>
         )}
         {larpHistory.map((entry, index) => (
           <article key={entry.id ?? `${entry.date}-${index}`} className={styles.entry}>

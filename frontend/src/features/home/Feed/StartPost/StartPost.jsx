@@ -7,16 +7,16 @@ import { springBouncy, easeOutQuint } from '../../../../lib/motion'
 import styles from './StartPost.module.css'
 
 const PLACEHOLDERS = [
-  'What impossible milestone are you reflecting on today?',
-  'Share a lesson from your made-up founder arc.',
-  'Announce a role you technically never interviewed for.',
-  'What thought leadership can you offer the ecosystem today?',
+  'what unhinged W are you cooking up rn?',
+  'drop the lore from ur fake founder arc bestie.',
+  'announce the bag you technically never got offered.',
+  'what galaxy-brained take can u offer the timeline today?',
 ]
 
 const ACTIONS = [
   {
     icon: 'party',
-    label: 'Celebrate fake promotion',
+    label: 'announce the fake glow-up',
     postType: 'Career Lore',
     suggestions: [
       'Thrilled to share that I have accepted a role as Chief Vibe Strategist at Nimbus Dynamics. Grateful for everyone who believed in my journey. The ecosystem is ready for what comes next.',
@@ -26,7 +26,7 @@ const ACTIONS = [
   },
   {
     icon: 'rocket',
-    label: 'Announce stealth startup',
+    label: 'drop the stealth era reveal',
     postType: 'Stealth Build Update',
     suggestions: [
       'After months in stealth, we are launching Project Moonshot for founders. Our first mission: replace meetings with autonomous execution. The future ships today.',
@@ -36,7 +36,7 @@ const ACTIONS = [
   },
   {
     icon: 'lightbulb',
-    label: 'Share leadership insight',
+    label: 'cook a galaxy-brained take',
     postType: 'Thought Leadership Incident',
     suggestions: [
       'Leadership insight: when uncertainty is high, optimize for clarity. This week we practiced it by documenting decisions in public, and it unlocked faster alignment across every team.',
@@ -46,7 +46,7 @@ const ACTIONS = [
   },
   {
     icon: 'mirror',
-    label: 'Reflect on your journey',
+    label: 'farm the aura publicly',
     postType: 'Aura Farming',
     suggestions: [
       'Looking back, my biggest shift was moving from waiting for permission to shipping before certainty. That mindset produced my most meaningful quarter yet.',
@@ -189,7 +189,7 @@ export default function StartPost() {
           maxLength={MAX_POST_LENGTH}
           placeholder={
             showFooter
-              ? 'Write your most career-defining paragraph...'
+              ? 'cook ur most unhinged career post yet...'
               : PLACEHOLDERS[placeholderIndex]
           }
           style={{ '--placeholder-key': placeholderIndex }}
@@ -270,7 +270,7 @@ export default function StartPost() {
               >
                 {charactersRemaining}
               </span>
-              <p className={styles.metaHint}>Press Ctrl/Cmd + Enter to publish</p>
+              <p className={styles.metaHint}>Ctrl/Cmd + Enter to send it fr</p>
             </div>
             {error ? <p className={styles.error}>{error}</p> : null}
             <div className={styles.composerActions}>
@@ -293,7 +293,7 @@ export default function StartPost() {
                   disabled={isPostDisabled}
                   onClick={handleSubmit}
                 >
-                  {isSubmitting ? 'Posting…' : 'Post'}
+                  {isSubmitting ? 'sending it…' : 'Slay'}
                 </button>
               </div>
             </div>

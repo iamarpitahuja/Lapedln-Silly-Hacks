@@ -46,14 +46,14 @@ export default function NotificationsPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h2 className={styles.heading}>Notifications</h2>
-        <p className={styles.subheading}>Connection requests, unread messages, and comments on your posts.</p>
+        <h2 className={styles.heading}>Pings</h2>
+        <p className={styles.subheading}>ur pings, slide requests, and yaps. all the tea.</p>
 
-        {loading ? <p className={styles.state}>Loading notifications…</p> : null}
+        {loading ? <p className={styles.state}>loading ur pings…</p> : null}
         {!loading && error ? <p className={styles.stateError}>{error}</p> : null}
 
         {!loading && !error && notifications.length === 0 ? (
-          <p className={styles.empty}>No notifications right now.</p>
+          <p className={styles.empty}>no pings rn. ur either cooked or thriving.</p>
         ) : null}
 
         {!loading && !error && notifications.length > 0 ? (
@@ -65,7 +65,7 @@ export default function NotificationsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.22, ease: easeOutQuint }}
               >
-                <h3 className={styles.sectionTitle}>Today</h3>
+                <h3 className={styles.sectionTitle}>Just dropped</h3>
                 <ul className={styles.list}>
                   <AnimatePresence initial={false}>
                     {today.map((notification, index) => (
@@ -82,7 +82,7 @@ export default function NotificationsPage() {
                         <div className={styles.itemMeta}>
                           <span>{timeAgo(notification.created_at)}</span>
                           <Link className={styles.openLink} to={destinationForNotification(notification)}>
-                            Open
+                            Check it
                           </Link>
                         </div>
                       </Motion.li>
@@ -99,7 +99,7 @@ export default function NotificationsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.22, ease: easeOutQuint }}
               >
-                <h3 className={styles.sectionTitle}>Older</h3>
+                <h3 className={styles.sectionTitle}>Ancient history</h3>
                 <ul className={styles.list}>
                   <AnimatePresence initial={false}>
                     {older.map((notification, index) => (
@@ -116,7 +116,7 @@ export default function NotificationsPage() {
                         <div className={styles.itemMeta}>
                           <span>{timeAgo(notification.created_at)}</span>
                           <Link className={styles.openLink} to={destinationForNotification(notification)}>
-                            Open
+                            Check it
                           </Link>
                         </div>
                       </Motion.li>

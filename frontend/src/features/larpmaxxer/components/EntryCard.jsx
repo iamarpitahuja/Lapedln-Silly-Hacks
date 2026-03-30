@@ -11,9 +11,9 @@ export function EntryCard({
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
-        <p className={styles.eyebrow}>Training Suite</p>
+        <p className={styles.eyebrow}>Larp Dojo</p>
         <h1 className={styles.title}>LarpMaxxing</h1>
-        <p className={styles.subtitle}>Train for the conversations your future self deserves.</p>
+        <p className={styles.subtitle}>train for the convos ur delusional future self needs.</p>
 
         <div className={styles.statsRow}>
           <div className={styles.personaInfo}>
@@ -24,7 +24,7 @@ export function EntryCard({
 
         <div className={styles.actions}>
           <button className={styles.btnPrimary} onClick={onEnter}>
-            Begin Training
+            Enter the Dojo
           </button>
           {onEnterSimulation && (
             <button className={styles.btnSecondary} onClick={onEnterSimulation}>
@@ -32,7 +32,7 @@ export function EntryCard({
             </button>
           )}
           <button className={styles.btnGhost} onClick={onWarmUp}>
-            Quick Warm-up
+            Quick Cook
           </button>
         </div>
       </div>

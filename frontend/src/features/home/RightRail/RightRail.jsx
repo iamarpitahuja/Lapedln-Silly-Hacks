@@ -6,9 +6,9 @@ export default function RightRail() {
 
   return (
     <div className={styles.rail}>
-      {/* Trending Delusions */}
+      {/* Trending Delulu */}
       <div className={styles.card}>
-        <h3 className={styles.title}>Trending Delusions</h3>
+        <h3 className={styles.title}>Trending Delulu</h3>
         <ol className={styles.list}>
           {trendingDelusions.map((item, i) => (
             <li key={i} className={styles.listItem}>
@@ -20,7 +20,7 @@ export default function RightRail() {
         <button className={styles.seeMore}>see more</button>
       </div>
 
-      {/* Today's Buzzwords */}
+      {/* Today's Sigma Vocab */}
       <div className={styles.card}>
         <h3 className={styles.title}>Today&apos;s Buzzwords</h3>
         <ul className={styles.buzzList}>

@@ -37,8 +37,8 @@ export default function LockedPostCard({ post }) {
       </div>
       <div className={styles.overlay}>
         <span className={styles.lockIcon}><Icon name="lock" size={32} /></span>
-        <p className={styles.lockMessage}>This content is above your professional aura.</p>
-        <p className={styles.lockSub}>Increase your LarpRating to unlock.</p>
+        <p className={styles.lockMessage}>this post is built different. ur aura ain't there yet.</p>
+        <p className={styles.lockSub}>grind ur LarpRating and maybe u'll see it fr.</p>
       </div>
     </div>
   )

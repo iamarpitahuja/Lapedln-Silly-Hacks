@@ -462,7 +462,7 @@ export default function PostCard({ post, isOwnPost = false }) {
           aria-label="View thread"
         >
           <Icon name="message" size={12} className={styles.commentIcon} />
-          <span className={styles.commentCount} aria-hidden="true">{totalCommentCount} comment{totalCommentCount === 1 ? '' : 's'}</span>
+          <span className={styles.commentCount} aria-hidden="true">{totalCommentCount} yap{totalCommentCount === 1 ? '' : 's'}</span>
         </button>
       </div>
 
@@ -477,7 +477,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             whileHover={{ y: -1 }}
           >
             <Icon name="thumbsUp" size={18} />
-            <span>{isLarped ? 'Liked' : 'Like'}</span>
+            <span>{isLarped ? 'W posted' : 'W'}</span>
           </Motion.button>
         ) : null}
         {!blockReactions ? (
@@ -490,7 +490,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             whileHover={{ y: -1 }}
           >
             <Icon name="heart" size={18} />
-            <span>{isLoved ? 'Loved' : 'Love'}</span>
+            <span>{isLoved ? 'Obsessed' : 'Slay'}</span>
           </Motion.button>
         ) : null}
         {!blockReactions ? (
@@ -511,7 +511,7 @@ export default function PostCard({ post, isOwnPost = false }) {
           whileTap={{ scale: 0.92 }}
           whileHover={{ y: -1 }}
         >
-          <Icon name="message" size={18} /> <span>Comment</span>
+          <Icon name="message" size={18} /> <span>Yap</span>
         </Motion.button>
         <Motion.button
           className={`${styles.action} ${styles.actionRelarp} ${
@@ -526,9 +526,9 @@ export default function PostCard({ post, isOwnPost = false }) {
           <Icon name="repeat" size={18} />
           <span>
             {isUndoingRelarp
-              ? 'Undoing...'
+              ? 'uncooked...'
               : userAlreadyRelarped
-                ? 'Undo Re-Larp'
+                ? 'un-larp this'
                 : 'Re-Larp'}
           </span>
         </Motion.button>
@@ -560,7 +560,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                 transition={{ duration: 0.2, delay: 0.1 }}
               >
                 <form className={styles.relarpComposer} onSubmit={handleRelarpSubmit}>
-                  <p className={styles.relarpTitle}>Re-Larp this post</p>
+                  <p className={styles.relarpTitle}>cook ur Re-Larp</p>
                   <textarea
                     className={styles.relarpInput}
                     value={relarpDraft}
@@ -568,10 +568,10 @@ export default function PostCard({ post, isOwnPost = false }) {
                     onKeyDown={handleRelarpKeyDown}
                     maxLength={MAX_RELARP_LENGTH}
                     rows={3}
-                    placeholder="Add optional context before you Re-Larp..."
+                    placeholder="add ur hot take before u Re-Larp (optional ngl)..."
                   />
                   <div className={styles.relarpMeta}>
-                    <p className={styles.relarpHint}>Ctrl/Cmd + Enter to publish</p>
+                    <p className={styles.relarpHint}>Ctrl/Cmd + Enter to send it</p>
                     <span
                       className={`${styles.charCount} ${remainingRelarpCharacters < 30 ? styles.charCountWarn : ''}`}
                     >
@@ -597,10 +597,10 @@ export default function PostCard({ post, isOwnPost = false }) {
                       disabled={isSubmittingRelarp || isUndoingRelarp}
                     >
                       {isSubmittingRelarp
-                        ? 'Re-Larping...'
+                        ? 'cooking...'
                         : relarpDraft.trim()
-                          ? 'Publish Re-Larp'
-                          : 'Quick Re-Larp'}
+                          ? 'Drop the Re-Larp'
+                          : 'Speedrun Re-Larp'}
                     </button>
                   </div>
                 </form>
@@ -622,7 +622,7 @@ export default function PostCard({ post, isOwnPost = false }) {
               >
                 <div className={styles.commentsSection}>
                   <div className={styles.commentsHeader}>
-                    <h4 className={styles.commentsTitle}>Comments</h4>
+                    <h4 className={styles.commentsTitle}>the yap sesh</h4>
                     <span className={styles.commentsMeta}>
                       {comments.length} shown
                       {hasUnloadedComments ? ` • ${totalCommentCount} total` : ''}
@@ -726,7 +726,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                       </AnimatePresence>
                     </ul>
                   ) : (
-                    <p className={styles.emptyComments}>No comments yet. Be the first to glaze this post.</p>
+                    <p className={styles.emptyComments}>no yaps yet. be the first to glaze bestie.</p>
                   )}
 
                   <form className={styles.commentComposer} onSubmit={handleCommentSubmit}>
@@ -748,10 +748,10 @@ export default function PostCard({ post, isOwnPost = false }) {
                         onKeyDown={handleCommentKeyDown}
                         maxLength={MAX_COMMENT_LENGTH}
                         rows={2}
-                        placeholder="Add your high-conviction comment..."
+                        placeholder="drop ur most unhinged take..."
                       />
                       <div className={styles.commentComposerMeta}>
-                        <p className={styles.commentHint}>Ctrl/Cmd + Enter to post</p>
+                        <p className={styles.commentHint}>Ctrl/Cmd + Enter to yap</p>
                         <span
                           className={`${styles.charCount} ${remainingCharacters < 40 ? styles.charCountWarn : ''}`}
                         >
@@ -775,7 +775,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                           className={styles.commentSubmit}
                           disabled={!commentDraft.trim() || isSubmittingComment}
                         >
-                          {isSubmittingComment ? 'Posting...' : 'Post comment'}
+                          {isSubmittingComment ? 'yappin…' : 'Send the yap'}
                         </button>
                       </div>
                     </div>

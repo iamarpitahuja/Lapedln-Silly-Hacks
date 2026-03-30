@@ -2,7 +2,7 @@ import type { ScenarioContent } from '../../features/larpmaxxer/types'
 
 export const scenarioContent: ScenarioContent = {
   scenarioId: 'startup-pitch',
-  briefDescription: "Marcus has a CS background, $400M under management, and 8 minutes before his next meeting. He's heard every AI pitch this week. You need genuine interest, not polite tolerance.",
+  briefDescription: "Marcus has a CS background, $400M under management, and 8 minutes before his next meeting. He has literally heard fourteen AI infrastructure pitches today. He is not going to be polite about it. You need to create actual interest — not just survive the clock.",
   openingLine: "You've got me for eight minutes. What are you building?",
   dialogueNodes: [
     {
