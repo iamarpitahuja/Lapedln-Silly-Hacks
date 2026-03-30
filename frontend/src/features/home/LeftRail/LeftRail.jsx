@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useMockData } from '../../../context/MockDataContext'
 import LarpRatingBadge from '../../../components/LarpRatingBadge/LarpRatingBadge'
 import Icon from '../../../components/Icon/Icon'
@@ -111,6 +112,22 @@ export default function LeftRail() {
         <button className={styles.seeMore}>
           See more <Icon name="arrowRight" size={14} />
         </button>
+      </div>
+
+      {/* LarpMaxxer quick access */}
+      <div className={styles.card}>
+        <div className={styles.larpmaxxerCard}>
+          <div className={styles.larpmaxxerHeader}>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16" className={styles.larpmaxxerIcon}>
+              <path d="M10 2l2.5 5.5L18 8.5l-4 4 1 5.5L10 15.5 4.5 18l1-5.5-4-4 5.5-1z" />
+            </svg>
+            <span className={styles.larpmaxxerTitle}>LarpMaxxer</span>
+          </div>
+          <p className={styles.larpmaxxerSub}>Train your corporate persona</p>
+          <Link to="/larpmaxxer" className={styles.larpmaxxerBtn}>
+            Enter Training
+          </Link>
+        </div>
       </div>
     </div>
   )

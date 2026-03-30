@@ -308,3 +308,55 @@
 .glazerRow:hover {
   transform: translateX(3px);
 }
+
+.larpmaxxerCard {
+  padding: 14px 16px;
+}
+
+.larpmaxxerHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.larpmaxxerIcon {
+  color: var(--neon);
+  flex-shrink: 0;
+}
+
+.larpmaxxerTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.larpmaxxerSub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.larpmaxxerBtn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 7px 0;
+  border-radius: 16px;
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.larpmaxxerBtn:hover {
+  background: rgba(167, 139, 250, 0.08);
+  box-shadow: var(--glow-sm);
+}

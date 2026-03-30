@@ -198,6 +198,25 @@
   border: 1px solid var(--border-md);
 }
 
+.btnTrain {
+  background: var(--neon-faint);
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  padding: 6px 16px;
+  border-radius: 18px;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.btnTrain:hover {
+  background: rgba(167, 139, 250, 0.12);
+  box-shadow: var(--glow-sm);
+}
+
 .emptyState {
   font-size: 14px;
   color: var(--text-muted);

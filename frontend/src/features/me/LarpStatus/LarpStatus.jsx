@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useMockData } from '../../../context/MockDataContext'
 import Icon from '../../../components/Icon/Icon'
 import styles from './LarpStatus.module.css'
@@ -80,6 +81,9 @@ export default function LarpStatus({ onNotice }) {
               <button className={styles.btnFilled} onClick={handleOpenEditor}>
                 Edit Target Larps
               </button>
+              <Link to="/larpmaxxer" className={styles.btnTrain}>
+                Train Your Larp
+              </Link>
             </div>
           </div>
         ) : (
