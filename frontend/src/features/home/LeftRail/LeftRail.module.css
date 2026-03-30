@@ -18,8 +18,7 @@
 
 .coverPhoto {
   height: 64px;
-  background:
-    linear-gradient(135deg, var(--neon-dark) 0%, var(--neon) 100%);
+  background: linear-gradient(135deg, #0d0a1a 0%, #150e28 50%, #1e1040 100%);
   background-size: cover;
   background-position: center;
   position: relative;
