@@ -16,6 +16,11 @@ function getTierColor(rating) {
   return '#f289a8'
 }
 
+function formatRating(rating) {
+  const n = Number(rating) || 0
+  return Number.isInteger(n) ? n : n.toFixed(1)
+}
+
 export default function LarpRatingBadge({ rating, size = 'large' }) {
   const tier = getTier(rating)
   const color = getTierColor(rating)
@@ -24,50 +29,34 @@ export default function LarpRatingBadge({ rating, size = 'large' }) {
     return (
       <span
         className={styles.small}
-        style={{
-          color,
-          borderColor: color,
-          background: `${color}22`,
-          '--tier-color': color,
-        }}
+        style={{ color }}
         title={`LarpRating: ${rating} — ${tier}`}
       >
-        <span className={styles.smallValue}>{rating}</span>
+        <span className={styles.smallValue}>{formatRating(rating)}</span>
+        <span className={styles.smallDivider}>·</span>
         <span className={styles.smallTier}>{tier}</span>
       </span>
     )
   }
 
-  // Large circular gauge
-  const radius = 40
-  const circumference = 2 * Math.PI * radius
-  const progress = (rating / 100) * circumference
-
+  // Large display — unbounded number, no fake progress ring
   return (
     <div className={styles.gauge}>
-      <svg width="100" height="100" viewBox="0 0 100 100">
-        <circle
-          cx="50" cy="50" r={radius}
-          fill="none"
-          stroke="rgba(167, 139, 250, 0.18)"
-          strokeWidth="10"
-        />
-        <circle
-          className={styles.gaugeCircle}
-          cx="50" cy="50" r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="10"
-          strokeDasharray={`${progress} ${circumference}`}
-          strokeLinecap="round"
-          transform="rotate(-90 50 50)"
-          style={{ filter: `drop-shadow(0 0 5px ${color}66)` }}
-        />
-      </svg>
-      <div className={styles.gaugeInner}>
-        <span className={styles.gaugeValue} style={{ textShadow: `0 1px 4px ${color}55` }}>{rating}</span>
-        <span className={styles.gaugeTier} style={{ color }}>({tier})</span>
+      <div
+        className={styles.gaugeBadge}
+        style={{
+          borderColor: `${color}55`,
+          boxShadow: `0 0 24px ${color}33, inset 0 0 32px ${color}0d`,
+        }}
+      >
+        <span
+          className={styles.gaugeValue}
+          style={{ color, textShadow: `0 0 14px ${color}88` }}
+        >
+          {formatRating(rating)}
+        </span>
       </div>
+      <span className={styles.gaugeTier} style={{ color }}>{tier}</span>
     </div>
   )
 }

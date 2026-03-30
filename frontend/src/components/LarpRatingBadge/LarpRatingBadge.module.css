@@ -1,77 +1,72 @@
+/* ── Large badge ──────────────────────────────────── */
 .gauge {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gaugeCircle {
-  transition: stroke-dasharray 1.2s var(--ease-out-quint);
-  animation: gaugeFill 1.5s var(--ease-out-quint) forwards;
-}
-
-@keyframes gaugeFill {
-  from { stroke-dasharray: 0 251.32; }
-}
-
-.gaugeInner {
-  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0;
+  gap: 8px;
   animation: fadeIn var(--transition-slow) forwards;
 }
 
+.gaugeBadge {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  transition: box-shadow 0.4s ease;
+}
+
 .gaugeValue {
-  font-size: 18px;
+  font-size: 26px;
   font-weight: 800;
-  color: var(--text-primary);
   line-height: 1;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .gaugeTier {
-  font-size: 9px;
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
   text-align: center;
+  opacity: 0.9;
 }
 
+/* ── Small inline badge ───────────────────────────── */
 .small {
   display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid;
-  border-radius: 4px;
-  padding: 3px 10px;
-  vertical-align: middle;
+  align-items: baseline;
+  gap: 4px;
   line-height: 1;
-  transition: all var(--transition-fast);
   cursor: help;
-}
-
-.small:hover {
-  box-shadow: 0 2px 8px var(--tier-color, #5b7348);
-  transform: translateY(-1px);
-}
-
-.small:active {
-  transform: scale(var(--active-scale));
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
 }
 
 .smallValue {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.smallDivider {
   font-size: 11px;
-  font-weight: 700;
-  line-height: 1.2;
+  opacity: 0.4;
+  line-height: 1;
 }
 
 .smallTier {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1;
   opacity: 0.85;
   white-space: nowrap;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
 }
