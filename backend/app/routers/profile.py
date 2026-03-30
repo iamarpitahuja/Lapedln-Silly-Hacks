@@ -98,6 +98,11 @@ async def update_me(
     if not updates:
         return _ensure_profile_for_user(supabase, user_id)
 
+    # Convert datetime objects to ISO strings for JSON serialization
+    for key, val in updates.items():
+        if isinstance(val, datetime):
+            updates[key] = val.isoformat()
+
     result = (
         supabase.table("profiles")
         .update(updates)

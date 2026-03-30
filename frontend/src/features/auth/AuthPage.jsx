@@ -15,6 +15,7 @@ export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [displayName, setDisplayName] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [confirmSent, setConfirmSent] = useState(false)
@@ -31,7 +32,7 @@ export default function AuthPage() {
 
     try {
       if (isSignUp) {
-        await signUp(email, password)
+        await signUp(email, password, displayName.trim() || undefined)
         setConfirmSent(true)
       } else {
         await signIn(email, password)
@@ -99,6 +100,21 @@ export default function AuthPage() {
         {error && <div className={styles.error}>{error}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form}>
+          {isSignUp && (
+            <label className={styles.label}>
+              <span>Full Name</span>
+              <input
+                type="text"
+                className={styles.input}
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="Your thought leadership identity"
+                required
+                autoComplete="name"
+              />
+            </label>
+          )}
+
           <label className={styles.label}>
             <span>Email</span>
             <input
