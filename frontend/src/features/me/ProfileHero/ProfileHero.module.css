@@ -129,6 +129,26 @@
   box-shadow: var(--glow-sm);
 }
 
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  background: rgba(242, 137, 168, 0.08);
+  color: var(--accent-rose);
+  border: 1px solid rgba(242, 137, 168, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.removeBtn:hover {
+  background: rgba(242, 137, 168, 0.18);
+  transform: translateY(-1px);
+}
+
 .hiddenInput {
   display: none;
 }

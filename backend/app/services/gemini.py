@@ -130,28 +130,45 @@ async def evaluate_prestige(content: str) -> dict:
     return json.loads(response.text)
 
 
+# In-memory glaze cache: post_id -> [glaze1, glaze2, glaze3]
+_glaze_cache: dict[str, list[str]] = {}
+
+
 async def generate_glazes(posts: list[dict]) -> dict[str, list[str]]:
-    """Generate 3 satirical compliments per post. Returns {post_id: [glazes]}."""
+    """Generate 3 satirical compliments per post. Returns {post_id: [glazes]}.
+    Results are cached in memory so Gemini is only called once per post.
+    """
     client = _get_client()
     if not client:
         result = {}
         for p in posts:
-            result[p["id"]] = random.sample(MOCK_GLAZES, 3)
+            result[p["id"]] = _glaze_cache.get(p["id"]) or random.sample(MOCK_GLAZES, 3)
         return result
 
-    from google.genai import types
-    posts_json = json.dumps(
-        [{"id": p["id"], "content": p["content"], "post_type": p.get("post_type", "")} for p in posts]
-    )
-    response = await client.aio.models.generate_content(
-        model=settings.gemini_model,
-        contents=f"Posts to glaze:\n{posts_json}",
-        config=types.GenerateContentConfig(
-            system_instruction=GLAZE_SYSTEM_PROMPT,
-            response_mime_type="application/json",
-        ),
-    )
-    return json.loads(response.text)
+    # Only call Gemini for posts not already cached
+    uncached = [p for p in posts if p["id"] not in _glaze_cache]
+
+    if uncached:
+        try:
+            from google.genai import types
+            posts_json = json.dumps(
+                [{"id": p["id"], "content": p["content"], "post_type": p.get("post_type", "")} for p in uncached]
+            )
+            response = await client.aio.models.generate_content(
+                model=settings.gemini_model,
+                contents=f"Posts to glaze:\n{posts_json}",
+                config=types.GenerateContentConfig(
+                    system_instruction=GLAZE_SYSTEM_PROMPT,
+                    response_mime_type="application/json",
+                ),
+            )
+            _glaze_cache.update(json.loads(response.text))
+        except Exception:
+            # Quota exhausted or API error — fall back to mock glazes for uncached posts
+            for p in uncached:
+                _glaze_cache[p["id"]] = random.sample(MOCK_GLAZES, 3)
+
+    return {p["id"]: _glaze_cache.get(p["id"], []) for p in posts}
 
 
 async def roleplay_chat(character_prompt: str, conversation_history: list[dict]) -> dict:

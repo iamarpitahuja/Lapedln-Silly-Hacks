@@ -1,0 +1,175 @@
+/* ── Start screen ── */
+.startScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.rules {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 360px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.startBtn {
+  padding: 12px 32px;
+  background: var(--neon);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+}
+
+/* ── Timer ── */
+.timerWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.timerBar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-subtle);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.timerFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+
+.timerText {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-family: 'Sora', sans-serif;
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ── Current call ── */
+.callout {
+  text-align: center;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  background: var(--neon-faint);
+  border: 1px solid var(--border-md);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* ── Board ── */
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+
+.cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  word-break: break-word;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+/* Word has been called — glow border hint */
+.cellCallable {
+  border-color: var(--neon);
+  color: var(--text-secondary);
+  box-shadow: 0 0 8px var(--neon-dim);
+  animation: callPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes callPulse {
+  from { box-shadow: 0 0 4px var(--neon-dim); }
+  to   { box-shadow: 0 0 14px var(--neon-dim); }
+}
+
+.cellMarked {
+  background: var(--neon);
+  color: var(--text-on-accent);
+  border-color: var(--neon);
+  box-shadow: none;
+  animation: none;
+}
+
+.cellFree {
+  background: var(--neon-faint);
+  color: var(--neon);
+  border-color: var(--border-md);
+  font-weight: 800;
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  cursor: default;
+}
+
+.cellWin {
+  box-shadow: 0 0 12px var(--neon-dim);
+  animation: winPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes winPulse {
+  from { box-shadow: 0 0 8px var(--neon-dim); }
+  to   { box-shadow: 0 0 20px var(--neon-dim); }
+}
+
+/* ── Messages ── */
+.winMsg {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--neon);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.lossMsg {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent-rose);
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+}
+
+.subtitle {
+  text-align: center;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+}

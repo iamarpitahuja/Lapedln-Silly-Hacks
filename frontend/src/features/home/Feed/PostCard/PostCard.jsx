@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion as Motion } from 'framer-motion'
 import LarpRatingBadge from '../../../../components/LarpRatingBadge/LarpRatingBadge'
 import SuggestedGlazes from '../SuggestedGlazes/SuggestedGlazes'
+import ProfilePopup from '../../../../components/ProfilePopup/ProfilePopup'
 import Icon from '../../../../components/Icon/Icon'
 import {
   createGlaze as apiCreateGlaze,
@@ -20,6 +21,7 @@ import {
   removeRelarpLove as apiRemoveRelarpLove,
   createRelarpGlaze as apiCreateRelarpGlaze,
   removeRelarpGlaze as apiRemoveRelarpGlaze,
+  deletePost as apiDeletePost,
 } from '../../../../services/api'
 import { useMockData } from '../../../../context/MockDataContext'
 import { getInitials } from '../../../../utils/strings'
@@ -40,6 +42,26 @@ export default function PostCard({ post, isOwnPost = false }) {
   const { author, type, timestamp, content, reactions } = post
   const relarpSource = post.isRelarp ? post.relarpOf : null
   const { currentUser } = useMockData()
+
+  const [popup, setPopup] = useState(null) // { author, x, y }
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleAvatarClick = (e, avatarAuthor) => {
+    if (!avatarAuthor?.id) return
+    e.stopPropagation()
+    setPopup({ author: avatarAuthor, x: e.clientX, y: e.clientY })
+  }
+
+  const handleDelete = async () => {
+    if (isDeleting) return
+    setIsDeleting(true)
+    try {
+      await apiDeletePost(post.id)
+      window.dispatchEvent(new Event('feed:refresh'))
+    } catch {
+      setIsDeleting(false)
+    }
+  }
 
   const [isGlazing, setIsGlazing] = useState(false)
   const [isGlazed, setIsGlazed] = useState(Boolean(post.has_user_glazed))
@@ -346,8 +368,11 @@ export default function PostCard({ post, isOwnPost = false }) {
 
       <div className={styles.header}>
         <div
-          className={styles.avatar}
+          className={`${styles.avatar} ${styles.avatarClickable}`}
           style={author.avatar ? {} : { background: getAvatarColor(author.name) }}
+          onClick={e => handleAvatarClick(e, author)}
+          role="button"
+          tabIndex={0}
         >
           {author.avatar ? (
             <img src={author.avatar} alt={author.name} className={styles.avatarImg} />
@@ -368,14 +393,21 @@ export default function PostCard({ post, isOwnPost = false }) {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <button className={styles.iconBtn} aria-label="More options">
-            <Icon name="more" size={16} />
-          </button>
-          {!isOwnPost ? (
+          {isOwnPost ? (
+            <button
+              className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+              aria-label="Delete post"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              title="Delete post"
+            >
+              <Icon name="trash" size={16} />
+            </button>
+          ) : (
             <button className={styles.iconBtn} aria-label="Dismiss">
               <Icon name="x" size={16} />
             </button>
-          ) : null}
+          )}
         </div>
       </div>
 
@@ -399,12 +431,22 @@ export default function PostCard({ post, isOwnPost = false }) {
           </div>
         ) : null}
 
+        {post.roastMemeUrl ? (
+          <div className={styles.roastMemeWrap}>
+            <p className={styles.roastMemeLabel}>🔥 AI Roast Meme</p>
+            <img src={post.roastMemeUrl} alt="Roast meme" className={styles.roastMeme} />
+          </div>
+        ) : null}
+
         {relarpSource ? (
           <article className={styles.relarpEmbed}>
             <div className={styles.relarpEmbedHeader}>
               <div
-                className={styles.relarpEmbedAvatar}
+                className={`${styles.relarpEmbedAvatar} ${styles.avatarClickable}`}
                 style={relarpSource.author.avatar ? {} : { background: getAvatarColor(relarpSource.author.name) }}
+                onClick={e => handleAvatarClick(e, relarpSource.author)}
+                role="button"
+                tabIndex={0}
               >
                 {relarpSource.author.avatar ? (
                   <img src={relarpSource.author.avatar} alt={relarpSource.author.name} className={styles.avatarImg} />
@@ -477,7 +519,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             whileHover={{ y: -1 }}
           >
             <Icon name="thumbsUp" size={18} />
-            <span>{isLarped ? 'Liked' : 'Like'}</span>
+            <span>{isLarped ? 'Liked' : 'Like'}{larpCount > 0 ? ` (${larpCount})` : ''}</span>
           </Motion.button>
         ) : null}
         {!blockReactions ? (
@@ -490,7 +532,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             whileHover={{ y: -1 }}
           >
             <Icon name="heart" size={18} />
-            <span>{isLoved ? 'Loved' : 'Love'}</span>
+            <span>{isLoved ? 'Loved' : 'Love'}{loveCount > 0 ? ` (${loveCount})` : ''}</span>
           </Motion.button>
         ) : null}
         {!blockReactions ? (
@@ -501,7 +543,7 @@ export default function PostCard({ post, isOwnPost = false }) {
             whileTap={{ scale: 0.92 }}
             whileHover={{ y: -1 }}
           >
-            <Icon name="sparkles" size={18} /> <span>Glaze</span>
+            <Icon name="sparkles" size={18} /> <span>Glaze{glazeCount > 0 ? ` (${glazeCount})` : ''}</span>
           </Motion.button>
         ) : null}
         <Motion.button
@@ -511,7 +553,7 @@ export default function PostCard({ post, isOwnPost = false }) {
           whileTap={{ scale: 0.92 }}
           whileHover={{ y: -1 }}
         >
-          <Icon name="message" size={18} /> <span>Comment</span>
+          <Icon name="message" size={18} /> <span>Comment{totalCommentCount > 0 ? ` (${totalCommentCount})` : ''}</span>
         </Motion.button>
         <Motion.button
           className={`${styles.action} ${styles.actionRelarp} ${
@@ -529,7 +571,7 @@ export default function PostCard({ post, isOwnPost = false }) {
               ? 'Undoing...'
               : userAlreadyRelarped
                 ? 'Undo Re-Larp'
-                : 'Re-Larp'}
+                : 'Re-Larp'}{relarpCount > 0 ? ` (${relarpCount})` : ''}
           </span>
         </Motion.button>
         {!isOwnPost ? (
@@ -786,7 +828,14 @@ export default function PostCard({ post, isOwnPost = false }) {
           </AnimatePresence>
         </div>
       </div>
+
+      {popup ? (
+        <ProfilePopup
+          author={popup.author}
+          clickPos={{ x: popup.x, y: popup.y }}
+          onClose={() => setPopup(null)}
+        />
+      ) : null}
     </div>
   )
 }
-

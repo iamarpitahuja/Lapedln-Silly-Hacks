@@ -10,7 +10,7 @@ const PLACEHOLDERS = [
   'What impossible milestone are you reflecting on today?',
   'Share a lesson from your made-up founder arc.',
   'Announce a role you technically never interviewed for.',
-  'What thought leadership can you offer the ecosystem today?',
+  'What bullshit can you offer the ecosystem today?',
 ]
 
 const ACTIONS = [

@@ -5,6 +5,7 @@ import { MockDataProvider } from './context/MockDataContext'
 import TopNav from './components/TopNav/TopNav'
 import Home from './features/home/Home'
 import Me from './features/me/Me'
+import PublicProfile from './features/profile/PublicProfile'
 import Network from './features/network/Network'
 import Messaging from './features/messaging/Messaging'
 import JobsPage from './pages/JobsPage'
@@ -45,6 +46,7 @@ function AppRoutes() {
               <Route path="/messaging" element={<Messaging />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/me" element={<Me />} />
+              <Route path="/profile/:userId" element={<PublicProfile />} />
             </Routes>
           </Motion.div>
         </AnimatePresence>

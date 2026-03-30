@@ -106,7 +106,7 @@ export default function TopNav() {
         {/* Left: Logo + Search */}
         <div className={styles.left}>
           <NavLink to="/" className={styles.logo}>
-            <img src="/logo.png" alt="LarpedIn" className={styles.logoImg} />
+            <img src={theme === 'light' ? '/logoLightMode.png' : '/logoDarkMode.png'} alt="LarpedIn" className={styles.logoImg} />
             <span className={styles.logoText}>LarpedIn</span>
           </NavLink>
           <div className={styles.searchWrap}>
