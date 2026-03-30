@@ -8,14 +8,21 @@ export function createRng(seed) {
   };
 }
 
+function localDateStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 export function todaySeed() {
-  const str = new Date().toISOString().slice(0, 10);
+  const str = localDateStr();
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = (hash * 31 + str.charCodeAt(i)) | 0;
   }
   return hash;
 }
+
+export { localDateStr };
 
 export function seededShuffle(arr, rng) {
   const a = [...arr];

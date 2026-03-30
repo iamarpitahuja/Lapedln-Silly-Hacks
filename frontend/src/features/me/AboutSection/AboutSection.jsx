@@ -67,7 +67,7 @@ export default function AboutSection({ onNotice }) {
           >
             {currentUser.about
               ? <p className={styles.bio}>{currentUser.about}</p>
-              : <p className={styles.emptyState}>No personal brand narrative yet. Click edit to share your thought leadership journey.</p>
+              : <p className={styles.emptyState}>no lore written yet. drop ur origin story. we're waiting.</p>
             }
           </Motion.div>
         ) : (
@@ -85,7 +85,7 @@ export default function AboutSection({ onNotice }) {
                   value={bioDraft}
                   onChange={event => setBioDraft(event.target.value)}
                   autoFocus
-                  placeholder="Tell your persona's story..."
+                  placeholder="drop the lore here..."
                 />
                 <div className={styles.actions}>
                   <button type="submit" className={styles.saveBtn}>
@@ -98,7 +98,7 @@ export default function AboutSection({ onNotice }) {
               </form>
               <div className={styles.editorHint}>
                 <Icon name="sparkles" size={12} />
-                <span>Drafting your legend</span>
+                <span>drafting the lore</span>
               </div>
             </div>
           </Motion.div>

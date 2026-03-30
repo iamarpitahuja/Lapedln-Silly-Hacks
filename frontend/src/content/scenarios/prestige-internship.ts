@@ -3,7 +3,7 @@ import type { ScenarioContent } from '../../features/larpmaxxer/types'
 export const scenarioContent: ScenarioContent = {
   scenarioId: 'prestige-internship',
   briefDescription:
-    "Chad is a returning intern for the third summer and has opinions about orientation that he will share whether you ask or not. He has color-coded his Notion onboarding doc and considers himself your most accessible senior resource.",
+    "Chad is a returning intern for the third summer. He has a color-coded Notion onboarding doc, a return-offer probability spreadsheet for all 40 interns, and opinions about orientation that he will share whether you ask or not. He considers himself essentially a junior manager. He is not.",
   openingLine:
     "Hey! I'm Chad — third summer here, so basically ask me anything. I basically know where all the bodies are buried. Ha. Not literally. Anyway, what group are you in?",
   dialogueNodes: [
@@ -37,7 +37,7 @@ export const scenarioContent: ScenarioContent = {
           flavorBadge: 'cringe_risk',
           metricDeltas: { aura: -3, socialFooting: -2, plausibility: -3, larpContinuity: -3, respect: -2 },
           meterDeltas: { impressed: -2, suspicion: 10 },
-          characterThinks: "He said he 'skimmed' the pre-reads on day one of a place that grades you on preparation. I will remember this when I fill out the peer evaluation form.",
+          characterThinks: "He said he 'skimmed' the pre-reads on day one of a firm that literally scores you on preparation. I will absolutely remember this when I fill out the peer evaluation form. Which I do fill out.",
         },
         {
           id: 'pi-t1-d',

@@ -13,7 +13,7 @@ function getAvatarColor(name) {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
 }
 
-export default function UserCard({ user, initialStatus = 'none', connectionId: initialConnectionId = null }) {
+export default function UserCard({ user, initialStatus = 'none', connectionId: initialConnectionId = null, onNetworkChange }) {
   const [status, setStatus] = useState(initialStatus)
   const [connectionId, setConnectionId] = useState(initialConnectionId)
   const navigate = useNavigate()
@@ -21,6 +21,7 @@ export default function UserCard({ user, initialStatus = 'none', connectionId: i
   function handleStatusChange(newStatus, newId) {
     setStatus(newStatus)
     setConnectionId(newId)
+    if (onNetworkChange) onNetworkChange(user, newStatus, newId)
   }
 
   const name = user.display_name || 'Anonymous Larper'

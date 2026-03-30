@@ -117,6 +117,7 @@
   box-shadow: none;
 }
 
+
 .listItem {
   transition: transform var(--transition-fast);
 }

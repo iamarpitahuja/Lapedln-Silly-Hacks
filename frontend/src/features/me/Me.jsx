@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import ProfileHero from './ProfileHero/ProfileHero'
 import LarpStatus from './LarpStatus/LarpStatus'
 import AboutSection from './AboutSection/AboutSection.jsx'
@@ -20,6 +21,7 @@ const sectionMotion = {
 }
 
 export default function Me() {
+  const navigate = useNavigate()
   const [interactionNotice, setInteractionNotice] = useState('')
   const clearTimerRef = useRef(null)
 
@@ -54,6 +56,18 @@ export default function Me() {
           <LarpStatus onNotice={showInteractionNotice} />
         </Motion.div>
         <Motion.div {...sectionMotion} transition={{ duration: 0.3, ease: easeOutQuint, delay: 0.12 }}>
+          <button className={styles.larpmaxxCard} onClick={() => navigate('/larpmaxxer')}>
+            <div className={styles.larpmaxxCardInner}>
+              <div className={styles.larpmaxxCardText}>
+                <span className={styles.larpmaxxCardEyebrow}>Level up your corporate persona</span>
+                <span className={styles.larpmaxxCardTitle}>Practice your Larp</span>
+                <span className={styles.larpmaxxCardSubtitle}>Get LarpMaxxing →</span>
+              </div>
+              <span className={styles.larpmaxxCardEmoji}>🎭</span>
+            </div>
+          </button>
+        </Motion.div>
+        <Motion.div {...sectionMotion} transition={{ duration: 0.3, ease: easeOutQuint, delay: 0.18 }}>
           <AboutSection onNotice={showInteractionNotice} />
         </Motion.div>
         <Motion.div {...sectionMotion} transition={{ duration: 0.3, ease: easeOutQuint, delay: 0.18 }}>

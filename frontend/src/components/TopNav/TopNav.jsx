@@ -6,14 +6,13 @@ import { useAuth } from '../../context/AuthContext'
 import { getInitials } from '../../utils/strings'
 import { fetchConversations } from '../../services/api'
 import { springSnap } from '../../lib/motion'
-import { initializeTheme, setTheme as applyTheme } from '../../lib/theme'
 import styles from './TopNav.module.css'
 
 const NAV_ITEMS = [
   {
     path: '/',
-    label: 'Home',
-    tooltip: 'See what everyone is pretending to accomplish',
+    label: 'Feed',
+    tooltip: 'See what everyone is cooking up',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M23 9v2h-2v7a3 3 0 01-3 3h-4v-6h-4v6H6a3 3 0 01-3-3v-7H1V9l11-7 11 7z" />
@@ -22,8 +21,8 @@ const NAV_ITEMS = [
   },
   {
     path: '/network',
-    label: 'My Network',
-    tooltip: 'People you allegedly know',
+    label: 'Network',
+    tooltip: 'Your professional circle',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M12 16v6H3v-6a3 3 0 013-3h3a3 3 0 013 3zm5.5-3A3.5 3.5 0 1014 9.5a3.5 3.5 0 003.5 3.5zm1 2h-2a2.5 2.5 0 00-2.5 2.5V22h7v-4.5a2.5 2.5 0 00-2.5-2.5zM7.5 2A4.5 4.5 0 1012 6.5 4.49 4.49 0 007.5 2z" />
@@ -33,7 +32,7 @@ const NAV_ITEMS = [
   {
     path: '/jobs',
     label: 'J*bs',
-    tooltip: 'Skip the inconvenient parts',
+    tooltip: 'Update your fake title instantly',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M17 6V5a3 3 0 00-3-3h-4a3 3 0 00-3 3v1H2v4a3 3 0 003 3h14a3 3 0 003-3V6zM9 5a1 1 0 011-1h4a1 1 0 011 1v1H9zm10 9a4 4 0 003-1.38V17a3 3 0 01-3 3H5a3 3 0 01-3-3v-4.38A4 4 0 005 14z" />
@@ -42,8 +41,8 @@ const NAV_ITEMS = [
   },
   {
     path: '/messaging',
-    label: 'Messaging',
-    tooltip: 'Cold outreach, hot delusion',
+    label: 'Messages',
+    tooltip: 'Slide into someone\'s DMs',
     isMessaging: true,
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
@@ -54,7 +53,7 @@ const NAV_ITEMS = [
   {
     path: '/notifications',
     label: 'Notifications',
-    tooltip: 'Validation center',
+    tooltip: 'Your notifications',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M22 19h-6.18C15.4 20.77 13.85 22 12 22s-3.4-1.23-3.82-3H2v-2l2-2V9a8 8 0 0116 0v6l2 2zM12 4a6 6 0 00-6 6v7h12V10a6 6 0 00-6-6z" />
@@ -64,7 +63,7 @@ const NAV_ITEMS = [
   {
     path: '/me',
     label: 'Me',
-    tooltip: 'Curate your myth',
+    tooltip: 'Your profile',
     isMe: true,
   },
 ]
@@ -76,12 +75,20 @@ export default function TopNav() {
   const [theme, setTheme] = useState('dark')
 
   useEffect(() => {
-    setTheme(initializeTheme())
+    const storedTheme = window.localStorage.getItem('theme')
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
+    const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
+      ? storedTheme
+      : (prefersLight ? 'light' : 'dark')
+    document.documentElement.setAttribute('data-theme', initialTheme)
+    setTheme(initialTheme)
   }, [])
 
   const toggleTheme = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(applyTheme(nextTheme))
+    document.documentElement.setAttribute('data-theme', nextTheme)
+    window.localStorage.setItem('theme', nextTheme)
+    setTheme(nextTheme)
   }
 
   useEffect(() => {
@@ -119,7 +126,7 @@ export default function TopNav() {
             <input
               type="text"
               className={styles.search}
-              placeholder="Search people, titles, delusions"
+              placeholder="Search"
             />
           </div>
         </div>

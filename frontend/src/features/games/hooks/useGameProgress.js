@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
+import { localDateStr } from '../data/dailySeed';
 
 function getTodayKey() {
-  return new Date().toISOString().slice(0, 10);
+  return localDateStr();
 }
 
 function cleanupOldKeys() {

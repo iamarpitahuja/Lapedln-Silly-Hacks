@@ -40,7 +40,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 app.include_router(feed.router, prefix="/api")
 app.include_router(posts.router, prefix="/api")
 app.include_router(jobs.router, prefix="/api")
@@ -49,8 +48,8 @@ app.include_router(connections.router, prefix="/api")
 app.include_router(messages.router, prefix="/api")
 app.include_router(notifications.router, prefix="/api")
 app.include_router(relarps.router, prefix="/api")
-app.include_router(larpmaxxer.router, prefix="/api")
 app.include_router(games.router)
+app.include_router(larpmaxxer.router, prefix="/api")
 
 
 @app.get("/health")

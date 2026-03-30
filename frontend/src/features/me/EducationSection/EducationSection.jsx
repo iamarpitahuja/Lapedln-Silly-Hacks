@@ -141,7 +141,7 @@ export default function EducationSection({ onNotice }) {
       </AnimatePresence>
       <div className={styles.entries}>
         {currentUser.education.length === 0 && (
-          <p className={styles.emptyState}>No credentials listed. Add an institution to signal your intellectual capital.</p>
+          <p className={styles.emptyState}>no clout institutions yet. flex ur education arc.</p>
         )}
         {currentUser.education.map(entry => (
           <article key={entry.id} className={styles.entry}>

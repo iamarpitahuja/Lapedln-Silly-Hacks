@@ -38,7 +38,7 @@ export default function SkillsSection({ onNotice }) {
   return (
     <section className={styles.card}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Skills & Endorsements</h2>
+        <h2 className={styles.title}>Skills & Clout</h2>
         <div className={styles.headerActions}>
           <button
             type="button"
@@ -88,7 +88,7 @@ export default function SkillsSection({ onNotice }) {
       </AnimatePresence>
       <div className={styles.skills}>
         {currentUser.skills.length === 0 && (
-          <p className={styles.emptyState}>No skills listed. Add your first endorsable competency.</p>
+          <p className={styles.emptyState}>no skills listed. list something that sounds vaguely real.</p>
         )}
         {currentUser.skills.map(skill => (
           <article key={skill.id} className={styles.skillRow}>
@@ -105,7 +105,7 @@ export default function SkillsSection({ onNotice }) {
                 className={styles.endorseBtn}
                 onClick={() => handleEndorse(skill.id)}
               >
-                Ask for Endorsement
+                Request Clout
               </button>
               <button
                 type="button"
