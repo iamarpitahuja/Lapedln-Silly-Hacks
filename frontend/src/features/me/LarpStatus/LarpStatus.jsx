@@ -65,7 +65,7 @@ export default function LarpStatus({ onNotice }) {
           <div className={styles.displayArea}>
             {job
               ? <p className={styles.persona}>{job}</p>
-              : <p className={styles.emptyState}>no active larp set. define ur current character bestie.</p>
+              : <p className={styles.emptyState}>No active larp set. Define your current character.</p>
             }
             <div className={styles.pills}>
               {opportunities.length > 0

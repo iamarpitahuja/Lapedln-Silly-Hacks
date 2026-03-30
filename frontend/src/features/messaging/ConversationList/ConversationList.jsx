@@ -44,7 +44,7 @@ export default function ConversationList({
       <div className={styles.searchWrap}>
         <input
           className={styles.searchInput}
-          placeholder="search ur convos bestie"
+          placeholder="search conversations"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -136,7 +136,7 @@ export default function ConversationList({
 
         {filteredConvs.length === 0 && filteredGroups.length === 0 && (
           <p className={styles.empty}>
-            {search ? 'nothing matching rn. check ur spelling bestie.' : 'no slidin yet. hit the pencil and make ur move.'}
+            {search ? 'No results. Check your spelling.' : 'No conversations yet. Hit the pencil to start one.'}
           </p>
         )}
       </div>

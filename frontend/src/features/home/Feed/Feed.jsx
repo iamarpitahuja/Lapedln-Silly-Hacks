@@ -140,7 +140,7 @@ export default function Feed() {
     <div className={styles.feed}>
       <StartPost />
       {loading ? (
-        <p className={styles.loadingText}>cooking the timeline… no cap…</p>
+        <p className={styles.loadingText}>loading the feed…</p>
       ) : (
         <Motion.div className={styles.posts}>
           <AnimatePresence initial={false}>

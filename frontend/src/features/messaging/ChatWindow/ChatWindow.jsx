@@ -185,7 +185,7 @@ export default function ChatWindow({ otherUser, group, currentUserId }) {
           <p className={styles.state}>
             {isGroup
               ? 'no tea yet. cook something up.'
-              : 'no msgs yet. slide in bestie.'}
+              : 'No messages yet. Say something.'}
           </p>
         )}
         {messages.map(msg => (

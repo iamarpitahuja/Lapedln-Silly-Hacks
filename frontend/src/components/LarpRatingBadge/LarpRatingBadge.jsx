@@ -4,7 +4,7 @@ function getTier(rating) {
   if (rating >= 95) return 'NPC evolved'
   if (rating >= 85) return 'Mythic'
   if (rating >= 70) return 'chronically online'
-  if (rating >= 50) return 'delulu phase'
+  if (rating >= 50) return 'Larp Ascended'
   return 'local NPC'
 }
 
