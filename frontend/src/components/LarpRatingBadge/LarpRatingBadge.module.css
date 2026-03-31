@@ -1,39 +1,30 @@
-.gauge {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gaugeCircle {
-  transition: stroke-dasharray 1.2s var(--ease-out-quint);
-  animation: gaugeFill 1.5s var(--ease-out-quint) forwards;
-}
-
-@keyframes gaugeFill {
-  from { stroke-dasharray: 0 251.32; }
-}
-
-.gaugeInner {
-  position: absolute;
-  display: flex;
+.badge {
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0;
+  gap: 2px;
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 10px 18px;
   animation: fadeIn var(--transition-slow) forwards;
 }
 
-.gaugeValue {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--text-primary);
+.badgeLabel {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
   line-height: 1;
 }
 
-.gaugeTier {
+.badgeValue {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.badgeTier {
   font-size: 9px;
   font-weight: 600;
   line-height: 1.2;

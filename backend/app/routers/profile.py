@@ -94,9 +94,14 @@ async def update_me(
     supabase=Depends(get_service_client),
 ):
     """Patch the current user's profile fields used by the frontend."""
-    updates = body.model_dump(exclude_unset=True)
+    updates = body.model_dump(exclude_unset=True, mode='json')
     if not updates:
         return _ensure_profile_for_user(supabase, user_id)
+
+    # Convert datetime objects to ISO strings for JSON serialization
+    for key, val in updates.items():
+        if isinstance(val, datetime):
+            updates[key] = val.isoformat()
 
     result = (
         supabase.table("profiles")
