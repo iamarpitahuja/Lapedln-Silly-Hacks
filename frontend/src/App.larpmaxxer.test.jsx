@@ -18,6 +18,7 @@ vi.mock('./services/api', () => ({
 vi.mock('./features/home/Home', () => ({ default: () => <div>Home</div> }))
 vi.mock('./features/larpmaxxer/index', () => ({ LarpMaxxer: () => <div>LarpMaxxer</div> }))
 vi.mock('./pages/PersonaSelect', () => ({ default: () => <div>PersonaSelect</div> }))
+vi.mock('./features/featureTour/FeatureTour', () => ({ default: () => null }))
 
 import App from './App'
 

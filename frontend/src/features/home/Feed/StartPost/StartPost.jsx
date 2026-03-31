@@ -169,7 +169,7 @@ export default function StartPost() {
   const isPostDisabled = (!draft.trim() && !photo) || isSubmitting
 
   return (
-    <div className={styles.card} onBlur={handleContainerBlur}>
+    <div className={styles.card} onBlur={handleContainerBlur} data-tour="start-post">
       <div className={styles.row}>
         <div className={styles.avatar}>
           {currentUser.avatar ? (

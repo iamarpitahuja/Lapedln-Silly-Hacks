@@ -13,6 +13,7 @@ import { LarpMaxxer } from './features/larpmaxxer/index'
 import Me from './features/me/Me'
 import Messaging from './features/messaging/Messaging'
 import Network from './features/network/Network'
+import FeatureTour from './features/featureTour/FeatureTour'
 import OnboardingPage from './features/onboarding/OnboardingPage'
 import PublicProfile from './features/profile/PublicProfile'
 import { easeOutQuint } from './lib/motion'
@@ -22,6 +23,7 @@ import PersonaSelect from './pages/PersonaSelect'
 import { fetchProfile } from './services/api'
 
 const FORCE_ONBOARDING_KEY = 'larpedin.forceOnboarding'
+const FEATURE_TOUR_PENDING_KEY = 'larpedin.featureTourPending'
 
 function isOnboardingIncomplete(profile) {
   if (!profile || typeof profile !== 'object') return true
@@ -50,6 +52,9 @@ function AppRoutes() {
   const bypassOnboardingCheck = location.pathname === '/larpmaxxer' || location.pathname === '/persona-select'
   const [isNewUser, setIsNewUser] = useState(null)
   const [forceOnboarding, setForceOnboarding] = useState(false)
+  const [isTourOpen, setIsTourOpen] = useState(
+    () => typeof window !== 'undefined' && window.localStorage.getItem(FEATURE_TOUR_PENDING_KEY) === '1'
+  )
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -131,6 +136,8 @@ function AppRoutes() {
               <OnboardingPage
                 onComplete={() => {
                   setIsNewUser(false)
+                  window.localStorage.setItem(FEATURE_TOUR_PENDING_KEY, '1')
+                  setIsTourOpen(true)
                   window.localStorage.removeItem(FORCE_ONBOARDING_KEY)
                   setForceOnboarding(false)
                 }}
@@ -169,6 +176,13 @@ function AppRoutes() {
             </>
           } />
         </Routes>
+        <FeatureTour
+          isOpen={Boolean(session) && location.pathname !== '/onboarding' && isTourOpen}
+          onFinish={() => {
+            window.localStorage.removeItem(FEATURE_TOUR_PENDING_KEY)
+            setIsTourOpen(false)
+          }}
+        />
       </MockDataProvider>
     </UserProvider>
   )

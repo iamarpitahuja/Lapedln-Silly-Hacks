@@ -45,7 +45,7 @@ export default function NotificationsPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
+      <div className={styles.card} data-tour="notifications-card">
         <h2 className={styles.heading}>Notifications</h2>
         <p className={styles.subheading}>Connection requests, comments, and messages.</p>
 

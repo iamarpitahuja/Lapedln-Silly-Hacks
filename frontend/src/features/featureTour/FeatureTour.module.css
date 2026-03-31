@@ -1,0 +1,249 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: auto;
+  isolation: isolate;
+}
+
+.spotlight {
+  position: fixed;
+  border-radius: 16px;
+  border: 2px solid var(--neon);
+  box-shadow:
+    0 0 0 9999px var(--overlay-scrim),
+    0 0 0 1px var(--border-md),
+    0 0 26px rgba(167, 139, 250, 0.42);
+  pointer-events: none;
+  transition:
+    top 0.22s var(--ease-out-quint),
+    left 0.22s var(--ease-out-quint),
+    width 0.22s var(--ease-out-quint),
+    height 0.22s var(--ease-out-quint);
+}
+
+.panel {
+  position: fixed;
+  width: min(500px, calc(100vw - 28px));
+  border-radius: 18px;
+  border: 1px solid var(--border-strong);
+  background:
+    linear-gradient(135deg, rgba(167, 139, 250, 0.08), transparent 42%),
+    linear-gradient(160deg, var(--bg-card), var(--bg-elevated));
+  box-shadow: var(--glow-lg);
+  padding: 14px 14px 12px;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: var(--tour-arrow-left, 50%);
+  transform: translateX(-50%) rotate(45deg);
+  background: var(--bg-card);
+  border-left: 1px solid var(--border-strong);
+  border-top: 1px solid var(--border-strong);
+  opacity: 0;
+}
+
+.panelBelow::before {
+  top: -7px;
+  opacity: 1;
+}
+
+.panelAbove::before {
+  bottom: -7px;
+  transform: translateX(-50%) rotate(225deg);
+  opacity: 1;
+}
+
+.panelRight::before {
+  left: -7px;
+  top: var(--tour-arrow-top, 50%);
+  transform: translateY(-50%) rotate(-45deg);
+  opacity: 1;
+}
+
+.panelLeft::before {
+  left: auto;
+  right: -7px;
+  top: var(--tour-arrow-top, 50%);
+  transform: translateY(-50%) rotate(135deg);
+  opacity: 1;
+}
+
+.progressTrack {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--neon));
+  transition: width 0.2s var(--ease-out-quint);
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.kicker {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.zoneChip {
+  border: 1px solid var(--border-md);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  background: rgba(90, 215, 193, 0.14);
+}
+
+.title {
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-size: 21px;
+  line-height: 1.18;
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.missingTarget {
+  color: var(--accent-amber);
+  font-size: 12px;
+  border: 1px dashed rgba(241, 199, 91, 0.42);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: rgba(241, 199, 91, 0.1);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.skipButton {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+
+.skipButton:hover {
+  border-color: var(--border-md);
+  color: var(--text-primary);
+}
+
+.rightActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.secondaryButton,
+.primaryButton {
+  min-width: 92px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  border: 1px solid transparent;
+}
+
+.secondaryButton {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.secondaryButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.secondaryButton:not(:disabled):hover {
+  border-color: var(--border-md);
+  color: var(--text-primary);
+}
+
+.primaryButton {
+  background: var(--neon);
+  color: var(--text-on-accent);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.primaryButton:hover {
+  background: var(--neon-dark);
+}
+
+@media (max-width: 700px) {
+  .panel {
+    width: calc(100vw - 20px);
+    padding: 13px 12px 11px;
+    border-radius: 16px;
+  }
+
+  .panel::before {
+    opacity: 0;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .description {
+    font-size: 13px;
+  }
+
+  .metaRow {
+    align-items: flex-start;
+  }
+
+  .zoneChip {
+    padding: 2px 8px;
+    font-size: 9px;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rightActions {
+    width: 100%;
+  }
+
+  .skipButton,
+  .secondaryButton,
+  .primaryButton {
+    width: 100%;
+  }
+}

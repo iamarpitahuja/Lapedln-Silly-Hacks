@@ -178,7 +178,7 @@ export default function JobsPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.boardWrap}>
+      <div className={styles.boardWrap} data-tour="jobs-board">
 
         {/* Board header */}
         <div className={styles.boardHeader}>

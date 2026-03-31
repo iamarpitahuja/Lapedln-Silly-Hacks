@@ -101,7 +101,7 @@ export default function TopNav() {
   }, [])
 
   return (
-    <header className={styles.nav}>
+    <header className={styles.nav} data-tour="top-nav">
       <div className={styles.inner}>
         {/* Left: Logo + Search */}
         <div className={styles.left}>

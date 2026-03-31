@@ -5,7 +5,6 @@ import { easeOutQuint } from '../../lib/motion'
 import { updateProfilePatch, updateJob, fetchProfile } from '../../services/api'
 import { useOnboardingState } from './hooks/useOnboardingState'
 import SynergizingLoader from './components/SynergizingLoader'
-import StepName from './steps/StepName'
 import StepJob from './steps/StepJob'
 import StepAvatar from './steps/StepAvatar'
 import StepBio from './steps/StepBio'
@@ -89,7 +88,7 @@ function normalizeExperience(rawExperience = []) {
 
 export default function OnboardingPage({ onComplete }) {
   const navigate = useNavigate()
-  const { step, formData, direction, advance } = useOnboardingState()
+  const { step, formData, direction, advance } = useOnboardingState(6)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState(null)
   const [larpRating, setLarpRating] = useState(0)
@@ -146,7 +145,6 @@ export default function OnboardingPage({ onComplete }) {
   }, [onComplete, navigate])
 
   const steps = [
-    <StepName key="name" onNext={data => persistAndAdvance(data)} />,
     <StepJob key="job" onNext={data => persistAndAdvance(data)} />,
     <StepAvatar
       key="avatar"

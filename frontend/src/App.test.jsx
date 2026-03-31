@@ -29,6 +29,10 @@ vi.mock('./features/home/Home', () => ({
   default: () => <div>Home</div>,
 }))
 
+vi.mock('./features/featureTour/FeatureTour', () => ({
+  default: () => null,
+}))
+
 vi.mock('framer-motion', () => ({
   motion: {
     div: ({ children, ...p }) => <div {...p}>{children}</div>,

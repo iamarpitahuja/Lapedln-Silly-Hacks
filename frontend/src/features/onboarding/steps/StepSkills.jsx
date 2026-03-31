@@ -35,7 +35,7 @@ export default function StepSkills({ onNext, onSkip }) {
   }
 
   return (
-    <StepShell heading="Tag your superpowers." stepNumber={6} totalSteps={6} skippable onSkip={onSkip}>
+    <StepShell heading="Tag your superpowers." stepNumber={5} totalSteps={5} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.tagList}>
           <AnimatePresence>

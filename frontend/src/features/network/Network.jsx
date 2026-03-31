@@ -68,7 +68,7 @@ export default function Network() {
       <div className={styles.container}>
         <h1 className={styles.heading}>My Network</h1>
 
-        <div className={styles.tabs}>
+        <div className={styles.tabs} data-tour="network-tabs">
           {TABS.map(tab => (
             <button
               key={tab}

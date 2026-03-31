@@ -75,7 +75,7 @@ export default function GamesWidget({ onPlay }) {
   }, []);
 
   return (
-    <div>
+    <div data-tour="daily-games">
       <div className={s.title}>Daily Games</div>
       <div className={s.tiles}>
         {GAMES.map((game) => {

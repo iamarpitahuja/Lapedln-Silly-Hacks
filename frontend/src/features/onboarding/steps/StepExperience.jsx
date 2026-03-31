@@ -31,7 +31,7 @@ export default function StepExperience({ onNext, onSkip }) {
   }
 
   return (
-    <StepShell heading="Document your corporate journey." stepNumber={5} totalSteps={6} skippable onSkip={onSkip}>
+    <StepShell heading="Document your corporate journey." stepNumber={4} totalSteps={5} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <AnimatePresence>
           {entries.map((entry, i) => (

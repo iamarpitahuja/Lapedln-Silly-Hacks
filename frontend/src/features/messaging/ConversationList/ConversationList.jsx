@@ -31,7 +31,7 @@ export default function ConversationList({
   )
 
   return (
-    <div className={styles.panel}>
+    <div className={styles.panel} data-tour="messaging-list">
       <div className={styles.header}>
         <h2 className={styles.heading}>Messaging</h2>
         <button className={styles.newBtn} onClick={onNewMessage} title="New message">

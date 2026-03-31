@@ -56,7 +56,11 @@ export default function Me() {
           <LarpStatus onNotice={showInteractionNotice} />
         </Motion.div>
         <Motion.div {...sectionMotion} transition={{ duration: 0.3, ease: easeOutQuint, delay: 0.12 }}>
-          <button className={styles.larpmaxxCard} onClick={() => navigate('/larpmaxxer')}>
+          <button
+            className={styles.larpmaxxCard}
+            onClick={() => navigate('/larpmaxxer')}
+            data-tour="profile-larpmaxxer"
+          >
             <div className={styles.larpmaxxCardInner}>
               <div className={styles.larpmaxxCardText}>
                 <span className={styles.larpmaxxCardEyebrow}>Level up your corporate persona</span>
