@@ -4,7 +4,7 @@ import { springSnap } from '../../../lib/motion'
 import StepShell from '../components/StepShell'
 import styles from './steps.module.css'
 
-export default function StepSkills({ onNext, onSkip }) {
+export default function StepSkills({ onNext, onSkip, stepNumber = 6, totalSteps = 6 }) {
   const [skills, setSkills] = useState([])
   const [input, setInput] = useState('')
 
@@ -35,7 +35,7 @@ export default function StepSkills({ onNext, onSkip }) {
   }
 
   return (
-    <StepShell heading="Tag your superpowers." stepNumber={6} totalSteps={6} skippable onSkip={onSkip}>
+    <StepShell heading="Tag your superpowers." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.tagList}>
           <AnimatePresence>

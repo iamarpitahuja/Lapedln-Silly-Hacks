@@ -12,7 +12,7 @@ function normalizeJobOptions(response) {
   return []
 }
 
-export default function StepJob({ onNext }) {
+export default function StepJob({ onNext, stepNumber = 2, totalSteps = 6 }) {
   const [jobs, setJobs] = useState([])
   const [selected, setSelected] = useState(null)
   const [error, setError] = useState(null)
@@ -40,7 +40,7 @@ export default function StepJob({ onNext }) {
   }
 
   return (
-    <StepShell heading="Choose your corporate identity." stepNumber={2} totalSteps={6} skippable={false}>
+    <StepShell heading="Choose your corporate identity." stepNumber={stepNumber} totalSteps={totalSteps} skippable={false}>
       {loading && <p className={jobStyles.loading}>Generating your destiny...</p>}
       {error && (
         <div className={jobStyles.errorBox}>

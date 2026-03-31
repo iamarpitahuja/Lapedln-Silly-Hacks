@@ -7,7 +7,7 @@ import expStyles from './StepExperience.module.css'
 
 const EMPTY_ENTRY = { company: '', title: '', start: '', end: '' }
 
-export default function StepExperience({ onNext, onSkip }) {
+export default function StepExperience({ onNext, onSkip, stepNumber = 5, totalSteps = 6 }) {
   const [entries, setEntries] = useState([])
   const [draft, setDraft] = useState(null)
 
@@ -31,7 +31,7 @@ export default function StepExperience({ onNext, onSkip }) {
   }
 
   return (
-    <StepShell heading="Document your corporate journey." stepNumber={5} totalSteps={6} skippable onSkip={onSkip}>
+    <StepShell heading="Document your corporate journey." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <AnimatePresence>
           {entries.map((entry, i) => (

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { easeOutQuint } from '../../lib/motion'
 import { updateProfilePatch, updateJob, fetchProfile } from '../../services/api'
+import { useAuth } from '../../context/AuthContext'
 import { useOnboardingState } from './hooks/useOnboardingState'
 import SynergizingLoader from './components/SynergizingLoader'
 import StepName from './steps/StepName'
@@ -89,10 +90,15 @@ function normalizeExperience(rawExperience = []) {
 
 export default function OnboardingPage({ onComplete }) {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { step, formData, direction, advance } = useOnboardingState()
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState(null)
   const [larpRating, setLarpRating] = useState(0)
+  const existingDisplayName = String(user?.display_name ?? '').trim()
+  const hasExistingName = Boolean(existingDisplayName && existingDisplayName !== 'Anonymous Larper')
+  const includeNameStep = !hasExistingName
+  const profileStepCount = includeNameStep ? 6 : 5
 
   async function persistAndAdvance(partialData = {}, { finalize = false } = {}) {
     const merged = { ...formData, ...partialData }
@@ -146,18 +152,41 @@ export default function OnboardingPage({ onComplete }) {
   }, [onComplete, navigate])
 
   const steps = [
-    <StepName key="name" onNext={data => persistAndAdvance(data)} />,
-    <StepJob key="job" onNext={data => persistAndAdvance(data)} />,
+    ...(includeNameStep
+      ? [<StepName key="name" stepNumber={1} totalSteps={profileStepCount} onNext={data => persistAndAdvance(data)} />]
+      : []),
+    <StepJob
+      key="job"
+      stepNumber={includeNameStep ? 2 : 1}
+      totalSteps={profileStepCount}
+      onNext={data => persistAndAdvance(data)}
+    />,
     <StepAvatar
       key="avatar"
+      stepNumber={includeNameStep ? 3 : 2}
+      totalSteps={profileStepCount}
       onNext={data => persistAndAdvance(data)}
       onSkip={() => persistAndAdvance({})}
-      displayName={formData.display_name}
+      displayName={formData.display_name ?? existingDisplayName}
     />,
-    <StepBio key="bio" onNext={data => persistAndAdvance(data)} onSkip={() => persistAndAdvance({})} />,
-    <StepExperience key="experience" onNext={data => persistAndAdvance(data)} onSkip={() => persistAndAdvance({})} />,
+    <StepBio
+      key="bio"
+      stepNumber={includeNameStep ? 4 : 3}
+      totalSteps={profileStepCount}
+      onNext={data => persistAndAdvance(data)}
+      onSkip={() => persistAndAdvance({})}
+    />,
+    <StepExperience
+      key="experience"
+      stepNumber={includeNameStep ? 5 : 4}
+      totalSteps={profileStepCount}
+      onNext={data => persistAndAdvance(data)}
+      onSkip={() => persistAndAdvance({})}
+    />,
     <StepSkills
       key="skills"
+      stepNumber={includeNameStep ? 6 : 5}
+      totalSteps={profileStepCount}
       onNext={data => persistAndAdvance(data, { finalize: true })}
       onSkip={() => persistAndAdvance({}, { finalize: true })}
     />,

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import StepShell from '../components/StepShell'
 import styles from './steps.module.css'
 
-export default function StepBio({ onNext, onSkip }) {
+export default function StepBio({ onNext, onSkip, stepNumber = 4, totalSteps = 6 }) {
   const [bio, setBio] = useState('')
 
   function handleSubmit(e) {
@@ -11,7 +11,7 @@ export default function StepBio({ onNext, onSkip }) {
   }
 
   return (
-    <StepShell heading="Describe your personal brand in buzzwords." stepNumber={4} totalSteps={6} skippable onSkip={onSkip}>
+    <StepShell heading="Describe your personal brand in buzzwords." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <textarea
           className={styles.textarea}

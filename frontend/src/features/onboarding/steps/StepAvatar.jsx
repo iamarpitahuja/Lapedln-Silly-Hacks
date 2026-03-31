@@ -4,7 +4,7 @@ import { getInitials } from '../../../utils/strings'
 import styles from './steps.module.css'
 import avatarStyles from './StepAvatar.module.css'
 
-export default function StepAvatar({ onNext, onSkip, displayName = '' }) {
+export default function StepAvatar({ onNext, onSkip, displayName = '', stepNumber = 3, totalSteps = 6 }) {
   const [preview, setPreview] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState(null)
@@ -54,7 +54,7 @@ export default function StepAvatar({ onNext, onSkip, displayName = '' }) {
   }
 
   return (
-    <StepShell heading="Upload your professional headshot." stepNumber={3} totalSteps={6} skippable onSkip={onSkip}>
+    <StepShell heading="Upload your professional headshot." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
       <div className={avatarStyles.avatarArea}>
         {preview ? (
           <img src={preview} alt="Avatar preview" className={avatarStyles.preview} />

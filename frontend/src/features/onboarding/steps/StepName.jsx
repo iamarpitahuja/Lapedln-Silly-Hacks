@@ -2,7 +2,7 @@ import { useState } from 'react'
 import StepShell from '../components/StepShell'
 import styles from './steps.module.css'
 
-export default function StepName({ onNext }) {
+export default function StepName({ onNext, stepNumber = 1, totalSteps = 6 }) {
   const [name, setName] = useState('')
 
   function handleSubmit(e) {
@@ -12,7 +12,7 @@ export default function StepName({ onNext }) {
   }
 
   return (
-    <StepShell heading="What should the algorithm call you?" stepNumber={1} totalSteps={6} skippable={false}>
+    <StepShell heading="What should the algorithm call you?" stepNumber={stepNumber} totalSteps={totalSteps} skippable={false}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <input
           className={styles.input}
