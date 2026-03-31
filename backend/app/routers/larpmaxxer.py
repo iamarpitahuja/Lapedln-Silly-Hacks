@@ -1,11 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.database import get_db
 from app.dependencies import get_current_user
+from app.services.elevenlabs import stream_tts
 from app.services.larpmaxxer_store import (
     get_characters,
+    get_character_voice_id,
     get_personas,
     get_progress,
     get_scenario_content,
@@ -27,6 +31,11 @@ class ProgressPatch(BaseModel):
     personaId: str | None = None
     larpRating: float | None = None
     completedScenarios: list[CompletedScenario] | None = None
+
+
+class LarpmaxxerTTSRequest(BaseModel):
+    text: str
+    characterId: str
 
 
 @router.get("/larpmaxxer/bootstrap")
@@ -58,6 +67,33 @@ async def get_larpmaxxer_progress(
 ):
     progress = await get_progress(user_id, db)
     return {"userId": user_id, **progress}
+
+
+@router.post("/larpmaxxer/tts")
+async def synthesize_larpmaxxer_tts(
+    body: LarpmaxxerTTSRequest,
+    _user_id: str = Depends(get_current_user),
+):
+    text = body.text.strip()
+    character_id = body.characterId.strip()
+
+    if not settings.elevenlabs_api_key:
+        raise HTTPException(status_code=503, detail="TTS not configured")
+
+    if not text:
+        raise HTTPException(status_code=400, detail="text is required")
+
+    if not character_id:
+        raise HTTPException(status_code=400, detail="characterId is required")
+
+    voice_id = get_character_voice_id(character_id)
+    if not voice_id:
+        raise HTTPException(status_code=404, detail=f"No voice configured for character '{character_id}'")
+
+    return StreamingResponse(
+        stream_tts(text=text, voice_id=voice_id),
+        media_type="audio/mpeg",
+    )
 
 
 @router.patch("/larpmaxxer/progress")
