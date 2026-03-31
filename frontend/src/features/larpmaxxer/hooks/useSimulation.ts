@@ -211,6 +211,8 @@ export function useSimulation(
   onSessionEnd?: (delta: number, scenarioId: string, score: number) => void
 ) {
   const [state, dispatch] = useReducer(reducer, initialState)
+  const stateRef = useRef(state)
+  stateRef.current = state
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -223,7 +225,7 @@ export function useSimulation(
   }, [])
 
   const startSession = useCallback(async (scenarioId: string) => {
-    if (!personaId) return
+    const activePersonaId: PersonaId = personaId ?? 'finance_bro'
     dispatch({ type: 'LOAD_START' })
 
     const scenario = SCENARIO_MAP.get(scenarioId)
@@ -231,7 +233,7 @@ export function useSimulation(
     if (!scenario || !character) return
 
     // Apply character persona affinities to base meters
-    const affinities = character.personaAffinities[personaId] ?? { impressed: 0, suspicion: 0 }
+    const affinities = character.personaAffinities[activePersonaId] ?? { impressed: 0, suspicion: 0 }
     const basemeters: Meters = {
       impressed: clamp(45 + affinities.impressed),
       suspicion: clamp(25 - affinities.suspicion),
@@ -241,7 +243,7 @@ export function useSimulation(
     const session: SimulationSession = {
       sessionId: 'sim_' + Date.now(),
       userId,
-      personaId,
+      personaId: activePersonaId,
       scenarioId,
       characterId: character.id,
       startedAt: Date.now(),
@@ -320,11 +322,12 @@ export function useSimulation(
   }, [])
 
   const selectResponse = useCallback((option: ResponseOption) => {
-    const { session, scenarioContent } = state
-    if (!session || !scenarioContent || !personaId) return
+    const { session, scenarioContent } = stateRef.current
+    if (!session || !scenarioContent) return
     if (session.status !== 'active') return
 
-    const alignmentTier = getAlignmentTier(option.personaTag, personaId, option.flavorBadge)
+    const sessionPersonaId: PersonaId = session.personaId ?? personaId ?? 'finance_bro'
+    const alignmentTier = getAlignmentTier(option.personaTag, sessionPersonaId, option.flavorBadge)
     const cringe = isCringeIncident(option.metricDeltas)
 
     // Update cumulative stats
@@ -418,10 +421,10 @@ export function useSimulation(
         }, 800)
       }
     }, 2500)
-  }, [state, personaId, handleSessionEnd])
+  }, [personaId, handleSessionEnd])
 
   const endSession = useCallback(() => {
-    const { session } = state
+    const { session } = stateRef.current
     if (!session) return
 
     const scenario = SCENARIO_MAP.get(session.scenarioId)
@@ -434,7 +437,7 @@ export function useSimulation(
     if (onSessionEnd) {
       onSessionEnd(summary.larpRatingDelta, session.scenarioId, summary.performanceScore)
     }
-  }, [state, onSessionEnd])
+  }, [onSessionEnd])
 
   const resetSession = useCallback(() => {
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current)

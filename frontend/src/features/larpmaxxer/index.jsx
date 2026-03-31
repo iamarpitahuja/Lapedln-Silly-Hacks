@@ -32,7 +32,13 @@ export function LarpMaxxer({ onExitTraining }) {
 
   const [hasEntered, setHasEntered] = useState(false)
   const [selectedScenarioId, setSelectedScenarioId] = useState(null)
-  const [scenarios, setScenarios] = useState(SCENARIOS)
+  const [scenariosOverride, setScenariosOverride] = useState([])
+  const scenarios = useMemo(() => {
+    if (scenariosOverride.length === 0) return SCENARIOS
+    const map = new Map(SCENARIOS.map(s => [s.id, s]))
+    scenariosOverride.forEach(s => map.set(s.id, s))
+    return Array.from(map.values())
+  }, [scenariosOverride])
   const [personas, setPersonas] = useState(PERSONAS)
   const [characters, setCharacters] = useState(CHARACTERS)
   const prevCringeCount = useRef(0)
@@ -112,7 +118,7 @@ export function LarpMaxxer({ onExitTraining }) {
         const bootstrap = await fetchLarpmaxxerBootstrap()
         if (cancelled) return
         if (Array.isArray(bootstrap?.scenarios) && bootstrap.scenarios.length > 0) {
-          setScenarios(bootstrap.scenarios)
+          setScenariosOverride(bootstrap.scenarios)
         }
         if (Array.isArray(bootstrap?.personas) && bootstrap.personas.length > 0) {
           setPersonas(bootstrap.personas)
@@ -130,12 +136,17 @@ export function LarpMaxxer({ onExitTraining }) {
     }
   }, [])
 
-  const characterMap = useMemo(() => new Map(characters.map(character => [character.id, character])), [characters])
+  const characterMap = useMemo(() => {
+    const map = new Map(CHARACTERS.map(c => [c.id, c]))
+    characters.forEach(c => map.set(c.id, c))
+    return map
+  }, [characters])
 
   const activeCharacterId = session?.characterId
     ?? scenarios.find(s => s.id === selectedScenarioId)?.characterId
   const character = activeCharacterId ? characterMap.get(activeCharacterId) ?? null : null
-  const persona = personaId ? personas.find(p => p.id === personaId) ?? null : null
+
+  const persona = personas.find(p => p.id === (personaId ?? 'finance_bro')) ?? null
   const unlockedIds = getUnlockedScenarios(completedScenarios, larpRating)
   const activeScenarioId = session?.scenarioId ?? selectedScenarioId
   const activeScenario = scenarios.find(s => s.id === activeScenarioId) ?? null

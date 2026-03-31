@@ -59,7 +59,7 @@ function saveToStorage(state: UserState): void {
 const defaultState: UserState = {
   userId: generateUserId(),
   displayName: 'Anonymous Larper',
-  personaId: null,
+  personaId: 'finance_bro',
   larpRating: INITIAL_LARP_RATING,
   completedScenarios: [],
 }
@@ -69,7 +69,8 @@ const UserContext = createContext<UserContextType | null>(null)
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<UserState>(() => {
     const stored = loadFromStorage()
-    return stored ?? { ...defaultState, userId: generateUserId() }
+    const base = stored ?? { ...defaultState, userId: generateUserId() }
+    return { ...base, personaId: base.personaId ?? 'finance_bro' }
   })
   const stateRef = useRef(state)
   // Session-only — not persisted to localStorage
@@ -91,7 +92,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         setState(prev => ({
           ...prev,
           userId: typeof remote.userId === 'string' ? remote.userId : prev.userId,
-          personaId: remote.personaId ?? null,
+          personaId: remote.personaId ?? prev.personaId ?? 'finance_bro',
           larpRating: typeof remote.larpRating === 'number' ? remote.larpRating : prev.larpRating,
           completedScenarios: Array.isArray(remote.completedScenarios)
             ? remote.completedScenarios
