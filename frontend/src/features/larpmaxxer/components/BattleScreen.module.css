@@ -1,0 +1,135 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  position: relative;
+}
+
+/* ── Arena ─────────────────────────────────────────── */
+
+.arena {
+  flex: 1;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  overflow: visible;
+  min-height: 0;
+}
+
+.arenaOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Turn badge ─────────────────────────────────────── */
+
+.turnBadge {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.55);
+  background: rgba(0,0,0,0.6);
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ── Enemy stats panel — top LEFT ───────────────────── */
+
+.enemyStats {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  width: 200px;
+  background: rgba(6, 4, 16, 0.88);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statName {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.statRole {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+  margin-top: -4px;
+}
+
+.meters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Character sprite — bottom LEFT ─────────────────── */
+
+.playerSprite {
+  position: absolute;
+  left: 20px;
+  bottom: 0;
+  width: 260px;
+  height: 300px;
+  z-index: 1;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.6));
+  overflow: visible;
+}
+
+/* ── Enemy sprite — top RIGHT ────────────────────────── */
+
+.enemySprite {
+  position: absolute;
+  right: 40px;
+  bottom: 20px;
+  width: 230px;
+  height: 230px;
+  z-index: 1;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.7));
+}
+
+
+
+/* ── Bottom section ─────────────────────────────────── */
+
+.bottomSection {
+  height: 196px;
+  flex-shrink: 0;
+  display: flex;
+  border-top: 2px solid rgba(255,255,255,0.08);
+  background: rgba(6, 4, 16, 0.97);
+}
+
+.dialogueSide {
+  flex: 1.1;
+  overflow: hidden;
+}
+
+.moveSide {
+  flex: 1;
+  border-left: 1px solid rgba(255,255,255,0.07);
+  overflow: hidden;
+}

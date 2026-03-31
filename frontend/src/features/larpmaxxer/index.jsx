@@ -11,7 +11,7 @@ import { fetchLarpmaxxerBootstrap } from '../../services/api'
 
 import { ScenarioPanel } from './components/ScenarioPanel'
 import { PreBrief } from './components/PreBrief'
-import { DialogueScreen } from './components/DialogueScreen'
+import { BattleScreen } from './components/BattleScreen'
 import { EventCard } from './components/EventCard'
 import { SummaryScreen } from './components/SummaryScreen'
 import { CharacterPanel } from './components/CharacterPanel'
@@ -246,7 +246,7 @@ export function LarpMaxxer({ onExitTraining }) {
   else if (session?.status === 'prebriefing') centerScreen = 'prebriefing'
 
   const showCharacterPanel = character !== null &&
-    (centerScreen === 'active' || centerScreen === 'event' || centerScreen === 'summary')
+    (centerScreen === 'event' || centerScreen === 'summary')
 
   const meterDeltas = session?.history.length
     ? (() => {
@@ -353,7 +353,7 @@ export function LarpMaxxer({ onExitTraining }) {
             {centerScreen === 'active' && session && character && currentNode && (
               <Motion.div key="active" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }} style={{ height: '100%', overflow: 'hidden' }}>
-                <DialogueScreen
+                <BattleScreen
                   session={session}
                   currentNode={currentNode}
                   character={character}

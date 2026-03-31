@@ -1,0 +1,109 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(8, 6, 20, 0.97);
+  border-right: 1px solid rgba(255,255,255,0.07);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.scrollArea::-webkit-scrollbar {
+  width: 3px;
+}
+
+.scrollArea::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+}
+
+/* Log entries */
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.charEntry {
+  align-items: flex-start;
+}
+
+.userEntry {
+  align-items: flex-end;
+}
+
+.entryLabel {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.charEntry .entryLabel {
+  color: var(--neon, #7c3aed);
+}
+
+.userEntry .entryLabel {
+  color: var(--text-secondary);
+}
+
+.entryText {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 95%;
+}
+
+.userEntry .entryText {
+  color: rgba(255,255,255,0.75);
+  font-style: italic;
+  text-align: right;
+}
+
+/* Cursor */
+.cursor {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-left: 3px;
+  animation: blink 0.8s ease-in-out infinite;
+}
+
+/* Thinking dots */
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding-top: 2px;
+}
+
+.dot {
+  animation: dotPulse 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.1; }
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.1); }
+}
