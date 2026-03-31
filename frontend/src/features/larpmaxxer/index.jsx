@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
 import { useSimulation } from './hooks/useSimulation'
 import { useUser } from '../../context/UserContext'
@@ -20,6 +20,7 @@ import { ConfirmModal } from './components/ConfirmModal'
 import styles from './LarpMaxxer.module.css'
 
 export function LarpMaxxer({ onExitTraining }) {
+  const navigate = useNavigate()
   const {
     userId,
     personaId,
@@ -111,6 +112,7 @@ export function LarpMaxxer({ onExitTraining }) {
       try {
         const bootstrap = await fetchLarpmaxxerBootstrap()
         if (cancelled) return
+        const bundledVoiceByCharacter = new Map(CHARACTERS.map((entry) => [entry.id, entry.voiceId]))
         if (Array.isArray(bootstrap?.scenarios) && bootstrap.scenarios.length > 0) {
           setScenarios(bootstrap.scenarios)
         }
@@ -118,7 +120,12 @@ export function LarpMaxxer({ onExitTraining }) {
           setPersonas(bootstrap.personas)
         }
         if (Array.isArray(bootstrap?.characters) && bootstrap.characters.length > 0) {
-          setCharacters(bootstrap.characters)
+          setCharacters(
+            bootstrap.characters.map((entry) => ({
+              ...entry,
+              voiceId: entry.voiceId ?? bundledVoiceByCharacter.get(entry.id),
+            })),
+          )
         }
       } catch {
         // Keep bundled content when bootstrap API is unavailable.
@@ -146,7 +153,22 @@ export function LarpMaxxer({ onExitTraining }) {
     ? scenarios.find(s => s.id === lastPlayed.scenarioId) ?? null : null
   const tier1Unlocked = scenarios.filter(s => s.unlockTier === 1 && unlockedIds.includes(s.id))
 
+  function promptPersonaSelection() {
+    openConfirm({
+      title: 'Choose Persona First',
+      message: 'Select a persona before starting a simulation.',
+      confirmLabel: 'Choose Persona',
+      action: () => {
+        navigate('/persona-select')
+      },
+    })
+  }
+
   function handleWarmUp() {
+    if (!personaId) {
+      promptPersonaSelection()
+      return
+    }
     const pick = tier1Unlocked[Math.floor(Math.random() * tier1Unlocked.length)]
     if (pick) {
       setHasEntered(true)
@@ -162,6 +184,10 @@ export function LarpMaxxer({ onExitTraining }) {
   } : null
 
   function handleSelectScenario(id) {
+    if (!personaId) {
+      promptPersonaSelection()
+      return
+    }
     if (session && session.status === 'active') {
       openConfirm({
         title: 'Switch Scenario?',

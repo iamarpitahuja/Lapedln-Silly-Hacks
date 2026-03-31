@@ -91,9 +91,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         setState(prev => ({
           ...prev,
           userId: typeof remote.userId === 'string' ? remote.userId : prev.userId,
-          personaId: remote.personaId ?? null,
-          larpRating: typeof remote.larpRating === 'number' ? remote.larpRating : prev.larpRating,
-          completedScenarios: Array.isArray(remote.completedScenarios)
+          personaId: remote.personaId ?? prev.personaId,
+          larpRating: typeof remote.larpRating === 'number'
+            ? Math.max(prev.larpRating, remote.larpRating)
+            : prev.larpRating,
+          completedScenarios: Array.isArray(remote.completedScenarios) && (
+            remote.completedScenarios.length > 0 || prev.completedScenarios.length === 0
+          )
             ? remote.completedScenarios
             : prev.completedScenarios,
         }))

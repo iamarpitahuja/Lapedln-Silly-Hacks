@@ -61,6 +61,7 @@ export type CharacterProfile = {
   company: string
   subtext: string
   avatar: string
+  voiceId?: string
   personalityTraits: string[]
   personaAffinities: Partial<Record<PersonaId, { impressed: number; suspicion: number }>>
   catchphrases: string[]

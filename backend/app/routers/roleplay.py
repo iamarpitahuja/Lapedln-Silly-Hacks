@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from supabase import Client
 
+from app.config import settings
 from app.dependencies import get_current_user, get_service_client
+from app.services.elevenlabs import stream_tts
 from app.services.gemini import roleplay_chat
 from app.services.voice_registry import get_character_prompt, list_characters
 
@@ -13,6 +16,11 @@ class ChatMessage(BaseModel):
     session_id: str | None = None
     character_id: str
     message: str
+
+
+class TTSRequest(BaseModel):
+    text: str
+    voice_id: str
 
 
 @router.get("/roleplay/characters")
@@ -76,3 +84,25 @@ async def chat(
         "dialogue": response["dialogue"],
         "emotion": response.get("emotion", "inspired"),
     }
+
+
+@router.post("/roleplay/tts")
+async def synthesize_roleplay_tts(
+    body: TTSRequest,
+):
+    text = body.text.strip()
+    voice_id = body.voice_id.strip()
+
+    if not settings.elevenlabs_api_key:
+        raise HTTPException(status_code=503, detail="TTS not configured")
+
+    if not text:
+        raise HTTPException(status_code=400, detail="text is required")
+
+    if not voice_id:
+        raise HTTPException(status_code=400, detail="voice_id is required")
+
+    return StreamingResponse(
+        stream_tts(text=text, voice_id=voice_id),
+        media_type="audio/mpeg",
+    )

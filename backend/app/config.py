@@ -20,7 +20,8 @@ class Settings(BaseSettings):
 
     # Defaults
     gemini_model: str = "gemini-2.0-flash"
-    elevenlabs_model: str = "eleven_turbo_v2_5"
+    # Prefer quality-first model for dialogue realism.
+    elevenlabs_model: str = "eleven_v3"
 
     @property
     def skip_auth(self) -> bool:

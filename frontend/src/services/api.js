@@ -2,7 +2,7 @@ import { supabase } from '../lib/supabase'
 
 const API_BASE = '/api'
 
-async function authFetch(url, options = {}) {
+async function authFetchRaw(url, options = {}) {
   const { data: { session } } = await supabase.auth.getSession()
   const token = session?.access_token
 
@@ -16,6 +16,13 @@ async function authFetch(url, options = {}) {
     const text = await res.text().catch(() => '')
     throw new Error(text || `Request failed: ${res.status}`)
   }
+
+  return res
+}
+
+async function authFetch(url, options = {}) {
+  const res = await authFetchRaw(url, options)
+
   // 204 No Content — nothing to parse
   if (res.status === 204) return
   const contentType = res.headers.get('content-type')
@@ -298,4 +305,23 @@ export async function patchLarpmaxxerProgress(payload) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
+}
+
+export async function fetchRoleplayTts({ text, voiceId, signal }) {
+  const res = await fetch(`${API_BASE}/roleplay/tts`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text,
+      voice_id: voiceId,
+    }),
+    signal,
+  })
+
+  if (!res.ok) {
+    const textBody = await res.text().catch(() => '')
+    throw new Error(textBody || `Request failed: ${res.status}`)
+  }
+
+  return res.blob()
 }

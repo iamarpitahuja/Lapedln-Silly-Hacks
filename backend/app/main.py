@@ -16,6 +16,7 @@ from app.routers import (
     posts,
     profile,
     relarps,
+    roleplay,
 )
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,7 @@ app.include_router(notifications.router, prefix="/api")
 app.include_router(relarps.router, prefix="/api")
 app.include_router(games.router)
 app.include_router(larpmaxxer.router, prefix="/api")
+app.include_router(roleplay.router, prefix="/api")
 
 
 @app.get("/health")

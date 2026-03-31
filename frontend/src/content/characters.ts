@@ -9,6 +9,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Deloitte',
     subtext: 'Wants to help. Will accidentally humble-brag about his own journey.',
     avatar: '🧑‍💼',
+    voiceId: 'CwhRBWXzGAHq8TQ4Fs17',
     personalityTraits: ['earnest', 'mildly anxious', 'over-prepared', 'genuinely helpful'],
     personaAffinities: {
       consulting_clone: { impressed: 10, suspicion: -5 },
@@ -29,6 +30,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Series B startup',
     subtext: 'Has a follow-up template drafted before you finish your sentence',
     avatar: '👩‍💼',
+    voiceId: 'cgSgspJ2msm6clMCkdW9',
     personalityTraits: ['efficient', 'strategic', 'politely transactional', 'time-conscious'],
     personaAffinities: {
       finance_bro: { impressed: 8, suspicion: -5 },
@@ -50,6 +52,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Your new company',
     subtext: 'Has seen twelve versions of you. Knows exactly which one you are.',
     avatar: '👨‍💼',
+    voiceId: 'iP95p4xoKVk53GoZ742B',
     personalityTraits: ['measured', 'quietly skeptical', 'experienced', 'patient up to a point'],
     personaAffinities: {
       consulting_clone: { impressed: 5, suspicion: -5 },
@@ -70,6 +73,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'The company interviewing you',
     subtext: 'Has seen this exact performance before. Marked you down before you sat down.',
     avatar: '👩‍💼',
+    voiceId: 'SAz9YHcvj6GT2YYXdXww',
     personalityTraits: ['methodical', 'pattern-matching', 'professionally warm', 'unfoolable'],
     personaAffinities: {
       consulting_clone: { impressed: 10, suspicion: -10 },
@@ -90,6 +94,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Morgan Stanley (allegedly)',
     subtext: 'Slept 4 hours, crushed the gym at 5am, and is somehow the most annoying person at this bar',
     avatar: '🤵',
+    voiceId: 'N2lVS1w4EtoT3dr4eOWO',
     personalityTraits: ['jargon-dense', 'competitive', 'sleep-deprived but thriving', 'hierarchy-aware'],
     personaAffinities: {
       finance_bro: { impressed: 15, suspicion: -10 },
@@ -111,6 +116,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'University',
     subtext: 'Will dismantle your entire worldview using a 1974 essay you haven\'t read',
     avatar: '🧑‍🎓',
+    voiceId: 'pqHfZKP75CvOlQylNhV4',
     personalityTraits: ['theoretically rigorous', 'politely confrontational', 'citation-heavy', 'genuinely curious'],
     personaAffinities: {
       liberal_arts: { impressed: 15, suspicion: -10 },
@@ -132,6 +138,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Technically homeless',
     subtext: 'Shipped more in a week than you have in your career. Uses a library bag as a laptop case.',
     avatar: '🧑‍💻',
+    voiceId: 'pNInz6obpgDQGcFmaJgB',
     personalityTraits: ['bluntly precise', 'zero-pretense', 'systems thinker', 'unimpressed by credentials'],
     personaAffinities: {
       homeless_cs: { impressed: 15, suspicion: -15 },
@@ -153,6 +160,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Family office',
     subtext: 'Wealth so old it\'s boring to him. Will ask about your outcomes, not your logo.',
     avatar: '🧔',
+    voiceId: 'bIHbv24MWmeRgasZH58o',
     personalityTraits: ['calm', 'outcome-oriented', 'discretely evaluating everything', 'genuinely unimpressed by names'],
     personaAffinities: {
       startup_billionaire: { impressed: 15, suspicion: -10 },
@@ -174,6 +182,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Culture-adjacent agency',
     subtext: 'Drops a reference per sentence. Keeps a mental score of how many you miss.',
     avatar: '👩‍🎨',
+    voiceId: 'FGY2WhTYpPnrIDTdsKH5',
     personalityTraits: ['effortlessly cool', 'culturally fluent', 'reference-dense', 'generous if you keep up'],
     personaAffinities: {
       liberal_arts: { impressed: 10, suspicion: -5 },
@@ -195,6 +204,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Threshold Ventures',
     subtext: 'Has a sixth sense for founders who googled "AI startup pitch" this morning',
     avatar: '🧑‍💼',
+    voiceId: 'JBFqnCBsd6RMkjVDRZzb',
     personalityTraits: ['pattern-matching', 'efficiently skeptical', 'genuinely curious under the surface', 'time-scarce'],
     personaAffinities: {
       ai_founder: { impressed: 10, suspicion: -5 },
@@ -217,6 +227,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Prestige firm',
     subtext: 'Third summer. Already acts like he manages the managing directors.',
     avatar: '🧑',
+    voiceId: 'TX3LPaxmHKxFdv7VOQHJ',
     personalityTraits: ['subtly territorial', 'status-aware', 'casually gatekeeping', 'internally competitive'],
     personaAffinities: {
       consulting_clone: { impressed: 10, suspicion: -5 },
@@ -238,6 +249,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Pre-IPO startup',
     subtext: 'Attending this dinner as a tax write-off for her soul',
     avatar: '👩‍💼',
+    voiceId: 'EXAVITQu4vr4xnSDxMaL',
     personalityTraits: ['decisive', 'low-patience for performance', 'authentic detector', 'quietly powerful'],
     personaAffinities: {
       startup_billionaire: { impressed: 12, suspicion: -10 },
@@ -259,6 +271,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: 'Threshold Ventures',
     subtext: 'Will ask about your CAC in 90 seconds. Then your LTV. Then your churn. Then your soul.',
     avatar: '🧑‍💼',
+    voiceId: 'IKne3meq5aSn9XLyUdCD',
     personalityTraits: ['technically literate', 'deal-hungry but disciplined', 'CS background', 'time-scarce'],
     personaAffinities: {
       ai_founder: { impressed: 15, suspicion: -10 },
@@ -281,6 +294,7 @@ export const CHARACTERS: CharacterProfile[] = [
     company: '$1.4B outcome, now advising',
     subtext: 'Exited at $1.4B. Still drives a 2019 Prius. Curious what you\'re actually about.',
     avatar: '👩‍💼',
+    voiceId: 'Xb7hH8MSUJpSbSDYk0k2',
     personalityTraits: ['genuinely curious', 'subtly testing everything', 'wealth-invisible', 'authenticity radar'],
     personaAffinities: {
       startup_billionaire: { impressed: 15, suspicion: -15 },

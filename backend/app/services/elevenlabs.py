@@ -1,17 +1,16 @@
-import base64
-import json
 import re
 from collections.abc import AsyncGenerator
 
-import websockets
+import httpx
 
 from app.config import settings
 
 
-def chunk_text(text: str) -> list[str]:
-    """Split text on natural sentence boundaries for streaming TTS."""
-    chunks = re.split(r"(?<=[.!?;])\s+", text)
-    return [c.strip() for c in chunks if c.strip()]
+def normalize_tts_text(text: str) -> str:
+    """Normalize punctuation/whitespace for smoother delivery."""
+    cleaned = text.replace("—", ", ").replace("–", ", ")
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned
 
 
 async def stream_tts(text: str, voice_id: str) -> AsyncGenerator[bytes, None]:
@@ -20,34 +19,37 @@ async def stream_tts(text: str, voice_id: str) -> AsyncGenerator[bytes, None]:
     Connects to ElevenLabs WebSocket, streams text chunks in,
     yields audio chunks out. Used with FastAPI StreamingResponse.
     """
-    url = (
-        f"wss://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
-        f"/stream-input?model_id={settings.elevenlabs_model}"
-    )
+    normalized_text = normalize_tts_text(text)
+    if not normalized_text:
+        return
 
-    async with websockets.connect(url) as ws:
-        # 1. Send initial config with API key
-        await ws.send(json.dumps({
-            "text": " ",
-            "voice_settings": {"stability": 0.5, "similarity_boost": 0.75},
-            "xi_api_key": settings.elevenlabs_api_key,
-        }))
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream"
+    payload = {
+        "text": normalized_text,
+        "model_id": settings.elevenlabs_model,
+        # Conservative settings to reduce synthetic/exaggerated delivery.
+        "voice_settings": {
+            "stability": 0.55,
+            "similarity_boost": 0.9,
+            "style": 0.0,
+            "use_speaker_boost": True,
+        },
+    }
 
-        # 2. Send text chunks
-        chunks = chunk_text(text)
-        for chunk in chunks:
-            await ws.send(json.dumps({
-                "text": chunk + " ",
-                "try_trigger_generation": True,
-            }))
+    headers = {
+        "xi-api-key": settings.elevenlabs_api_key,
+        "accept": "audio/mpeg",
+        "content-type": "application/json",
+    }
 
-        # 3. Send end-of-stream signal
-        await ws.send(json.dumps({"text": ""}))
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        async with client.stream("POST", url, headers=headers, json=payload) as response:
+            if response.status_code >= 400:
+                detail = await response.aread()
+                raise RuntimeError(
+                    f"ElevenLabs TTS failed ({response.status_code}): {detail.decode('utf-8', errors='ignore')}"
+                )
 
-        # 4. Receive and yield audio chunks
-        async for message in ws:
-            data = json.loads(message)
-            if data.get("audio"):
-                yield base64.b64decode(data["audio"])
-            if data.get("isFinal"):
-                break
+            async for chunk in response.aiter_bytes():
+                if chunk:
+                    yield chunk

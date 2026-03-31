@@ -40,6 +40,15 @@
   font-size: 14px;
   color: var(--text-primary);
   line-height: 1.55;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.textBody {
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
 }
 
 .bubble.user .text {
@@ -61,5 +70,55 @@
   align-self: flex-end;
 }
 
+.speakerBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--border-md);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.speakerBtn:hover:not(:disabled) {
+  color: var(--neon);
+  border-color: var(--neon-dim);
+}
+
+.speakerBtn:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.speakerBtnError {
+  color: var(--accent-danger);
+  border-color: var(--accent-danger);
+  background: var(--accent-danger-soft);
+}
+
+.speakerIcon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--border-md);
+  border-top-color: var(--neon);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 

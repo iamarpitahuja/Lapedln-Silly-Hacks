@@ -22,16 +22,50 @@ function initialLabel(name) {
     .toUpperCase()
 }
 
-export function DialogueBubble({ speaker, text, flavorBadge, speakerName }) {
+export function DialogueBubble({
+  speaker,
+  text,
+  flavorBadge,
+  speakerName,
+  showSpeaker = false,
+  ttsState = 'idle',
+  onSpeakerClick = null,
+}) {
   const isUser = speaker === 'user'
   const badgeStyle = flavorBadge ? BADGE_STYLE[flavorBadge] : null
   const avatarLabel = initialLabel(speakerName ?? (isUser ? 'You' : 'Character'))
+  const isLoading = ttsState === 'loading'
+  const isPlaying = ttsState === 'playing'
+  const isError = ttsState === 'error'
+  const speakerLabel = isLoading
+    ? 'Loading voice'
+    : isPlaying
+      ? 'Stop voice playback'
+      : 'Play voice'
 
   return (
     <div className={`${styles.bubble} ${isUser ? styles.user : ''}`}>
       <div className={styles.avatarWrap}>{avatarLabel}</div>
       <div className={styles.content}>
-        <div className={styles.text}>{text}</div>
+        <div className={styles.text}>
+          <span className={styles.textBody}>{text}</span>
+          {showSpeaker && (
+            <button
+              type="button"
+              className={`${styles.speakerBtn} ${isError ? styles.speakerBtnError : ''}`}
+              onClick={onSpeakerClick}
+              disabled={isLoading}
+              aria-label={speakerLabel}
+              title={speakerLabel}
+            >
+              {isLoading ? (
+                <span className={styles.spinner} aria-hidden />
+              ) : (
+                <span className={styles.speakerIcon} aria-hidden>{isPlaying ? '🔇' : '🔊'}</span>
+              )}
+            </button>
+          )}
+        </div>
         {badgeStyle && (
           <span
             className={styles.badge}
