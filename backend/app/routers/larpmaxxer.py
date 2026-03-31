@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.dependencies import get_current_user, get_service_client
+from app.database import get_db
+from app.dependencies import get_current_user
 from app.services.larpmaxxer_store import (
     get_characters,
     get_personas,
@@ -10,6 +12,7 @@ from app.services.larpmaxxer_store import (
     get_scenarios,
     update_progress,
 )
+from app.services.rating_engine import adjust_rating
 
 router = APIRouter(tags=["larpmaxxer"])
 
@@ -51,9 +54,9 @@ async def get_larpmaxxer_scenario_content(
 @router.get("/larpmaxxer/progress")
 async def get_larpmaxxer_progress(
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
-    progress = get_progress(user_id, supabase)
+    progress = await get_progress(user_id, db)
     return {"userId": user_id, **progress}
 
 
@@ -61,7 +64,7 @@ async def get_larpmaxxer_progress(
 async def patch_larpmaxxer_progress(
     body: ProgressPatch,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     updates: dict = {}
     if "personaId" in body.model_fields_set:
@@ -78,5 +81,21 @@ async def patch_larpmaxxer_progress(
             for entry in (body.completedScenarios or [])
         ]
 
-    progress = update_progress(user_id, updates, supabase)
-    return {"userId": user_id, **progress}
+    progress = await update_progress(user_id, updates, db)
+
+    # Sync scenario completions to Profile.larp_rating
+    rating_change = None
+    if body.completedScenarios:
+        for scenario in body.completedScenarios:
+            # Scale delta by score: 1.5 base + up to 1.5 bonus (score is 0-100)
+            delta = 1.5 + (scenario.score / 100.0) * 1.5
+            rating_change = await adjust_rating(
+                db, user_id, "larpmaxxer_scenario_complete",
+                {"delta": round(delta, 1)},
+            )
+        await db.commit()
+
+    result = {"userId": user_id, **progress}
+    if rating_change:
+        result["rating_change"] = rating_change
+    return result

@@ -1,31 +1,30 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from app.dependencies import get_current_user, get_service_client
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.services.rating_engine import adjust_rating
 
 router = APIRouter(prefix="/api/games", tags=["games"])
 
-REWARD_DELTAS = {
-    "bingo": 0.5,
-    "grind": 1.5,
-    "connections": 1.0,
-}
+VALID_GAMES = {"bingo", "grind", "connections"}
+
 
 class ClaimRewardRequest(BaseModel):
     game: str
+
 
 @router.post("/claim-reward")
 async def claim_reward(
     body: ClaimRewardRequest,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
-    if body.game not in REWARD_DELTAS:
+    if body.game not in VALID_GAMES:
         raise HTTPException(status_code=400, detail="Invalid game")
 
-    delta = REWARD_DELTAS[body.game]
-    supabase.rpc("update_larp_rating", {
-        "target_user_id": user_id,
-        "rating_delta": delta,
-    }).execute()
+    rating_change = await adjust_rating(db, user_id, f"game_{body.game}")
+    await db.commit()
 
-    return {"ok": True, "rating_delta": delta}
+    return {"ok": True, "rating_change": rating_change}

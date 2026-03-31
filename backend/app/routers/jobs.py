@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.dependencies import get_current_user, get_service_client
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.models import Profile
 
 router = APIRouter(tags=["jobs"])
 
@@ -29,14 +33,6 @@ class JobUpdate(BaseModel):
     job: str
 
 
-def _first_row(data):
-    if isinstance(data, list):
-        return data[0] if data else None
-    if isinstance(data, dict):
-        return data
-    return None
-
-
 @router.get("/jobs/options")
 async def list_job_options():
     return {"options": JOB_OPTIONS}
@@ -46,36 +42,32 @@ async def list_job_options():
 async def update_job(
     body: JobUpdate,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Update the user's current larp job. This is the single source of truth."""
     job = body.job.strip()
     if not job:
         raise HTTPException(status_code=400, detail="Job cannot be empty")
 
-    result = (
-        supabase.table("profiles")
-        .update({"job": job})
-        .eq("id", user_id)
-        .execute()
-    )
-    updated = _first_row(result.data)
-    if not updated:
-        upsert_result = (
-            supabase.table("profiles")
-            .upsert(
-                {
-                    "id": user_id,
-                    "display_name": "Anonymous Larper",
-                    "job": job,
-                },
-                on_conflict="id",
-            )
-            .execute()
+    result = await db.execute(select(Profile).where(Profile.id == user_id))
+    profile = result.scalar_one_or_none()
+
+    if profile is None:
+        # Upsert: create profile with job
+        profile = Profile(
+            id=user_id,
+            display_name="Anonymous Larper",
+            job=job,
         )
-        updated = _first_row(upsert_result.data) or {"job": job}
+        db.add(profile)
+        await db.commit()
+        await db.refresh(profile)
+    else:
+        profile.job = job
+        await db.commit()
+        await db.refresh(profile)
 
     return {
-        "job": updated["job"],
+        "job": profile.job,
         "message": "Professional delusion updated.",
     }

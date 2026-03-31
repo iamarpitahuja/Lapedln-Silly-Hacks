@@ -1,10 +1,37 @@
+import random
+
 from fastapi import APIRouter, Depends
 from collections import Counter
 
-from app.dependencies import get_current_user, get_user_client
-from app.services.gemini import generate_glazes
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.models import (
+    Post,
+    Profile,
+    Comment,
+    Glaze,
+    PostReaction,
+    Relarp,
+    RelarpReaction,
+)
 
 router = APIRouter(tags=["feed"])
+
+_MOCK_GLAZES = [
+    "Absolute masterclass in professional storytelling.",
+    "This is the kind of content that changes industries.",
+    "Your thought leadership is genuinely inspiring.",
+    "The courage it takes to post this... unmatched.",
+    "Every recruiter just bookmarked this.",
+    "This post has more value than most TED talks.",
+    "LinkedIn needs more brave voices like yours.",
+    "I just forwarded this to my entire C-suite.",
+    "This is what peak corporate consciousness looks like.",
+    "Your career trajectory just shifted the Overton window.",
+]
 BUZZWORD_TERMS = [
     "synergy",
     "alignment",
@@ -42,45 +69,86 @@ async def get_feed(
     limit: int = 20,
     offset: int = 0,
     user_id: str = Depends(get_current_user),
-    user_client=Depends(get_user_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """
-    Fetch the feed from Supabase. Service role client is used until auth is built
-    (Social Blindness RLS will apply once we switch to user JWTs).
+    Fetch the feed with Social Blindness filtering.
     Each post gets 3 AI-generated satirical compliments (glazes).
     """
-    posts_result = (
-        user_client.table("posts")
-        .select("*, profiles(id, display_name, job, avatar_url, larp_rating)")
-        .order("created_at", desc=True)
-        .range(offset, offset + limit - 1)
-        .execute()
+    # Get viewer's rating for Social Blindness
+    viewer_result = await db.execute(
+        select(Profile.larp_rating).where(Profile.id == user_id)
     )
-    posts = posts_result.data or []
+    viewer_rating = viewer_result.scalar_one_or_none() or 0.0
 
-    # Fetch relarps with commentary to show as feed items
-    all_relarps_result = (
-        user_client.table("relarps")
-        .select("*, relarper:profiles!user_id(id, display_name, title, avatar_url, larp_rating)")
-        .order("created_at", desc=True)
-        .range(offset, offset + limit - 1)
-        .execute()
+    # Query posts with Social Blindness: only show posts where author rating <= viewer rating
+    posts_stmt = (
+        select(Post, Profile)
+        .join(Profile, Post.author_id == Profile.id)
+        .where(
+            (Profile.larp_rating <= viewer_rating) | (Post.author_id == user_id)
+        )
+        .order_by(Post.created_at.desc())
+        .offset(offset)
+        .limit(limit)
     )
-    all_relarps = all_relarps_result.data or []
+    posts_rows = (await db.execute(posts_stmt)).all()
+    posts = []
+    for row in posts_rows:
+        post_dict = row.Post.to_dict()
+        post_dict["profiles"] = {
+            "id": row.Profile.id,
+            "display_name": row.Profile.display_name,
+            "job": row.Profile.job,
+            "avatar_url": row.Profile.avatar_url,
+            "larp_rating": row.Profile.larp_rating,
+        }
+        posts.append(post_dict)
+
+    # Fetch relarps with relarper profiles
+    relarps_stmt = (
+        select(Relarp, Profile)
+        .join(Profile, Relarp.user_id == Profile.id)
+        .order_by(Relarp.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+    )
+    relarps_rows = (await db.execute(relarps_stmt)).all()
+    all_relarps = []
+    for row in relarps_rows:
+        relarp_dict = row.Relarp.to_dict()
+        relarp_dict["relarper"] = {
+            "id": row.Profile.id,
+            "display_name": row.Profile.display_name,
+            "title": row.Profile.job,
+            "avatar_url": row.Profile.avatar_url,
+            "larp_rating": row.Profile.larp_rating,
+        }
+        all_relarps.append(relarp_dict)
 
     # Build a lookup of original posts by id (for embedding in relarp feed items)
     posts_by_id = {p["id"]: p for p in posts}
 
     # For relarps referencing posts not already fetched, fetch them
-    missing_post_ids = [r["post_id"] for r in all_relarps if r["post_id"] not in posts_by_id]
+    missing_post_ids = list(set(
+        r["post_id"] for r in all_relarps if r["post_id"] not in posts_by_id
+    ))
     if missing_post_ids:
-        extra_posts_result = (
-            user_client.table("posts")
-            .select("*, profiles(id, display_name, title, avatar_url, larp_rating)")
-            .in_("id", list(set(missing_post_ids)))
-            .execute()
+        extra_stmt = (
+            select(Post, Profile)
+            .join(Profile, Post.author_id == Profile.id)
+            .where(Post.id.in_(missing_post_ids))
         )
-        for ep in (extra_posts_result.data or []):
+        extra_rows = (await db.execute(extra_stmt)).all()
+        for row in extra_rows:
+            ep = row.Post.to_dict()
+            ep["profiles"] = {
+                "id": row.Profile.id,
+                "display_name": row.Profile.display_name,
+                "job": row.Profile.job,
+                "avatar_url": row.Profile.avatar_url,
+                "larp_rating": row.Profile.larp_rating,
+            }
             posts_by_id[ep["id"]] = ep
 
     # Build relarp feed items
@@ -128,79 +196,84 @@ async def get_feed(
             "trending_delusions": [],
             "buzzwords": [],
         }
-    glazes_result = user_client.table("glazes").select("*").in_("post_id", post_ids).execute()
+
+    glazes_stmt = select(Glaze).where(Glaze.post_id.in_(post_ids))
+    glazes_result = (await db.execute(glazes_stmt)).scalars().all()
 
     glazes_by_post: dict[str, list] = {}
     glaze_counts: dict[str, int] = {}
     user_glazed: set[str] = set()
-    for g in (glazes_result.data or []):
-        glazes_by_post.setdefault(g["post_id"], []).append(g)
-        glaze_counts[g["post_id"]] = glaze_counts.get(g["post_id"], 0) + 1
-        if g.get("glazer_id") == user_id and g.get("glaze_type") == "organic":
-            user_glazed.add(g["post_id"])
+    for g in glazes_result:
+        g_dict = g.to_dict()
+        glazes_by_post.setdefault(g.post_id, []).append(g_dict)
+        glaze_counts[g.post_id] = glaze_counts.get(g.post_id, 0) + 1
+        if g.glazer_id == user_id and g.glaze_type == "organic":
+            user_glazed.add(g.post_id)
 
-    # Fetch comments and relarps for visible posts
-    comments_result = (
-        user_client.table("comments")
-        .select("*, author:profiles!author_id(display_name, job, avatar_url, larp_rating)")
-        .in_("post_id", post_ids)
-        .order("created_at", desc=True)
-        .execute()
+    # Fetch comments with author profiles for visible posts
+    comments_stmt = (
+        select(Comment, Profile)
+        .join(Profile, Comment.author_id == Profile.id)
+        .where(Comment.post_id.in_(post_ids))
+        .order_by(Comment.created_at.desc())
     )
+    comments_rows = (await db.execute(comments_stmt)).all()
     comments_by_post: dict[str, list] = {}
-    for c in (comments_result.data or []):
-        comments_by_post.setdefault(c["post_id"], []).append({
-            "id": c["id"],
-            "content": c["content"],
-            "createdAt": c["created_at"],
+    for row in comments_rows:
+        comment = row.Comment
+        profile = row.Profile
+        comments_by_post.setdefault(comment.post_id, []).append({
+            "id": comment.id,
+            "content": comment.content,
+            "createdAt": comment.created_at.isoformat() if comment.created_at else None,
             "timestamp": "Just now",
             "author": {
-                "name": c["author"]["display_name"],
-                "headline": c["author"]["job"],
-                "avatar": c["author"].get("avatar_url"),
-                "larpRating": c["author"].get("larp_rating", 0),
+                "name": profile.display_name,
+                "headline": profile.job,
+                "avatar": profile.avatar_url,
+                "larpRating": profile.larp_rating,
             },
-            "isUserComment": c["author_id"] == user_id,
+            "isUserComment": comment.author_id == user_id,
         })
 
-    relarps_result = (
-        user_client.table("relarps")
-        .select("post_id, user_id")
-        .in_("post_id", post_ids)
-        .execute()
+    # Fetch relarp counts for visible posts
+    relarps_count_stmt = (
+        select(Relarp).where(Relarp.post_id.in_(post_ids))
     )
+    relarps_for_posts = (await db.execute(relarps_count_stmt)).scalars().all()
     relarp_counts: dict[str, int] = {}
     user_relarped: set[str] = set()
-    for r in (relarps_result.data or []):
-        relarp_counts[r["post_id"]] = relarp_counts.get(r["post_id"], 0) + 1
-        if r["user_id"] == user_id:
-            user_relarped.add(r["post_id"])
+    for r in relarps_for_posts:
+        relarp_counts[r.post_id] = relarp_counts.get(r.post_id, 0) + 1
+        if r.user_id == user_id:
+            user_relarped.add(r.post_id)
 
-    reactions_result = (
-        user_client.table("post_reactions")
-        .select("post_id, user_id, reaction_type")
-        .in_("post_id", post_ids)
-        .execute()
+    # Fetch post reactions
+    reactions_stmt = (
+        select(PostReaction).where(PostReaction.post_id.in_(post_ids))
     )
+    reactions = (await db.execute(reactions_stmt)).scalars().all()
     like_counts: dict[str, int] = {}
     love_counts: dict[str, int] = {}
     user_liked: set[str] = set()
     user_loved: set[str] = set()
-    for reaction in (reactions_result.data or []):
-        post_id = reaction["post_id"]
-        reaction_type = reaction["reaction_type"]
-        reaction_user = reaction["user_id"]
-        if reaction_type == "like":
-            like_counts[post_id] = like_counts.get(post_id, 0) + 1
-            if reaction_user == user_id:
-                user_liked.add(post_id)
-        elif reaction_type == "love":
-            love_counts[post_id] = love_counts.get(post_id, 0) + 1
-            if reaction_user == user_id:
-                user_loved.add(post_id)
+    for reaction in reactions:
+        pid = reaction.post_id
+        rtype = reaction.reaction_type
+        ruser = reaction.user_id
+        if rtype == "like":
+            like_counts[pid] = like_counts.get(pid, 0) + 1
+            if ruser == user_id:
+                user_liked.add(pid)
+        elif rtype == "love":
+            love_counts[pid] = love_counts.get(pid, 0) + 1
+            if ruser == user_id:
+                user_loved.add(pid)
 
-    # Generate AI glazes (mock when no Gemini key)
-    ai_glazes = await generate_glazes(regular_posts)
+    # Generate mock AI glazes instantly — no Gemini call, zero latency
+    ai_glazes = {}
+    for p in regular_posts:
+        ai_glazes[p["id"]] = random.sample(_MOCK_GLAZES, 3)
 
     # Fetch relarp reactions for relarp feed items
     relarp_items = [p for p in all_feed_items if p.get("is_relarp")]
@@ -212,16 +285,14 @@ async def get_feed(
     relarp_user_loved: set[str] = set()
     relarp_user_glazed: set[str] = set()
     if relarp_ids:
-        relarp_reactions_result = (
-            user_client.table("relarp_reactions")
-            .select("relarp_id, user_id, reaction_type")
-            .in_("relarp_id", relarp_ids)
-            .execute()
+        relarp_reactions_stmt = (
+            select(RelarpReaction).where(RelarpReaction.relarp_id.in_(relarp_ids))
         )
-        for rr in (relarp_reactions_result.data or []):
-            rid = rr["relarp_id"]
-            rtype = rr["reaction_type"]
-            ruser = rr["user_id"]
+        relarp_reactions = (await db.execute(relarp_reactions_stmt)).scalars().all()
+        for rr in relarp_reactions:
+            rid = rr.relarp_id
+            rtype = rr.reaction_type
+            ruser = rr.user_id
             if rtype == "like":
                 relarp_like_counts[rid] = relarp_like_counts.get(rid, 0) + 1
                 if ruser == user_id:
@@ -247,7 +318,7 @@ async def get_feed(
         post_comments = comments_by_post.get(post["id"], [])
         post["glazes"] = glazes_by_post.get(post["id"], [])
         post["ai_glazes"] = ai_glazes.get(post["id"], [])
-        post["comments"] = post_comments
+        post["comments"] = post_comments[:3]
         post["comment_count"] = len(post_comments)
         post["relarp_count"] = relarp_counts.get(post["id"], 0)
         post["has_user_relarped"] = post["id"] in user_relarped

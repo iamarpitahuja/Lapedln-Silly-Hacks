@@ -1,10 +1,7 @@
-import { supabase } from '../lib/supabase'
-
 const API_BASE = '/api'
 
 async function authFetchRaw(url, options = {}) {
-  const { data: { session } } = await supabase.auth.getSession()
-  const token = session?.access_token
+  const token = localStorage.getItem('larpedin.access_token')
 
   const headers = { ...options.headers }
   if (token) {
@@ -27,7 +24,16 @@ async function authFetch(url, options = {}) {
   if (res.status === 204) return
   const contentType = res.headers.get('content-type')
   if (contentType && contentType.includes('application/json')) {
-    return res.json()
+    const data = await res.json()
+
+    // Intercept rating_change from any API response and broadcast it
+    if (data && data.rating_change) {
+      window.dispatchEvent(
+        new CustomEvent('rating:change', { detail: data.rating_change })
+      )
+    }
+
+    return data
   }
 }
 

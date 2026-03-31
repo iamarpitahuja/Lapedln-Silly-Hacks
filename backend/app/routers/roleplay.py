@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from supabase import Client
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.dependencies import get_current_user, get_service_client
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.models import RoleplaySession
 from app.services.elevenlabs import stream_tts
 from app.services.gemini import roleplay_chat
 from app.services.voice_registry import get_character_prompt, list_characters
@@ -33,24 +35,19 @@ async def get_characters():
 async def chat(
     body: ChatMessage,
     user_id: str = Depends(get_current_user),
-    supabase: Client = Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """
     Chat with a corporate LARP character. Manages conversation state
     and gets strictly formatted JSON responses from Gemini.
     """
     # Load or create session
+    session = None
     if body.session_id:
-        session_result = (
-            supabase.table("roleplay_sessions")
-            .select("*")
-            .eq("id", body.session_id)
-            .eq("user_id", user_id)
-            .single()
-            .execute()
-        )
-        session = session_result.data
-        history = session["conversation_history"]
+        session = await db.get(RoleplaySession, body.session_id)
+        if not session or session.user_id != user_id:
+            raise HTTPException(status_code=404, detail="Session not found")
+        history = session.conversation_history or []
     else:
         history = []
 
@@ -65,18 +62,20 @@ async def chat(
     history.append({"role": "model", "text": response["dialogue"]})
 
     # Save session
-    if body.session_id:
-        supabase.table("roleplay_sessions").update({
-            "conversation_history": history,
-        }).eq("id", body.session_id).execute()
-        session_id = body.session_id
+    if body.session_id and session:
+        session.conversation_history = history
+        await db.commit()
+        session_id = session.id
     else:
-        insert_result = supabase.table("roleplay_sessions").insert({
-            "user_id": user_id,
-            "character_id": body.character_id,
-            "conversation_history": history,
-        }).execute()
-        session_id = insert_result.data[0]["id"]
+        new_session = RoleplaySession(
+            user_id=user_id,
+            character_id=body.character_id,
+            conversation_history=history,
+        )
+        db.add(new_session)
+        await db.commit()
+        await db.refresh(new_session)
+        session_id = new_session.id
 
     return {
         "session_id": session_id,

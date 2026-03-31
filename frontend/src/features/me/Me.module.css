@@ -1,7 +1,29 @@
 .page {
-  background: var(--bg-deep);
+  background: #09070f;
+  color-scheme: dark;
   min-height: calc(100vh - 52px);
   padding: 24px 16px;
+
+  /* Force dark theme regardless of system preference */
+  --neon: #a78bfa;
+  --neon-dark: #8b5cf6;
+  --neon-dim: rgba(167, 139, 250, 0.42);
+  --neon-faint: rgba(167, 139, 250, 0.06);
+  --bg-deep: #09070f;
+  --bg-card: #110d1a;
+  --bg-elevated: #171223;
+  --bg-subtle: #1d162b;
+  --text-primary: rgba(242, 239, 255, 0.94);
+  --text-secondary: rgba(198, 189, 224, 0.76);
+  --text-muted: rgba(159, 149, 188, 0.58);
+  --text-on-accent: #150e28;
+  --border: rgba(167, 139, 250, 0.16);
+  --border-md: rgba(167, 139, 250, 0.24);
+  --border-strong: rgba(167, 139, 250, 0.34);
+  --glow-sm: 0 0 0 1px rgba(167, 139, 250, 0.18);
+  --glow-md: 0 10px 28px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(167, 139, 250, 0.1);
+  --glow-lg: 0 18px 42px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(167, 139, 250, 0.12);
+  --accent-rose: #f289a8;
 }
 
 .content {

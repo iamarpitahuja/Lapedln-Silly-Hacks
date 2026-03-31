@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { supabase } from '../../../lib/supabase'
 import {
   fetchMessageHistory,
   sendMessage,
@@ -45,55 +44,40 @@ export default function ChatWindow({ otherUser, group, currentUserId }) {
       .finally(() => setLoading(false))
   }, [otherUserId, groupId, isGroup])
 
-  // Supabase Realtime for 1:1
+  // WebSocket for real-time messages
   useEffect(() => {
-    if (!otherUserId || !currentUserId || isGroup) return
+    if (!currentUserId) return
 
-    const channel = supabase
-      .channel(`messages-${currentUserId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `receiver_id=eq.${currentUserId}`,
-        },
-        (payload) => {
-          if (payload.new.sender_id === otherUserId) {
-            setMessages(prev => [...prev, payload.new])
-          }
+    const token = localStorage.getItem('larpedin.access_token')
+    if (!token) return
+
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const wsUrl = `${protocol}//${window.location.host}/api/ws/messages?token=${token}`
+    const ws = new WebSocket(wsUrl)
+
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data)
+        const data = msg.data
+
+        if (msg.type === 'direct_message' && data.sender_id === otherUserId) {
+          setMessages(prev => [...prev, data])
         }
-      )
-      .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
-  }, [otherUserId, currentUserId, isGroup])
-
-  // Supabase Realtime for groups
-  useEffect(() => {
-    if (!groupId || !currentUserId || !isGroup) return
-
-    const channel = supabase
-      .channel(`group-${groupId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'group_messages',
-          filter: `conversation_id=eq.${groupId}`,
-        },
-        (payload) => {
-          if (payload.new.sender_id !== currentUserId) {
-            setMessages(prev => [...prev, payload.new])
-          }
+        if (msg.type === 'group_message' && data.conversation_id === groupId && data.sender_id !== currentUserId) {
+          setMessages(prev => [...prev, data])
         }
-      )
-      .subscribe()
+      } catch (e) {
+        console.error('WebSocket message parse error:', e)
+      }
+    }
 
-    return () => { supabase.removeChannel(channel) }
-  }, [groupId, currentUserId, isGroup])
+    ws.onerror = (e) => console.error('WebSocket error:', e)
+
+    return () => {
+      ws.close()
+    }
+  }, [currentUserId, otherUserId, groupId])
 
   // Scroll to bottom
   useEffect(() => {

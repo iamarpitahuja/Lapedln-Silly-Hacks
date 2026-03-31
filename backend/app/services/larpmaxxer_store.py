@@ -6,6 +6,11 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models import LarpmaxxerProgress
+
 DATA_ROOT = Path(__file__).resolve().parent.parent / "data" / "larpmaxxer"
 CONTENT_ROOT = DATA_ROOT / "scenario-content"
 
@@ -97,75 +102,58 @@ def normalize_progress(value: Any) -> dict[str, Any]:
     }
 
 
-def _from_supabase_record(record: dict[str, Any]) -> dict[str, Any]:
+def _from_db_record(record: LarpmaxxerProgress) -> dict[str, Any]:
     return normalize_progress(
         {
-            "personaId": record.get("persona_id"),
-            "larpRating": record.get("larp_rating"),
-            "completedScenarios": record.get("completed_scenarios"),
+            "personaId": record.persona_id,
+            "larpRating": record.larp_rating,
+            "completedScenarios": record.completed_scenarios,
         }
     )
 
 
-def _fetch_progress_from_supabase(user_id: str, supabase) -> dict[str, Any] | None:
+async def _fetch_progress_from_db(user_id: str, db: AsyncSession) -> dict[str, Any] | None:
     try:
-        result = (
-            supabase.table("larpmaxxer_progress")
-            .select("persona_id, larp_rating, completed_scenarios")
-            .eq("user_id", user_id)
-            .single()
-            .execute()
+        result = await db.execute(
+            select(LarpmaxxerProgress).where(LarpmaxxerProgress.user_id == user_id)
         )
+        record = result.scalar_one_or_none()
+        if not record:
+            return None
+        return _from_db_record(record)
     except Exception:
         return None
 
-    if not result or not result.data:
-        return None
-    return _from_supabase_record(result.data)
 
-
-def _persist_progress_to_supabase(user_id: str, progress: dict[str, Any], supabase) -> bool:
-    payload = {
-        "user_id": user_id,
-        "persona_id": progress.get("personaId"),
-        "larp_rating": progress.get("larpRating"),
-        "completed_scenarios": progress.get("completedScenarios", []),
-    }
-
+async def _persist_progress_to_db(user_id: str, progress: dict[str, Any], db: AsyncSession) -> bool:
     try:
-        existing = (
-            supabase.table("larpmaxxer_progress")
-            .select("user_id")
-            .eq("user_id", user_id)
-            .execute()
-        )
-        if existing.data:
-            (
-                supabase.table("larpmaxxer_progress")
-                .update({
-                    "persona_id": payload["persona_id"],
-                    "larp_rating": payload["larp_rating"],
-                    "completed_scenarios": payload["completed_scenarios"],
-                })
-                .eq("user_id", user_id)
-                .execute()
-            )
+        existing = await db.get(LarpmaxxerProgress, user_id)
+        if existing:
+            existing.persona_id = progress.get("personaId")
+            existing.larp_rating = progress.get("larpRating")
+            existing.completed_scenarios = progress.get("completedScenarios", [])
         else:
-            supabase.table("larpmaxxer_progress").insert(payload).execute()
+            record = LarpmaxxerProgress(
+                user_id=user_id,
+                persona_id=progress.get("personaId"),
+                larp_rating=progress.get("larpRating"),
+                completed_scenarios=progress.get("completedScenarios", []),
+            )
+            db.add(record)
+        await db.commit()
+        return True
     except Exception:
         return False
 
-    return True
 
-
-def get_progress(user_id: str, supabase) -> dict[str, Any]:
+async def get_progress(user_id: str, db: AsyncSession) -> dict[str, Any]:
     if user_id in _MEMORY_PROGRESS:
         return copy.deepcopy(_MEMORY_PROGRESS[user_id])
 
-    supabase_progress = _fetch_progress_from_supabase(user_id, supabase)
-    if supabase_progress is not None:
-        _MEMORY_PROGRESS[user_id] = copy.deepcopy(supabase_progress)
-        return copy.deepcopy(supabase_progress)
+    db_progress = await _fetch_progress_from_db(user_id, db)
+    if db_progress is not None:
+        _MEMORY_PROGRESS[user_id] = copy.deepcopy(db_progress)
+        return copy.deepcopy(db_progress)
 
     if user_id not in _MEMORY_PROGRESS:
         _MEMORY_PROGRESS[user_id] = copy.deepcopy(DEFAULT_PROGRESS)
@@ -173,9 +161,9 @@ def get_progress(user_id: str, supabase) -> dict[str, Any]:
     return copy.deepcopy(_MEMORY_PROGRESS[user_id])
 
 
-def update_progress(user_id: str, updates: dict[str, Any], supabase) -> dict[str, Any]:
-    current = get_progress(user_id, supabase)
+async def update_progress(user_id: str, updates: dict[str, Any], db: AsyncSession) -> dict[str, Any]:
+    current = await get_progress(user_id, db)
     normalized_updates = normalize_progress({**current, **updates})
     _MEMORY_PROGRESS[user_id] = copy.deepcopy(normalized_updates)
-    _persist_progress_to_supabase(user_id, normalized_updates, supabase)
+    await _persist_progress_to_db(user_id, normalized_updates, db)
     return copy.deepcopy(normalized_updates)

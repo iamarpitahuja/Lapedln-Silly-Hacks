@@ -215,9 +215,9 @@ function adaptProfile(row) {
     larpRating: Number(row.larp_rating ?? 0),
     about: row.bio ?? '',
     stats: {
-      recruiterViews: Number(stats.recruiterViews ?? 0),
+      recruiterViews: Number(stats.recruiterViews ?? 0) || 0,
       impressionVelocity: String(stats.impressionVelocity ?? 'Unknown'),
-      weeklyAuraGrowth: Number(stats.weeklyAuraGrowth ?? 0),
+      weeklyAuraGrowth: parseFloat(stats.weeklyAuraGrowth) || 0,
       weeklyAuraGrowthPct: String(stats.weeklyAuraGrowthPct ?? '+0%'),
     },
     glazers: toArray(row.glazers),
@@ -340,9 +340,18 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
       void loadFeedData()
     }
 
+    const handleRatingChange = (e) => {
+      const { new_rating } = e.detail || {}
+      if (typeof new_rating === 'number') {
+        setProfile(prev => ({ ...prev, larpRating: new_rating }))
+      }
+    }
+
     window.addEventListener('profile:refresh', handleProfileRefresh)
+    window.addEventListener('rating:change', handleRatingChange)
     return () => {
       window.removeEventListener('profile:refresh', handleProfileRefresh)
+      window.removeEventListener('rating:change', handleRatingChange)
     }
   }, [testMode, refreshProfile])
 

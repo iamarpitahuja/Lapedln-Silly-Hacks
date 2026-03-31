@@ -2,7 +2,7 @@
 
 A satirical, hyper-gamified professional networking platform where corporate culture is taken to its absurd logical endpoint. AI scores your "buzzword density," a caste system hides the elite from peasants, auto-generated sycophantic compliments flood every post, and you can roleplay as parody corporate archetypes.
 
-**Stack**: Supabase (Postgres + Auth) | FastAPI (orchestration + AI) | React 19 + Vite (frontend) | Gemini 2.0 Flash (scoring + glazes + roleplay) | ElevenLabs (TTS) | Meme Lord API (roast memes)
+**Stack**: SQLite + SQLAlchemy (database) | FastAPI (orchestration + AI + auth) | React 19 + Vite (frontend) | Gemini 2.0 Flash (scoring + glazes + roleplay) | ElevenLabs (TTS) | Meme Lord API (roast memes)
 
 ---
 
@@ -10,59 +10,46 @@ A satirical, hyper-gamified professional networking platform where corporate cul
 
 ### Prerequisites
 - Python 3.11+
-- Node.js 18+ (for Supabase CLI and frontend)
-- Supabase account (remote) or Docker (local via `supabase start`)
+- Node.js 18+
 
 ### Install & Run
 ```bash
-# 1. Supabase (local)
-npx supabase start          # starts local Postgres, Auth, API
-npx supabase db reset        # applies all migrations + seed
-
-# 2. Backend
+# 1. Backend
 cd backend
 python -m venv .venv
 source .venv/bin/activate    # Windows: .venv\Scripts\activate
-cp .env.example .env         # fill in keys from `npx supabase status`
+cp .env.example .env         # fill in API keys
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --port 8000
 
-# 3. Frontend
+# 2. Frontend
 cd frontend
-cp .env.example .env.local   # fill in VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
 npm install
 npm run dev                  # starts at http://localhost:5173
 
-# 4. Verify
-curl http://localhost:8000/docs   # Swagger UI
+# 3. Verify
+curl http://localhost:8000/health   # {"status": "larping"}
+curl http://localhost:8000/docs     # Swagger UI
 ```
 
 ### Environment Variables
 
 **backend/.env**
 ```
-SUPABASE_URL=http://127.0.0.1:54321        # or https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-key             # for user-context queries (RLS applies)
-SUPABASE_SERVICE_ROLE_KEY=your-service-key  # for privileged backend operations (bypasses RLS)
-GEMINI_API_KEY=your-gemini-api-key
+JWT_SECRET=change-me-in-production    # secret for signing JWT tokens
+GEMINI_API_KEY=your-gemini-api-key    # optional, mocked when empty
 ELEVENLABS_API_KEY=your-elevenlabs-api-key  # optional, for TTS in roleplay
 MEMELORD_API_KEY=your-memelord-api-key      # optional, for roast meme generation
 DEV_MODE=false                              # true skips JWT auth (uses hardcoded DEV_USER_ID)
 ```
 
-**frontend/.env.local**
-```
-VITE_SUPABASE_URL=http://127.0.0.1:54321
-VITE_SUPABASE_ANON_KEY=your-anon-key
-```
-
-For local dev, get Supabase keys from `npx supabase status` after starting.
+No frontend `.env` needed — all API calls go through Vite's dev proxy to the backend.
 
 ---
 
 ## Database Schema
 
-Migrations are in `supabase/migrations/` and applied in order.
+SQLite database at `backend/data/larp.db`. Tables are auto-created on startup via SQLAlchemy `create_all`. Models defined in `backend/app/models.py`.
 
 ### Tables
 
@@ -238,11 +225,17 @@ Other RLS policies:
 backend/
 ├── .env.example
 ├── requirements.txt
+├── tests/
+│   ├── test_feed_helpers.py
+│   ├── test_larpmaxxer_store.py
+│   └── test_posts_reactions_helpers.py
 └── app/
-    ├── main.py                # FastAPI app, lifespan, CORS, router mounts
+    ├── main.py                # FastAPI app, lifespan, CORS, router mounts, WebSocket endpoint
     ├── config.py              # pydantic-settings, loads .env
-    ├── dependencies.py        # JWT auth, Supabase client factories
-    ├── dev_state.py           # Dev mode helpers (DEV_USER_ID)
+    ├── database.py            # SQLAlchemy async engine, session factory, init_db()
+    ├── models.py              # 15 SQLAlchemy ORM models (User + 14 data tables)
+    ├── dependencies.py        # JWT auth (python-jose)
+    ├── websocket.py           # WebSocket ConnectionManager for real-time messaging
     ├── routers/
     │   ├── feed.py            # GET /api/feed — Glaze-o-matic + Social Blindness
     │   ├── posts.py           # CRUD posts + comments + relarps + reactions
@@ -252,12 +245,22 @@ backend/
     │   ├── messages.py        # 1:1 DMs + group conversations
     │   ├── notifications.py   # Aggregated notifications
     │   ├── relarps.py         # Relarp reactions (like/love/glaze)
-    │   └── roleplay.py        # GET characters, POST chat (LarpMaxxing)
+    │   ├── roleplay.py        # GET characters, POST chat, POST tts
+    │   ├── games.py           # POST /api/games/claim-reward — gamification rewards
+    │   ├── larpmaxxer.py      # LarpMaxxer training game (bootstrap, scenarios, progress)
+    │   └── auth.py            # POST register/login, GET me — JWT auth
     ├── services/
     │   ├── gemini.py          # Gemini API wrapper (scoring + glazes + roleplay)
     │   ├── voice_registry.py  # Character definitions (Gary Vee, Corporate Buddha, etc.)
     │   ├── elevenlabs.py      # TTS streaming (WebSocket)
-    │   └── memelord.py        # Roast meme generation API
+    │   ├── memelord.py        # Roast meme generation API
+    │   └── larpmaxxer_store.py # JSON data loading + progress persistence for LarpMaxxer
+    ├── data/
+    │   └── larpmaxxer/
+    │       ├── characters.json
+    │       ├── personas.json
+    │       ├── scenarios.json
+    │       └── scenario-content/   # 14 scenario JSON files (coffee-chat, finance-bro, etc.)
     └── workers/
         └── scoring.py         # Background task: Prestige Evaluator + roast meme
 ```
@@ -265,6 +268,11 @@ backend/
 ---
 
 ## API Endpoints
+
+### Auth
+- **POST `/api/auth/register`** — Register with email/password; body: `{email, password, display_name}`. Returns JWT + user info.
+- **POST `/api/auth/login`** — Login with email/password; body: `{email, password}`. Returns JWT + user info.
+- **GET `/api/auth/me`** — Get current user from JWT token.
 
 ### Feed
 - **GET `/api/feed`** — Glaze-o-matic feed
@@ -328,23 +336,33 @@ backend/
 - **POST `/api/roleplay/chat`** — Chat with character; body: `{session_id?, character_id, message}`
   - Persists conversation history in `roleplay_sessions`
   - Returns: `{session_id, character_id, dialogue, emotion}`
+- **POST `/api/roleplay/tts`** — Text-to-speech synthesis via ElevenLabs streaming
+
+### Games
+- **POST `/api/games/claim-reward`** — Claim reward for mini-game (bingo, grind, connections) and update LARP rating
+
+### LarpMaxxer
+- **GET `/api/larpmaxxer/bootstrap`** — Get personas, characters, and scenarios data
+- **GET `/api/larpmaxxer/scenarios/{scenario_id}/content`** — Get individual scenario content
+- **GET `/api/larpmaxxer/progress`** — Get user's LarpMaxxer game progress
+- **PATCH `/api/larpmaxxer/progress`** — Update progress (persona, larp_rating, completed scenarios)
 
 ### Health
 - **GET `/health`** — Returns `{status: "larping", dev_mode: bool}`
 
 ---
 
-## Supabase Client Usage Matrix
+## Database & Auth Architecture
 
-| Endpoint | Client Type | Why |
-|---|---|---|
-| GET /api/feed | **Anon key + user JWT** | **MUST respect Social Blindness RLS** |
-| POST /api/posts | **Service role** | Insert on behalf of user |
-| PATCH /api/jobs/current | **Service role** | Privileged update |
-| PATCH /api/me | **Service role** | Profile update |
-| Connections/messages | **Service role** | Social graph writes |
-| Scoring worker | **Service role** | Writes buzzword_score, calls update_larp_rating RPC |
-| Roleplay | **Service role** | Session persistence |
+**Database**: SQLite via SQLAlchemy async (aiosqlite). WAL mode for concurrent reads. DB file at `backend/data/larp.db`. Tables auto-created on startup.
+
+**Auth**: Self-contained JWT (HS256) via python-jose + passlib bcrypt. Tokens stored in `localStorage` on the frontend. No external auth service.
+
+**Real-time Messaging**: FastAPI WebSocket at `/api/ws/messages?token=<jwt>`. In-memory `ConnectionManager` pushes new messages to connected clients.
+
+**File Storage**: Local filesystem at `backend/uploads/`. Served via FastAPI `StaticFiles` mount at `/uploads`.
+
+**Social Blindness**: Implemented as a SQLAlchemy query filter in `feed.py` — posts only visible if `author.larp_rating <= viewer.larp_rating`.
 
 ---
 
@@ -418,15 +436,27 @@ Client -> POST /api/roleplay/chat {session_id?, character_id, message}
 ```
 frontend/src/
 ├── main.jsx               # React entry
-├── App.jsx                # BrowserRouter + AuthProvider + routes
+├── App.jsx                # BrowserRouter + AuthProvider + routes + onboarding logic
+├── App.module.css         # App-level styles
 ├── index.css              # Global styles
 ├── lib/
-│   └── supabase.js        # Supabase client init
+│   ├── supabase.js        # Supabase client init
+│   ├── motion.js          # Animation/motion utilities (framer-motion)
+│   └── theme.js           # Theme/style configuration
 ├── context/
 │   ├── AuthContext.jsx    # Supabase auth state (login/logout/token)
+│   ├── UserContext.tsx    # User profile context
 │   └── MockDataContext.jsx # Frontend mock data (for tests)
 ├── services/
 │   └── api.js             # authFetch wrapper + all API call functions
+├── utils/
+│   ├── jobGenerator.js    # Satirical job title generator
+│   └── strings.js         # String manipulation utilities
+├── content/               # Static data for LarpMaxxer
+│   ├── characters.ts
+│   ├── personas.ts
+│   ├── scenarios.ts
+│   └── scenarios/         # 14 scenario .ts files (coffee-chat, finance-bro, etc.)
 ├── components/
 │   ├── TopNav/            # Navigation header
 │   ├── Icon/              # Reusable icon
@@ -437,12 +467,36 @@ frontend/src/
 │   │   └── AuthPage.jsx   # Login/signup + Google OAuth
 │   ├── home/
 │   │   ├── Home.jsx       # 3-column layout (LeftRail | Feed | RightRail)
+│   │   ├── LeftRail/      # Navigation sidebar
+│   │   ├── RightRail/     # Sidebar widgets
+│   │   │   └── GamesWidget/  # Mini-game launcher widget
 │   │   └── Feed/
 │   │       ├── Feed.jsx           # Main feed (posts + relarps)
 │   │       ├── StartPost/         # Compose post form
 │   │       ├── PostCard/          # Post with reactions, comments, roast meme
 │   │       ├── LockedPostCard/    # Blurred overlay for Social Blindness
 │   │       └── SuggestedGlazes/   # AI glaze display
+│   ├── games/             # Mini-games system
+│   │   ├── GameModal/     # Game container/launcher
+│   │   ├── BuzzwordBingo/ # Bingo-style game + useBingoState hook
+│   │   ├── TheGrind/      # Clicking/progression game + Keyboard + useGrindState
+│   │   ├── ThoughtLeadership/ # Networking game + useConnectionsState
+│   │   ├── hooks/useGameProgress.js
+│   │   └── data/          # dailySeed.js, wordLists.js
+│   ├── larpmaxxer/        # Interactive scenario roleplay training
+│   │   ├── index.jsx      # Main LarpMaxxer component
+│   │   ├── types.ts       # TypeScript types
+│   │   ├── components/    # PreBrief, CharacterPanel, ScenarioPanel, DialogueScreen,
+│   │   │                  # DialogueBubble, ResponseOptions, ResponseCard, EntryCard,
+│   │   │                  # EventCard, MeterBar, EvaluationFlash, SummaryScreen, ConfirmModal
+│   │   ├── engine/        # personaAlignment.ts, scoring.ts, unlockLogic.ts
+│   │   └── hooks/useSimulation.ts
+│   ├── onboarding/        # Multi-step new user onboarding
+│   │   ├── OnboardingPage.jsx
+│   │   ├── components/    # StepShell, BuzzwordParticles, LarpCounter, SynergizingLoader
+│   │   ├── hooks/useOnboardingState.js
+│   │   └── steps/         # StepWelcome, StepName, StepAvatar, StepBio, StepJob,
+│   │                      # StepExperience, StepSkills
 │   ├── me/
 │   │   ├── Me.jsx                 # Own profile page (editable)
 │   │   ├── ProfileHero/           # Avatar, name, LARP rating, cover photo
@@ -467,26 +521,36 @@ frontend/src/
 │       └── PublicProfile.jsx      # View any user's profile (read-only)
 └── pages/
     ├── JobsPage.jsx               # Pick satirical job title
-    └── NotificationsPage.jsx      # Aggregated notifications
+    ├── NotificationsPage.jsx      # Aggregated notifications
+    └── PersonaSelect.jsx          # Persona/character selection
 ```
+
+### Frontend Routes
+
+| Route | Component | Layout |
+|---|---|---|
+| `/` | Home | TopNav + standard |
+| `/onboarding` | OnboardingPage | Full-screen (no TopNav) |
+| `/larpmaxxer` | LarpMaxxer | Full-screen (no TopNav) |
+| `/persona-select` | PersonaSelect | Full-screen (no TopNav) |
+| `/network` | Network | TopNav + standard |
+| `/jobs` | JobsPage | TopNav + standard |
+| `/messaging` | Messaging | TopNav + standard |
+| `/notifications` | NotificationsPage | TopNav + standard |
+| `/me` | Me | TopNav + standard |
+| `/profile/:userId` | PublicProfile | TopNav + standard |
 
 ---
 
 ## Dev Commands Cheatsheet
 
 ```bash
-# Supabase
-npx supabase start                    # start local Supabase
-npx supabase stop                     # stop local Supabase
-npx supabase db reset                 # drop + recreate + apply all migrations
-npx supabase db diff --local          # see uncommitted schema changes
-npx supabase status                   # show local URLs and keys
-
 # Backend
 cd backend
 source .venv/bin/activate             # activate virtualenv
-uvicorn app.main:app --reload         # start FastAPI dev server (port 8000)
 pip install -r requirements.txt       # install dependencies
+uvicorn app.main:app --port 8000      # start FastAPI dev server
+rm data/larp.db                       # reset database (auto-recreated on startup)
 
 # Frontend
 cd frontend
@@ -496,7 +560,13 @@ npm test                              # run vitest tests
 npm run build                         # production build
 
 # Testing
-curl http://localhost:8000/docs       # Swagger UI
+curl http://localhost:8000/health                     # health check
+curl http://localhost:8000/docs                       # Swagger UI
+# Register + get token:
+curl -X POST http://localhost:8000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@larp.com","password":"test123","display_name":"Test"}'
+# Use token:
 curl http://localhost:8000/api/feed -H "Authorization: Bearer <jwt>"
 ```
 
@@ -504,26 +574,36 @@ curl http://localhost:8000/api/feed -H "Authorization: Bearer <jwt>"
 
 ## Key Gotchas
 
-1. **Social Blindness depends on client type.** Feed endpoint = anon key + user JWT. Everything else = service role. Get this wrong and the caste system breaks.
+1. **Social Blindness is a query filter.** Applied in `feed.py` via SQLAlchemy `where(Profile.larp_rating <= viewer_rating)`. Not database-level RLS — must be applied in code wherever posts are fetched.
 
 2. **Gemini `response_mime_type="application/json"`** is mandatory. Without it, Gemini wraps JSON in markdown code fences and `json.loads()` fails.
 
 3. **`google-genai`** (package name) is the modern SDK. NOT `google-generativeai` (legacy). Use `client.aio.models.generate_content()` for async calls in FastAPI.
 
-4. **`update_larp_rating`** is `SECURITY DEFINER` — runs with function owner's privileges regardless of caller. Safe to call from any client type via `.rpc()`.
+4. **Scoring is fire-and-forget.** Uses FastAPI `BackgroundTasks`. The scoring worker creates its own DB session since the request session is closed by the time it runs.
 
-5. **Scoring is fire-and-forget.** Uses FastAPI `BackgroundTasks`, not Celery. If the server restarts mid-scoring, that score is lost. Acceptable for a hackathon.
+5. **CORS**: Frontend expected at `localhost:3000` or `localhost:5173` (Vite default). Configured in `main.py`.
 
-6. **CORS**: Frontend expected at `localhost:3000` or `localhost:5173` (Vite default). Configured in `main.py`.
+6. **Frontend API proxy**: `vite.config.js` proxies `/api` and `/uploads` → `http://localhost:8000`. All frontend API calls use relative paths.
 
-7. **Supabase Python client for user-context**: Use `create_client(url, anon_key)` then `client.postgrest.auth(user_jwt)` to set the Bearer token so PostgREST enforces RLS as that user.
+7. **DEV_MODE=true** skips JWT verification and uses a hardcoded `DEV_USER_ID`. Never enable in production.
 
-8. **Frontend API proxy**: `vite.config.js` proxies `/api` → `http://localhost:8000`. All frontend API calls use relative paths (e.g., `fetch('/api/feed')`).
+8. **Roast meme URL is async/nullable.** `posts.roast_meme_url` is null until the background task completes. Frontend should handle null gracefully.
 
-9. **`profiles.job` replaced `profiles.title`**: Migration `20260329000004_unify_profile_job.sql` renamed the column. Use `job` everywhere; `title` no longer exists.
+9. **Group messaging vs 1:1**: Group chats use `conversations` + `conversation_members` + `group_messages` tables. 1:1 DMs use the `messages` table directly. These are separate systems.
 
-10. **DEV_MODE=true** skips JWT verification and uses a hardcoded `DEV_USER_ID` from `dev_state.py`. Never enable in production.
+10. **Games router prefix**: `games.py` is mounted WITHOUT the `/api` prefix in `main.py` — it defines its own `/api/games` prefix internally.
 
-11. **Roast meme URL is async/nullable.** `posts.roast_meme_url` is null until the background task completes. Frontend should handle null gracefully.
+11. **LarpMaxxer data is JSON-file-based.** Scenarios, characters, and personas live in `backend/app/data/larpmaxxer/` as JSON files, loaded and cached by `larpmaxxer_store.py`. Progress is persisted to SQLite.
 
-12. **Group messaging vs 1:1**: Group chats use `conversations` + `conversation_members` + `group_messages` tables. 1:1 DMs use the `messages` table directly. These are separate systems.
+12. **Frontend uses framer-motion** for page transitions and animations. Full-screen routes (`/onboarding`, `/larpmaxxer`, `/persona-select`) bypass TopNav.
+
+13. **Onboarding auto-redirect**: `App.jsx` checks if the user profile is incomplete and redirects to `/onboarding`. Can be forced via `?onboarding=true` query param.
+
+14. **Auth tokens in localStorage**: JWT stored at `larpedin.access_token`, user data at `larpedin.user`. The `api.js` `authFetchRaw()` reads the token from localStorage for every request.
+
+15. **WebSocket messaging**: Real-time messages delivered via WebSocket at `/api/ws/messages?token=<jwt>`. The `ConnectionManager` is in-memory — only works for single-process deployments.
+
+16. **Avatar uploads**: `POST /api/me/avatar` saves to `backend/uploads/avatars/{user_id}/`, served via FastAPI `StaticFiles` at `/uploads`.
+
+17. **SQLite WAL mode**: Enabled via pragma on engine connect. Handles concurrent reads well. Single writer is fine for hackathon scale.

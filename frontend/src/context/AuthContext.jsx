@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+
+const TOKEN_KEY = 'larpedin.access_token'
+const USER_KEY = 'larpedin.user'
 
 const DEFAULT_AUTH_CONTEXT = {
   session: null,
@@ -8,67 +10,87 @@ const DEFAULT_AUTH_CONTEXT = {
   loading: false,
   signUp: async () => ({ user: null }),
   signIn: async () => ({ user: null }),
-  signInWithGoogle: async () => ({ provider: 'google' }),
   signOut: async () => undefined,
 }
 
 const AuthContext = createContext(DEFAULT_AUTH_CONTEXT)
 
+function parseJwt(token) {
+  try {
+    const payload = token.split('.')[1]
+    return JSON.parse(atob(payload))
+  } catch {
+    return null
+  }
+}
+
+function isTokenExpired(token) {
+  const payload = parseJwt(token)
+  if (!payload?.exp) return true
+  return Date.now() / 1000 > payload.exp
+}
+
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  // Restore session from localStorage on mount
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setLoading(false)
-    })
+    const token = localStorage.getItem(TOKEN_KEY)
+    const userStr = localStorage.getItem(USER_KEY)
 
-    // Listen for auth changes (login, logout, token refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session)
-        if (event === 'SIGNED_IN' && window.location.hash) {
-          window.history.replaceState(null, '', window.location.pathname)
-        }
+    if (token && !isTokenExpired(token) && userStr) {
+      try {
+        const user = JSON.parse(userStr)
+        setSession({ access_token: token, user })
+      } catch {
+        localStorage.removeItem(TOKEN_KEY)
+        localStorage.removeItem(USER_KEY)
       }
-    )
-
-    return () => subscription.unsubscribe()
+    }
+    setLoading(false)
   }, [])
 
+  const _setAuth = (token, user) => {
+    localStorage.setItem(TOKEN_KEY, token)
+    localStorage.setItem(USER_KEY, JSON.stringify(user))
+    setSession({ access_token: token, user })
+  }
+
   const signUp = async (email, password, displayName) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: displayName ? { data: { full_name: displayName } } : undefined,
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, display_name: displayName }),
     })
-    if (error) throw error
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.detail || 'Registration failed')
+    }
+    const data = await res.json()
+    _setAuth(data.access_token, data.user)
     return data
   }
 
   const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
-    return data
-  }
-
-  const signInWithGoogle = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/',
-        skipBrowserRedirect: false,
-      },
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
     })
-    if (error) throw error
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.detail || 'Login failed')
+    }
+    const data = await res.json()
+    _setAuth(data.access_token, data.user)
     return data
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_KEY)
+    setSession(null)
   }
 
   return (
@@ -79,7 +101,6 @@ export function AuthProvider({ children }) {
       loading,
       signUp,
       signIn,
-      signInWithGoogle,
       signOut,
     }}>
       {children}

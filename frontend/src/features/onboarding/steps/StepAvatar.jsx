@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react'
-import { supabase } from '../../../lib/supabase'
 import StepShell from '../components/StepShell'
 import { getInitials } from '../../../utils/strings'
 import styles from './steps.module.css'
@@ -26,15 +25,23 @@ export default function StepAvatar({ onNext, onSkip, displayName = '' }) {
     setUploading(true)
     setUploadError(null)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      const userId = session?.user?.id ?? 'anon'
-      const path = `${userId}/${Date.now()}-${file.name}`
+      const token = localStorage.getItem('larpedin.access_token')
+      const formData = new FormData()
+      formData.append('file', file)
 
-      const { data, error } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
-      if (error) throw error
+      const res = await fetch('/api/me/avatar', {
+        method: 'POST',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        body: formData,
+      })
 
-      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(data.path)
-      setPreview(publicUrl)
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.detail || 'Upload failed')
+      }
+
+      const { url } = await res.json()
+      setPreview(url)
     } catch (err) {
       setUploadError(`Upload failed: ${err.message}. You can skip and set your avatar later.`)
     } finally {

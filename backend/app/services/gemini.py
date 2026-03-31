@@ -134,41 +134,60 @@ async def evaluate_prestige(content: str) -> dict:
 _glaze_cache: dict[str, list[str]] = {}
 
 
-async def generate_glazes(posts: list[dict]) -> dict[str, list[str]]:
-    """Generate 3 satirical compliments per post. Returns {post_id: [glazes]}.
-    Results are cached in memory so Gemini is only called once per post.
-    """
-    client = _get_client()
-    if not client:
-        result = {}
-        for p in posts:
-            result[p["id"]] = _glaze_cache.get(p["id"]) or random.sample(MOCK_GLAZES, 3)
-        return result
+def _fetch_glazes_in_thread(uncached: list[dict]):
+    """Run the async background fetch in a new event loop on a daemon thread."""
+    import asyncio
+    loop = asyncio.new_event_loop()
+    try:
+        loop.run_until_complete(_fetch_glazes_background(uncached))
+    finally:
+        loop.close()
 
-    # Only call Gemini for posts not already cached
+
+async def _fetch_glazes_background(uncached: list[dict]):
+    """Background task: fetch AI glazes from Gemini and populate cache."""
+    try:
+        client = _get_client()
+        if not client:
+            return
+        from google.genai import types
+        posts_json = json.dumps(
+            [{"id": p["id"], "content": p["content"], "post_type": p.get("post_type", "")} for p in uncached]
+        )
+        response = await client.aio.models.generate_content(
+            model=settings.gemini_model,
+            contents=f"Posts to glaze:\n{posts_json}",
+            config=types.GenerateContentConfig(
+                system_instruction=GLAZE_SYSTEM_PROMPT,
+                response_mime_type="application/json",
+            ),
+        )
+        _glaze_cache.update(json.loads(response.text))
+    except Exception:
+        pass  # Cache stays with mock glazes; real ones arrive on next load
+
+
+async def generate_glazes(posts: list[dict]) -> dict[str, list[str]]:
+    """Return glazes instantly from cache or mocks. Never blocks.
+    Schedules Gemini fetch in background for uncached posts — real AI glazes
+    will appear on the next feed load.
+    """
     uncached = [p for p in posts if p["id"] not in _glaze_cache]
 
-    if uncached:
-        try:
-            from google.genai import types
-            posts_json = json.dumps(
-                [{"id": p["id"], "content": p["content"], "post_type": p.get("post_type", "")} for p in uncached]
-            )
-            response = await client.aio.models.generate_content(
-                model=settings.gemini_model,
-                contents=f"Posts to glaze:\n{posts_json}",
-                config=types.GenerateContentConfig(
-                    system_instruction=GLAZE_SYSTEM_PROMPT,
-                    response_mime_type="application/json",
-                ),
-            )
-            _glaze_cache.update(json.loads(response.text))
-        except Exception:
-            # Quota exhausted or API error — fall back to mock glazes for uncached posts
-            for p in uncached:
-                _glaze_cache[p["id"]] = random.sample(MOCK_GLAZES, 3)
+    # Give uncached posts mock glazes immediately
+    for p in uncached:
+        _glaze_cache[p["id"]] = random.sample(MOCK_GLAZES, 3)
 
-    return {p["id"]: _glaze_cache.get(p["id"], []) for p in posts}
+    result = {p["id"]: _glaze_cache.get(p["id"], []) for p in posts}
+
+    # Schedule background Gemini fetch in a thread so it doesn't block
+    if uncached and _has_real_key():
+        import threading
+        threading.Thread(
+            target=_fetch_glazes_in_thread, args=(uncached,), daemon=True
+        ).start()
+
+    return result
 
 
 async def roleplay_chat(character_prompt: str, conversation_history: list[dict]) -> dict:

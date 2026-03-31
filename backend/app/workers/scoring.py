@@ -1,16 +1,21 @@
 import logging
 
+from app.database import async_session
+from app.models import Post
 from app.services.gemini import evaluate_prestige
 from app.services.memelord import generate_roast_meme
+from app.services.rating_engine import adjust_rating
 
 logger = logging.getLogger(__name__)
 
 
-async def score_content(supabase, post_id: str, user_id: str, content: str):
+async def score_content(post_id: str, user_id: str, content: str):
     """
     Background task: send post content to Gemini's Prestige Evaluator,
     then update buzzword_score on the post and adjust the user's LarpRating.
     Also generates a roast meme via Meme Lord API.
+
+    Creates its own DB session since background tasks run after the request completes.
     """
     try:
         result = await evaluate_prestige(content)
@@ -20,17 +25,21 @@ async def score_content(supabase, post_id: str, user_id: str, content: str):
         meme_prompt = f"corporate LinkedIn post roast: {roast}" if roast else f"roast this LinkedIn post: {content[:200]}"
         meme_url = await generate_roast_meme(meme_prompt)
 
-        if supabase is not None:
-            update_data = {"buzzword_score": result["buzzword_score"]}
-            if meme_url:
-                update_data["roast_meme_url"] = meme_url
+        async with async_session() as db:
+            # Update post scores
+            post = await db.get(Post, post_id)
+            if post:
+                post.buzzword_score = result["buzzword_score"]
+                if meme_url:
+                    post.roast_meme_url = meme_url
 
-            supabase.table("posts").update(update_data).eq("id", post_id).execute()
+            # Update larp rating via centralized engine
+            await adjust_rating(
+                db, user_id, "prestige_evaluated",
+                {"delta": result["rating_delta"]},
+            )
 
-            supabase.rpc("update_larp_rating", {
-                "target_user_id": user_id,
-                "rating_delta": result["rating_delta"],
-            }).execute()
+            await db.commit()
 
         logger.info(
             "Scored post %s: buzzword=%.1f, enthusiasm=%.1f, delta=%.1f | %s | meme=%s",

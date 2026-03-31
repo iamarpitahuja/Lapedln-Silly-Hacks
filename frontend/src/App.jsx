@@ -1,24 +1,25 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
-import { MotionConfig, AnimatePresence, motion as Motion } from 'framer-motion'
-import { AuthProvider, useAuth } from './context/AuthContext'
-import { UserProvider } from './context/UserContext'
-import { MockDataProvider } from './context/MockDataContext'
+import { AnimatePresence, motion as Motion, MotionConfig } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import styles from './App.module.css'
+import RatingToast from './components/RatingToast/RatingToast'
 import TopNav from './components/TopNav/TopNav'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { MockDataProvider } from './context/MockDataContext'
+import { UserProvider } from './context/UserContext'
+import AuthPage from './features/auth/AuthPage'
 import Home from './features/home/Home'
+import { LarpMaxxer } from './features/larpmaxxer/index'
 import Me from './features/me/Me'
-import PublicProfile from './features/profile/PublicProfile'
-import Network from './features/network/Network'
 import Messaging from './features/messaging/Messaging'
+import Network from './features/network/Network'
+import OnboardingPage from './features/onboarding/OnboardingPage'
+import PublicProfile from './features/profile/PublicProfile'
+import { easeOutQuint } from './lib/motion'
 import JobsPage from './pages/JobsPage'
 import NotificationsPage from './pages/NotificationsPage'
-import AuthPage from './features/auth/AuthPage'
-import { LarpMaxxer } from './features/larpmaxxer/index'
 import PersonaSelect from './pages/PersonaSelect'
-import { easeOutQuint } from './lib/motion'
 import { fetchProfile } from './services/api'
-import OnboardingPage from './features/onboarding/OnboardingPage'
-import styles from './App.module.css'
 
 const FORCE_ONBOARDING_KEY = 'larpedin.forceOnboarding'
 
@@ -121,6 +122,7 @@ function AppRoutes() {
   return (
     <UserProvider>
       <MockDataProvider>
+        <RatingToast />
         <Routes>
           {/* Full-screen routes — no TopNav */}
           <Route
@@ -147,7 +149,7 @@ function AppRoutes() {
                   <Motion.div
                     key={location.pathname}
                     className={styles.pageWrap}
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 12 }} 
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.22, ease: easeOutQuint }}

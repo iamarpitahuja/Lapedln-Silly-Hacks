@@ -1,7 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from sqlalchemy import select, and_, or_, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.dependencies import get_current_user, get_service_client
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.models import (
+    Connection,
+    Conversation,
+    ConversationMember,
+    GroupMessage,
+    Message,
+    Profile,
+)
+from app.websocket import manager
 
 router = APIRouter(tags=["messages"])
 
@@ -20,130 +32,154 @@ class SendGroupMessage(BaseModel):
     content: str
 
 
-# ── Compose picker ───────────────────────────────────────────────────────────
+# -- Compose picker -----------------------------------------------------------
 
 
 @router.get("/messages/users")
 async def get_messageable_users(
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """List all users for the compose picker. Connections first, then others."""
-    conn_result = (
-        supabase.table("connections")
-        .select(
-            "requester_id, addressee_id, "
-            "requester:profiles!requester_id(id, display_name, job, avatar_url, larp_rating), "
-            "addressee:profiles!addressee_id(id, display_name, job, avatar_url, larp_rating)"
+    conn_result = await db.execute(
+        select(Connection).where(
+            or_(
+                Connection.requester_id == user_id,
+                Connection.addressee_id == user_id,
+            ),
+            Connection.status == "accepted",
         )
-        .or_(f"requester_id.eq.{user_id},addressee_id.eq.{user_id}")
-        .eq("status", "accepted")
-        .execute()
     )
+    conn_rows = conn_result.scalars().all()
 
-    connection_ids = set()
-    connections = []
-    for c in conn_result.data:
-        profile = c["addressee"] if c["requester_id"] == user_id else c["requester"]
-        connection_ids.add(profile["id"])
-        connections.append(profile)
+    connection_ids: set[str] = set()
+    connections: list[dict] = []
+    for c in conn_rows:
+        other_id = c.addressee_id if c.requester_id == user_id else c.requester_id
+        connection_ids.add(other_id)
+        profile = await db.get(Profile, other_id)
+        if profile:
+            connections.append({
+                "id": profile.id,
+                "display_name": profile.display_name,
+                "job": profile.job,
+                "avatar_url": profile.avatar_url,
+                "larp_rating": profile.larp_rating,
+            })
 
-    all_profiles = (
-        supabase.table("profiles")
-        .select("id, display_name, job, avatar_url, larp_rating")
-        .execute()
+    all_profiles_result = await db.execute(
+        select(Profile).where(
+            Profile.id != user_id,
+            Profile.id.notin_(connection_ids) if connection_ids else True,
+        )
     )
     others = [
-        p for p in all_profiles.data
-        if p["id"] != user_id and p["id"] not in connection_ids
+        {
+            "id": p.id,
+            "display_name": p.display_name,
+            "job": p.job,
+            "avatar_url": p.avatar_url,
+            "larp_rating": p.larp_rating,
+        }
+        for p in all_profiles_result.scalars().all()
     ]
 
     return {"connections": connections, "others": others}
 
 
-# ── Conversations (1:1 + groups) ─────────────────────────────────────────────
+# -- Conversations (1:1 + groups) --------------------------------------------
 
 
 @router.get("/messages/conversations")
 async def get_conversations(
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """List all 1:1 conversations and group conversations."""
     # 1:1 conversations (derived from messages table)
-    dm_result = (
-        supabase.table("messages")
-        .select(
-            "*, "
-            "sender:profiles!sender_id(id, display_name, job, avatar_url), "
-            "receiver:profiles!receiver_id(id, display_name, job, avatar_url)"
-        )
-        .or_(f"sender_id.eq.{user_id},receiver_id.eq.{user_id}")
-        .order("created_at", desc=True)
-        .execute()
+    dm_result = await db.execute(
+        select(Message).where(
+            or_(
+                Message.sender_id == user_id,
+                Message.receiver_id == user_id,
+            )
+        ).order_by(Message.created_at.desc())
     )
+    dm_rows = dm_result.scalars().all()
 
     seen: dict[str, dict] = {}
-    for msg in dm_result.data:
-        other_id = msg["receiver_id"] if msg["sender_id"] == user_id else msg["sender_id"]
-        other_profile = msg["receiver"] if msg["sender_id"] == user_id else msg["sender"]
+    for msg in dm_rows:
+        other_id = msg.receiver_id if msg.sender_id == user_id else msg.sender_id
         if other_id not in seen:
+            other_profile = await db.get(Profile, other_id)
             seen[other_id] = {
-                "other_user": other_profile,
-                "latest_message": msg["content"],
-                "latest_at": msg["created_at"],
+                "other_user": {
+                    "id": other_profile.id,
+                    "display_name": other_profile.display_name,
+                    "job": other_profile.job,
+                    "avatar_url": other_profile.avatar_url,
+                } if other_profile else None,
+                "latest_message": msg.content,
+                "latest_at": msg.created_at.isoformat() if msg.created_at else None,
                 "unread_count": 0,
             }
-        if msg["receiver_id"] == user_id and not msg["read"]:
+        if msg.receiver_id == user_id and not msg.read:
             seen[other_id]["unread_count"] += 1
 
     dm_conversations = list(seen.values())
 
     # Group conversations
-    memberships = (
-        supabase.table("conversation_members")
-        .select("conversation_id")
-        .eq("user_id", user_id)
-        .execute()
-    )
-    conv_ids = [m["conversation_id"] for m in memberships.data]
-
-    groups = []
-    if conv_ids:
-        convs = (
-            supabase.table("conversations")
-            .select("*")
-            .in_("id", conv_ids)
-            .eq("is_group", True)
-            .execute()
+    memberships_result = await db.execute(
+        select(ConversationMember.conversation_id).where(
+            ConversationMember.user_id == user_id
         )
+    )
+    conv_ids = [m[0] for m in memberships_result.all()]
 
-        for conv in convs.data:
-            members_result = (
-                supabase.table("conversation_members")
-                .select("user_id, profiles!user_id(id, display_name, avatar_url)")
-                .eq("conversation_id", conv["id"])
-                .execute()
+    groups: list[dict] = []
+    if conv_ids:
+        convs_result = await db.execute(
+            select(Conversation).where(
+                Conversation.id.in_(conv_ids),
+                Conversation.is_group == True,
             )
-            members = [m["profiles"] for m in members_result.data if m.get("profiles")]
+        )
+        for conv in convs_result.scalars().all():
+            # Get members with profiles
+            members_result = await db.execute(
+                select(ConversationMember, Profile)
+                .join(Profile, ConversationMember.user_id == Profile.id)
+                .where(ConversationMember.conversation_id == conv.id)
+            )
+            members = [
+                {
+                    "id": profile.id,
+                    "display_name": profile.display_name,
+                    "avatar_url": profile.avatar_url,
+                }
+                for _, profile in members_result.all()
+            ]
 
-            latest = (
-                supabase.table("group_messages")
-                .select("content, created_at, sender_id")
-                .eq("conversation_id", conv["id"])
-                .order("created_at", desc=True)
+            # Get latest message
+            latest_result = await db.execute(
+                select(GroupMessage)
+                .where(GroupMessage.conversation_id == conv.id)
+                .order_by(GroupMessage.created_at.desc())
                 .limit(1)
-                .execute()
             )
-            latest_msg = latest.data[0] if latest.data else None
+            latest_msg = latest_result.scalars().first()
 
             groups.append({
-                "id": conv["id"],
-                "name": conv["name"],
+                "id": conv.id,
+                "name": conv.name,
                 "is_group": True,
                 "members": members,
-                "latest_message": latest_msg["content"] if latest_msg else None,
-                "latest_at": latest_msg["created_at"] if latest_msg else conv["created_at"],
+                "latest_message": latest_msg.content if latest_msg else None,
+                "latest_at": (
+                    latest_msg.created_at.isoformat()
+                    if latest_msg and latest_msg.created_at
+                    else (conv.created_at.isoformat() if conv.created_at else None)
+                ),
             })
 
         groups.sort(key=lambda g: g["latest_at"] or "", reverse=True)
@@ -151,55 +187,53 @@ async def get_conversations(
     return {"conversations": dm_conversations, "groups": groups}
 
 
-# ── Group conversations ──────────────────────────────────────────────────────
+# -- Group conversations ------------------------------------------------------
 
 
 @router.post("/messages/conversations", status_code=201)
 async def create_conversation(
     body: CreateConversation,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Create a new group conversation."""
     member_ids = list(set(body.member_ids))
     if user_id in member_ids:
         member_ids.remove(user_id)
     if len(member_ids) < 2:
-        raise HTTPException(status_code=400, detail="Group conversations need at least 2 other members")
+        raise HTTPException(
+            status_code=400,
+            detail="Group conversations need at least 2 other members",
+        )
 
     all_member_ids = [user_id] + member_ids
 
-    profiles_result = (
-        supabase.table("profiles")
-        .select("id, display_name")
-        .in_("id", all_member_ids)
-        .execute()
+    profiles_result = await db.execute(
+        select(Profile).where(Profile.id.in_(all_member_ids))
     )
-    names_by_id = {p["id"]: p["display_name"] for p in profiles_result.data}
+    profiles = profiles_result.scalars().all()
+    names_by_id = {p.id: p.display_name for p in profiles}
     other_names = [names_by_id.get(mid, "Unknown") for mid in member_ids]
     auto_name = body.name.strip() or ", ".join(other_names[:4])
     if len(other_names) > 4:
         auto_name += f" +{len(other_names) - 4}"
 
-    conv_result = (
-        supabase.table("conversations")
-        .insert({
-            "name": auto_name,
-            "is_group": True,
-            "created_by": user_id,
-        })
-        .execute()
-    )
-    conv = conv_result.data[0]
+    conv = Conversation(name=auto_name, is_group=True, created_by=user_id)
+    db.add(conv)
+    await db.flush()
 
-    members = [{"conversation_id": conv["id"], "user_id": uid} for uid in all_member_ids]
-    supabase.table("conversation_members").insert(members).execute()
+    for uid in all_member_ids:
+        db.add(ConversationMember(conversation_id=conv.id, user_id=uid))
+    await db.commit()
+    await db.refresh(conv)
 
     return {
-        "id": conv["id"],
-        "name": conv["name"],
+        "id": conv.id,
+        "name": conv.name,
         "is_group": True,
-        "members": profiles_result.data,
+        "members": [
+            {"id": p.id, "display_name": p.display_name} for p in profiles
+        ],
     }
 
 
@@ -207,27 +241,35 @@ async def create_conversation(
 async def get_group_message_history(
     conversation_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Fetch message history for a group conversation."""
-    membership = (
-        supabase.table("conversation_members")
-        .select("conversation_id")
-        .eq("conversation_id", conversation_id)
-        .eq("user_id", user_id)
-        .execute()
+    membership = await db.execute(
+        select(ConversationMember).where(
+            ConversationMember.conversation_id == conversation_id,
+            ConversationMember.user_id == user_id,
+        )
     )
-    if not membership.data:
+    if not membership.scalars().first():
         raise HTTPException(status_code=403, detail="Not a member of this conversation")
 
-    result = (
-        supabase.table("group_messages")
-        .select("*, sender:profiles!sender_id(id, display_name, avatar_url)")
-        .eq("conversation_id", conversation_id)
-        .order("created_at", desc=False)
-        .execute()
+    result = await db.execute(
+        select(GroupMessage, Profile)
+        .join(Profile, GroupMessage.sender_id == Profile.id)
+        .where(GroupMessage.conversation_id == conversation_id)
+        .order_by(GroupMessage.created_at.asc())
     )
-    return {"messages": result.data}
+    messages = []
+    for msg, sender in result.all():
+        d = msg.to_dict()
+        d["sender"] = {
+            "id": sender.id,
+            "display_name": sender.display_name,
+            "avatar_url": sender.avatar_url,
+        }
+        messages.append(d)
+
+    return {"messages": messages}
 
 
 @router.post("/messages/groups/{conversation_id}", status_code=201)
@@ -235,68 +277,102 @@ async def send_group_message(
     conversation_id: str,
     body: SendGroupMessage,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Send a message to a group conversation."""
     content = body.content.strip()
     if not content:
         raise HTTPException(status_code=400, detail="Message content cannot be empty")
 
-    membership = (
-        supabase.table("conversation_members")
-        .select("conversation_id")
-        .eq("conversation_id", conversation_id)
-        .eq("user_id", user_id)
-        .execute()
+    membership = await db.execute(
+        select(ConversationMember).where(
+            ConversationMember.conversation_id == conversation_id,
+            ConversationMember.user_id == user_id,
+        )
     )
-    if not membership.data:
+    if not membership.scalars().first():
         raise HTTPException(status_code=403, detail="Not a member of this conversation")
 
-    result = (
-        supabase.table("group_messages")
-        .insert({
-            "conversation_id": conversation_id,
-            "sender_id": user_id,
-            "content": content,
-        })
-        .execute()
+    msg = GroupMessage(
+        conversation_id=conversation_id, sender_id=user_id, content=content
     )
-    return result.data[0]
+    db.add(msg)
+    await db.commit()
+    await db.refresh(msg)
+
+    msg_dict = msg.to_dict()
+
+    # Push via WebSocket to all members
+    members_result = await db.execute(
+        select(ConversationMember.user_id).where(
+            ConversationMember.conversation_id == conversation_id
+        )
+    )
+    member_ids = [m[0] for m in members_result.all()]
+    await manager.send_to_users(
+        member_ids, {"type": "group_message", "data": msg_dict}, exclude=user_id
+    )
+
+    return msg_dict
 
 
-# ── Legacy 1:1 messages ──────────────────────────────────────────────────────
+# -- Legacy 1:1 messages -----------------------------------------------------
 
 
 @router.get("/messages/{other_user_id}")
 async def get_message_history(
     other_user_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Full message history with one person, oldest first."""
-    result = (
-        supabase.table("messages")
-        .select("*, sender:profiles!sender_id(id, display_name, avatar_url)")
-        .or_(
-            f"and(sender_id.eq.{user_id},receiver_id.eq.{other_user_id}),"
-            f"and(sender_id.eq.{other_user_id},receiver_id.eq.{user_id})"
+    result = await db.execute(
+        select(Message, Profile)
+        .join(Profile, Message.sender_id == Profile.id)
+        .where(
+            or_(
+                and_(
+                    Message.sender_id == user_id,
+                    Message.receiver_id == other_user_id,
+                ),
+                and_(
+                    Message.sender_id == other_user_id,
+                    Message.receiver_id == user_id,
+                ),
+            )
         )
-        .order("created_at", desc=False)
-        .execute()
+        .order_by(Message.created_at.asc())
     )
+    messages = []
+    for msg, sender in result.all():
+        d = msg.to_dict()
+        d["sender"] = {
+            "id": sender.id,
+            "display_name": sender.display_name,
+            "avatar_url": sender.avatar_url,
+        }
+        messages.append(d)
 
-    supabase.table("messages").update({"read": True}).eq(
-        "sender_id", other_user_id
-    ).eq("receiver_id", user_id).eq("read", False).execute()
+    # Mark unread messages as read
+    await db.execute(
+        update(Message)
+        .where(
+            Message.sender_id == other_user_id,
+            Message.receiver_id == user_id,
+            Message.read == False,
+        )
+        .values(read=True)
+    )
+    await db.commit()
 
-    return {"messages": result.data}
+    return {"messages": messages}
 
 
 @router.post("/messages", status_code=201)
 async def send_message(
     body: SendMessage,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Send a direct message."""
     if not body.content.strip():
@@ -304,13 +380,20 @@ async def send_message(
     if body.receiver_id == user_id:
         raise HTTPException(status_code=400, detail="Cannot message yourself")
 
-    result = (
-        supabase.table("messages")
-        .insert({
-            "sender_id": user_id,
-            "receiver_id": body.receiver_id,
-            "content": body.content.strip(),
-        })
-        .execute()
+    msg = Message(
+        sender_id=user_id,
+        receiver_id=body.receiver_id,
+        content=body.content.strip(),
     )
-    return result.data[0]
+    db.add(msg)
+    await db.commit()
+    await db.refresh(msg)
+
+    msg_dict = msg.to_dict()
+
+    # Push via WebSocket
+    await manager.send_to_user(
+        body.receiver_id, {"type": "direct_message", "data": msg_dict}
+    )
+
+    return msg_dict

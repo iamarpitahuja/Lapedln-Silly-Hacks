@@ -1,8 +1,14 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel
 
-from app.dependencies import get_current_user, get_service_client
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.models import Post, Profile, Comment, Glaze, PostReaction, Relarp
 from app.workers.scoring import score_content
+from app.services.rating_engine import adjust_rating
 
 router = APIRouter(tags=["posts"])
 
@@ -28,57 +34,79 @@ class CreateGlaze(BaseModel):
     content: str = ""
 
 
-def ensure_post_exists(post_id: str, supabase):
-    post_result = supabase.table("posts").select("id").eq("id", post_id).execute()
-    if not post_result.data:
+async def ensure_post_exists(post_id: str, db: AsyncSession):
+    post = await db.get(Post, post_id)
+    if not post:
         raise HTTPException(status_code=404, detail="Post not found")
+    return post
 
 
-def add_reaction(post_id: str, reaction_type: str, user_id: str, supabase):
-    ensure_post_exists(post_id, supabase)
-    existing = (
-        supabase.table("post_reactions")
-        .select("id")
-        .eq("post_id", post_id)
-        .eq("user_id", user_id)
-        .eq("reaction_type", reaction_type)
-        .execute()
+async def add_reaction(
+    post_id: str, reaction_type: str, user_id: str, db: AsyncSession
+):
+    post = await ensure_post_exists(post_id, db)
+    existing = await db.execute(
+        select(PostReaction).where(
+            PostReaction.post_id == post_id,
+            PostReaction.user_id == user_id,
+            PostReaction.reaction_type == reaction_type,
+        )
     )
-    if existing.data:
+    if existing.scalar_one_or_none():
         raise HTTPException(status_code=409, detail=f"Already {reaction_type}d")
 
-    result = (
-        supabase.table("post_reactions")
-        .insert({
-            "post_id": post_id,
-            "user_id": user_id,
-            "reaction_type": reaction_type,
-        })
-        .execute()
+    reaction = PostReaction(
+        post_id=post_id, user_id=user_id, reaction_type=reaction_type
     )
-    return result.data[0]
+    db.add(reaction)
+
+    # Actor reward
+    actor_action = f"{reaction_type}_given"
+    actor_change = await adjust_rating(db, user_id, actor_action)
+
+    # Author reward (skip if self-interaction)
+    if post.author_id != user_id:
+        await adjust_rating(db, post.author_id, f"post_{reaction_type}d")
+
+    await db.commit()
+    await db.refresh(reaction)
+    result = reaction.to_dict()
+    if actor_change:
+        result["rating_change"] = actor_change
+    return result
 
 
-def remove_reaction(post_id: str, reaction_type: str, user_id: str, supabase):
-    existing = (
-        supabase.table("post_reactions")
-        .select("id")
-        .eq("post_id", post_id)
-        .eq("user_id", user_id)
-        .eq("reaction_type", reaction_type)
-        .execute()
+async def remove_reaction(
+    post_id: str, reaction_type: str, user_id: str, db: AsyncSession
+):
+    post = await ensure_post_exists(post_id, db)
+    existing_result = await db.execute(
+        select(PostReaction).where(
+            PostReaction.post_id == post_id,
+            PostReaction.user_id == user_id,
+            PostReaction.reaction_type == reaction_type,
+        )
     )
-    if not existing.data:
-        raise HTTPException(status_code=404, detail=f"{reaction_type.title()} reaction not found")
+    reaction = existing_result.scalar_one_or_none()
+    if not reaction:
+        raise HTTPException(
+            status_code=404, detail=f"{reaction_type.title()} reaction not found"
+        )
 
-    (
-        supabase.table("post_reactions")
-        .delete()
-        .eq("post_id", post_id)
-        .eq("user_id", user_id)
-        .eq("reaction_type", reaction_type)
-        .execute()
-    )
+    await db.delete(reaction)
+
+    # Reverse the actor reward
+    from app.services.rating_engine import ACTIONS
+    actor_delta = ACTIONS.get(f"{reaction_type}_given", {}).get("delta", 0)
+    if actor_delta:
+        await adjust_rating(db, user_id, f"undo_{reaction_type}_given",
+                            {"delta": -actor_delta})
+
+    # Penalty to author (skip if self)
+    if post.author_id != user_id:
+        await adjust_rating(db, post.author_id, f"post_un{reaction_type}d")
+
+    await db.commit()
 
 
 @router.post("/posts")
@@ -86,44 +114,41 @@ async def create_post(
     body: CreatePost,
     background_tasks: BackgroundTasks,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Create a post and fire off the Prestige Evaluator scoring in the background."""
-    result = supabase.table("posts").insert({
-        "author_id": user_id,
-        "content": body.content,
-        "post_type": body.post_type,
-    }).execute()
-
-    post = result.data[0]
+    post = Post(
+        author_id=user_id,
+        content=body.content,
+        post_type=body.post_type,
+    )
+    db.add(post)
+    await db.commit()
+    await db.refresh(post)
 
     # Fire-and-forget: Gemini scores buzzwords and adjusts LarpRating (mock when no key)
-    background_tasks.add_task(score_content, supabase, post["id"], user_id, body.content)
+    background_tasks.add_task(score_content, post.id, user_id, body.content)
 
-    return post
+    return post.to_dict()
 
 
-@router.delete("/posts/{post_id}", status_code=204)
+@router.delete("/posts/{post_id}")
 async def delete_post(
     post_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Delete a post the current user owns. Cascades to comments, reactions, glazes, relarps."""
-    existing = (
-        supabase.table("posts")
-        .select("id, author_id")
-        .eq("id", post_id)
-        .single()
-        .execute()
-    )
-    if not existing.data:
+    post = await db.get(Post, post_id)
+    if not post:
         raise HTTPException(status_code=404, detail="Post not found")
-    if existing.data["author_id"] != user_id:
+    if post.author_id != user_id:
         raise HTTPException(status_code=403, detail="Not your post")
 
-    supabase.table("posts").delete().eq("id", post_id).execute()
-    return None
+    await db.delete(post)
+    rating_change = await adjust_rating(db, user_id, "post_deleted")
+    await db.commit()
+    return {"ok": True, "rating_change": rating_change}
 
 
 @router.post("/posts/{post_id}/comments", status_code=201)
@@ -131,44 +156,46 @@ async def create_comment(
     post_id: str,
     body: CreateComment,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Create a comment on a post."""
     content = body.content.strip()
     if not content:
         raise HTTPException(status_code=400, detail="Comment cannot be empty")
 
-    ensure_post_exists(post_id, supabase)
+    post = await ensure_post_exists(post_id, db)
 
-    insert_result = (
-        supabase.table("comments")
-        .insert({"post_id": post_id, "author_id": user_id, "content": content})
-        .execute()
-    )
-    comment = insert_result.data[0]
+    comment = Comment(post_id=post_id, author_id=user_id, content=content)
+    db.add(comment)
 
-    author_result = (
-        supabase.table("profiles")
-        .select("display_name, job, avatar_url, larp_rating")
-        .eq("id", user_id)
-        .single()
-        .execute()
-    )
-    author = author_result.data
+    # Actor reward
+    actor_change = await adjust_rating(db, user_id, "comment_created")
+    # Author reward (skip if commenting on own post)
+    if post.author_id != user_id:
+        await adjust_rating(db, post.author_id, "post_commented")
 
-    return {
-        "id": comment["id"],
+    await db.commit()
+    await db.refresh(comment)
+
+    # Fetch author profile
+    author = await db.get(Profile, user_id)
+
+    result = {
+        "id": comment.id,
         "timestamp": "Just now",
-        "createdAt": comment["created_at"],
-        "content": comment["content"],
+        "createdAt": comment.created_at.isoformat() if comment.created_at else None,
+        "content": comment.content,
         "author": {
-            "name": author["display_name"],
-            "headline": author["job"],
-            "avatar": author.get("avatar_url"),
-            "larpRating": author.get("larp_rating", 0),
+            "name": author.display_name if author else "Anonymous Larper",
+            "headline": author.job if author else "",
+            "avatar": author.avatar_url if author else None,
+            "larpRating": author.larp_rating if author else 0,
         },
         "isUserComment": True,
     }
+    if actor_change:
+        result["rating_change"] = actor_change
+    return result
 
 
 @router.patch("/posts/{post_id}/comments/{comment_id}")
@@ -177,53 +204,38 @@ async def edit_comment(
     comment_id: str,
     body: EditComment,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Edit a comment the current user owns."""
     content = body.content.strip()
     if not content:
         raise HTTPException(status_code=400, detail="Comment cannot be empty")
 
-    existing = (
-        supabase.table("comments")
-        .select("id, author_id")
-        .eq("id", comment_id)
-        .eq("post_id", post_id)
-        .single()
-        .execute()
+    result = await db.execute(
+        select(Comment).where(Comment.id == comment_id, Comment.post_id == post_id)
     )
-    if not existing.data:
+    comment = result.scalar_one_or_none()
+    if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
-    if existing.data["author_id"] != user_id:
+    if comment.author_id != user_id:
         raise HTTPException(status_code=403, detail="Not your comment")
 
-    result = (
-        supabase.table("comments")
-        .update({"content": content})
-        .eq("id", comment_id)
-        .execute()
-    )
-    updated = result.data[0]
+    comment.content = content
+    await db.commit()
+    await db.refresh(comment)
 
-    author_result = (
-        supabase.table("profiles")
-        .select("display_name, title, avatar_url, larp_rating")
-        .eq("id", user_id)
-        .single()
-        .execute()
-    )
-    author = author_result.data
+    author = await db.get(Profile, user_id)
 
     return {
-        "id": updated["id"],
+        "id": comment.id,
         "timestamp": "Just now",
-        "createdAt": updated["created_at"],
-        "content": updated["content"],
+        "createdAt": comment.created_at.isoformat() if comment.created_at else None,
+        "content": comment.content,
         "author": {
-            "name": author["display_name"],
-            "headline": author["title"],
-            "avatar": author.get("avatar_url"),
-            "larpRating": author.get("larp_rating", 0),
+            "name": author.display_name if author else "Anonymous Larper",
+            "headline": author.job if author else "",
+            "avatar": author.avatar_url if author else None,
+            "larpRating": author.larp_rating if author else 0,
         },
         "isUserComment": True,
     }
@@ -234,23 +246,20 @@ async def delete_comment(
     post_id: str,
     comment_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Delete a comment the current user owns."""
-    existing = (
-        supabase.table("comments")
-        .select("id, author_id")
-        .eq("id", comment_id)
-        .eq("post_id", post_id)
-        .single()
-        .execute()
+    result = await db.execute(
+        select(Comment).where(Comment.id == comment_id, Comment.post_id == post_id)
     )
-    if not existing.data:
+    comment = result.scalar_one_or_none()
+    if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
-    if existing.data["author_id"] != user_id:
+    if comment.author_id != user_id:
         raise HTTPException(status_code=403, detail="Not your comment")
 
-    supabase.table("comments").delete().eq("id", comment_id).execute()
+    await db.delete(comment)
+    await db.commit()
     return None
 
 
@@ -259,101 +268,96 @@ async def create_relarp(
     post_id: str,
     body: CreateRelarp,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Create a relarp relationship for the current user."""
-    post_result = (
-        supabase.table("posts")
-        .select("id, author_id")
-        .eq("id", post_id)
-        .single()
-        .execute()
-    )
-    post = post_result.data
+    post = await db.get(Post, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
-    if post["author_id"] == user_id:
+    if post.author_id == user_id:
         raise HTTPException(status_code=400, detail="Cannot relarp your own post")
 
-    existing = (
-        supabase.table("relarps")
-        .select("id")
-        .eq("post_id", post_id)
-        .eq("user_id", user_id)
-        .execute()
+    existing_result = await db.execute(
+        select(Relarp).where(Relarp.post_id == post_id, Relarp.user_id == user_id)
     )
-    if existing.data:
+    if existing_result.scalar_one_or_none():
         raise HTTPException(status_code=409, detail="Already relarped")
 
-    result = (
-        supabase.table("relarps")
-        .insert({
-            "post_id": post_id,
-            "user_id": user_id,
-            "commentary": body.commentary.strip(),
-        })
-        .execute()
+    relarp = Relarp(
+        post_id=post_id,
+        user_id=user_id,
+        commentary=body.commentary.strip(),
     )
-    return result.data[0]
+    db.add(relarp)
+
+    # Actor reward + author reward
+    actor_change = await adjust_rating(db, user_id, "relarp_created")
+    await adjust_rating(db, post.author_id, "post_relarped")
+
+    await db.commit()
+    await db.refresh(relarp)
+    result = relarp.to_dict()
+    if actor_change:
+        result["rating_change"] = actor_change
+    return result
 
 
-@router.delete("/posts/{post_id}/relarp", status_code=204)
+@router.delete("/posts/{post_id}/relarp")
 async def remove_relarp(
     post_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
     """Undo relarp for the current user."""
-    existing = (
-        supabase.table("relarps")
-        .select("id")
-        .eq("post_id", post_id)
-        .eq("user_id", user_id)
-        .execute()
+    result = await db.execute(
+        select(Relarp).where(Relarp.post_id == post_id, Relarp.user_id == user_id)
     )
-    if not existing.data:
+    relarp = result.scalar_one_or_none()
+    if not relarp:
         raise HTTPException(status_code=404, detail="Relarp not found")
 
-    supabase.table("relarps").delete().eq("post_id", post_id).eq("user_id", user_id).execute()
-    return None
+    await db.delete(relarp)
+    rating_change = await adjust_rating(db, user_id, "relarp_removed")
+    await db.commit()
+    return {"ok": True, "rating_change": rating_change}
 
 
 @router.post("/posts/{post_id}/like", status_code=201)
 async def create_like(
     post_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
-    return add_reaction(post_id, "like", user_id, supabase)
+    return await add_reaction(post_id, "like", user_id, db)
 
 
-@router.delete("/posts/{post_id}/like", status_code=204)
+@router.delete("/posts/{post_id}/like")
 async def remove_like(
     post_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
-    remove_reaction(post_id, "like", user_id, supabase)
-    return None
+    await remove_reaction(post_id, "like", user_id, db)
+    return {"ok": True}
 
 
 @router.post("/posts/{post_id}/love", status_code=201)
 async def create_love(
     post_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
-    return add_reaction(post_id, "love", user_id, supabase)
+    return await add_reaction(post_id, "love", user_id, db)
 
 
-@router.delete("/posts/{post_id}/love", status_code=204)
+@router.delete("/posts/{post_id}/love")
 async def remove_love(
     post_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
-    remove_reaction(post_id, "love", user_id, supabase)
-    return None
+    await remove_reaction(post_id, "love", user_id, db)
+    return {"ok": True}
 
 
 @router.post("/posts/{post_id}/glaze", status_code=201)
@@ -361,58 +365,73 @@ async def create_glaze(
     post_id: str,
     body: CreateGlaze,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
-    ensure_post_exists(post_id, supabase)
+    post = await ensure_post_exists(post_id, db)
 
-    existing = (
-        supabase.table("glazes")
-        .select("id")
-        .eq("post_id", post_id)
-        .eq("glazer_id", user_id)
-        .eq("glaze_type", "organic")
-        .execute()
+    existing_result = await db.execute(
+        select(Glaze).where(
+            Glaze.post_id == post_id,
+            Glaze.glazer_id == user_id,
+            Glaze.glaze_type == "organic",
+        )
     )
-    if existing.data:
+    if existing_result.scalar_one_or_none():
         raise HTTPException(status_code=409, detail="Already glazed")
 
     content = body.content.strip() or "Great post."
-    result = (
-        supabase.table("glazes")
-        .insert({
-            "post_id": post_id,
-            "glazer_id": user_id,
-            "content": content,
-            "glaze_type": "organic",
-        })
-        .execute()
+    glaze = Glaze(
+        post_id=post_id,
+        glazer_id=user_id,
+        content=content,
+        glaze_type="organic",
     )
-    return result.data[0]
+    db.add(glaze)
+
+    # Actor reward
+    actor_change = await adjust_rating(db, user_id, "glaze_given")
+    # Author reward (skip if self)
+    if post.author_id != user_id:
+        await adjust_rating(db, post.author_id, "post_glazed")
+
+    await db.commit()
+    await db.refresh(glaze)
+    result = glaze.to_dict()
+    if actor_change:
+        result["rating_change"] = actor_change
+    return result
 
 
-@router.delete("/posts/{post_id}/glaze", status_code=204)
+@router.delete("/posts/{post_id}/glaze")
 async def remove_glaze(
     post_id: str,
     user_id: str = Depends(get_current_user),
-    supabase=Depends(get_service_client),
+    db: AsyncSession = Depends(get_db),
 ):
-    existing = (
-        supabase.table("glazes")
-        .select("id")
-        .eq("post_id", post_id)
-        .eq("glazer_id", user_id)
-        .eq("glaze_type", "organic")
-        .execute()
+    post = await ensure_post_exists(post_id, db)
+
+    existing_result = await db.execute(
+        select(Glaze).where(
+            Glaze.post_id == post_id,
+            Glaze.glazer_id == user_id,
+            Glaze.glaze_type == "organic",
+        )
     )
-    if not existing.data:
+    glaze = existing_result.scalar_one_or_none()
+    if not glaze:
         raise HTTPException(status_code=404, detail="Glaze not found")
 
-    (
-        supabase.table("glazes")
-        .delete()
-        .eq("post_id", post_id)
-        .eq("glazer_id", user_id)
-        .eq("glaze_type", "organic")
-        .execute()
-    )
-    return None
+    await db.delete(glaze)
+
+    # Reverse the actor reward
+    from app.services.rating_engine import ACTIONS
+    actor_delta = ACTIONS.get("glaze_given", {}).get("delta", 0)
+    if actor_delta:
+        await adjust_rating(db, user_id, "undo_glaze_given", {"delta": -actor_delta})
+
+    # Penalty to author (skip if self)
+    if post.author_id != user_id:
+        await adjust_rating(db, post.author_id, "post_unglazed")
+
+    await db.commit()
+    return {"ok": True}
