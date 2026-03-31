@@ -28,6 +28,14 @@ const TOUR_STEPS = [
     description: 'Create posts, attach media, and publish updates from this composer.',
   },
   {
+    id: 'memelord',
+    route: '/',
+    zone: 'Feed',
+    selector: '[data-tour="start-post"]',
+    title: 'MemeLord + Random Glaze',
+    description: 'Posts can trigger MemeLord roast memes, and glaze suggestions are randomized for chaotic variety.',
+  },
+  {
     id: 'games',
     route: '/',
     zone: 'Feed',
@@ -75,6 +83,14 @@ const TOUR_STEPS = [
     selector: '[data-tour="profile-larpmaxxer"]',
     title: 'Profile + Training',
     description: 'Your profile is your public persona, and this shortcut takes you into LarpMaxxer practice.',
+  },
+  {
+    id: 'elevenlabs',
+    route: '/me',
+    zone: 'Me',
+    selector: '[data-tour="profile-larpmaxxer"]',
+    title: 'ElevenLabs Voice Mode',
+    description: 'Open LarpMaxxer from here and use speaker playback powered by the ElevenLabs TTS pipeline.',
   },
 ]
 
