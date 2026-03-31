@@ -1,7 +1,12 @@
+.form {
+  margin-top: 0.25rem;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
   gap: 0.75rem;
+  margin-top: 0.25rem;
   margin-bottom: 1.5rem;
 }
 
@@ -15,18 +20,21 @@
   font-weight: 600;
   cursor: pointer;
   text-align: center;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
   transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .card:hover {
   border-color: var(--neon);
-  box-shadow: var(--glow-sm);
+  box-shadow: 0 0 0 2px var(--neon-faint);
 }
 
 .cardSelected {
   border-color: var(--neon);
   background: color-mix(in srgb, var(--neon-faint) 60%, var(--bg-card));
   color: var(--neon);
+  box-shadow: 0 0 0 2px var(--neon-faint);
 }
 
 .loading {

@@ -49,7 +49,7 @@ export default function StepJob({ onNext, stepNumber = 2, totalSteps = 6 }) {
         </div>
       )}
       {!loading && !error && (
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={`${styles.form} ${jobStyles.form}`}>
           <div className={jobStyles.grid}>
             {jobs.map((job, i) => (
               <motion.button
@@ -60,7 +60,8 @@ export default function StepJob({ onNext, stepNumber = 2, totalSteps = 6 }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ ...springBouncy, delay: i * 0.03 }}
-                whileTap={{ scale: selected === job ? 1 : 1.04 }}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.99 }}
               >
                 {job}
               </motion.button>

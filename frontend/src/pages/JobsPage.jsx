@@ -178,10 +178,10 @@ export default function JobsPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.boardWrap} data-tour="jobs-board">
+      <div className={styles.boardWrap}>
 
         {/* Board header */}
-        <div className={styles.boardHeader}>
+        <div className={styles.boardHeader} data-tour="jobs-board-header">
           <div>
             <h2 className={styles.heading}>J*bs</h2>
             <p className={styles.subheading}>

@@ -55,7 +55,7 @@ const TOUR_STEPS = [
     id: 'jobs',
     route: '/jobs',
     zone: 'J*bs',
-    selector: '[data-tour="jobs-board"]',
+    selector: '[data-tour="jobs-board-header"]',
     title: 'Jobs Board',
     description: 'Apply to generated roles or define your own title whenever you want.',
   },
