@@ -34,9 +34,7 @@ export default function PersonaSelect() {
   const { personaId, setPersona } = useUser()
   const navigate = useNavigate()
   const [personas, setPersonas] = useState(PERSONAS)
-  const logoSrc = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
-    ? '/logoLightMode.png'
-    : '/logoDarkMode.png'
+  const logoSrc = '/logoDarkMode.png'
 
   useEffect(() => {
     if (personaId) navigate('/larpmaxxer', { replace: true })

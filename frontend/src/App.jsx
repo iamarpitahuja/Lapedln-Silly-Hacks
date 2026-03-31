@@ -27,18 +27,14 @@ const FEATURE_TOUR_PENDING_KEY = 'larpedin.featureTourPending'
 
 function isOnboardingIncomplete(profile) {
   if (!profile || typeof profile !== 'object') return true
+  // If onboarding has been completed, respect that
   if (profile.onboarding_completed_at) return false
-
-  const displayName = String(profile.display_name ?? '').trim()
-  const job = String(profile?.job ?? profile?.title ?? '').trim()
-  const bio = String(profile?.bio ?? '').trim()
-  const skills = Array.isArray(profile?.skills) ? profile.skills : []
-  const experience = Array.isArray(profile?.experience) ? profile.experience : []
-  const hasDefaultName = !displayName || displayName === 'Anonymous Larper'
-  const hasDefaultJob = !job || job === 'Aspiring Thought Leader'
-  const hasNoProfileSignal = bio.length === 0 && skills.length === 0 && experience.length === 0
-
-  return hasDefaultName || (hasDefaultJob && hasNoProfileSignal)
+  // Existing users with a real name and job can skip onboarding
+  const hasName = profile.display_name && profile.display_name !== 'Anonymous Larper'
+  const hasJob = profile.job && profile.job !== 'Aspiring Thought Leader'
+  if (hasName && hasJob) return false
+  // No completion timestamp and no meaningful profile data
+  return true
 }
 
 function LarpMaxxerPage() {
@@ -156,7 +152,7 @@ function AppRoutes() {
                   <Motion.div
                     key={location.pathname}
                     className={styles.pageWrap}
-                    initial={{ opacity: 0, y: 12 }} 
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.22, ease: easeOutQuint }}

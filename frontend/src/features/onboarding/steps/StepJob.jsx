@@ -40,7 +40,7 @@ export default function StepJob({ onNext }) {
   }
 
   return (
-    <StepShell heading="Choose your corporate identity." stepNumber={1} totalSteps={5} skippable={false}>
+    <StepShell heading="Choose your corporate identity." stepNumber={2} totalSteps={6} skippable={false}>
       {loading && <p className={jobStyles.loading}>Generating your destiny...</p>}
       {error && (
         <div className={jobStyles.errorBox}>

@@ -142,7 +142,9 @@ const TEST_BUZZWORDS = ['Synergy', 'Velocity', 'Alignment']
 
 function timeAgo(isoString) {
   if (!isoString) return 'recently'
-  const diffMs = Date.now() - new Date(isoString).getTime()
+  // Backend stores UTC but SQLite strips timezone info — treat naive timestamps as UTC
+  const utcString = isoString.endsWith('Z') || isoString.includes('+') ? isoString : isoString + 'Z'
+  const diffMs = Date.now() - new Date(utcString).getTime()
   const diffMins = Math.floor(diffMs / 60000)
   if (diffMins < 1) return 'just now'
   if (diffMins < 60) return `${diffMins}m`
@@ -343,7 +345,16 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     const handleRatingChange = (e) => {
       const { new_rating } = e.detail || {}
       if (typeof new_rating === 'number') {
-        setProfile(prev => ({ ...prev, larpRating: new_rating }))
+        setProfile(prev => {
+          const prevId = prev.id
+          // Also update author ratings in feed posts so they stay in sync
+          setAllPosts(posts => posts.map(post =>
+            post.author?.id === prevId
+              ? { ...post, author: { ...post.author, larpRating: new_rating } }
+              : post
+          ))
+          return { ...prev, larpRating: new_rating }
+        })
       }
     }
 
@@ -871,9 +882,7 @@ export function MockDataProvider({ children, testMode = IS_TEST_MODE }) {
     }
   }
 
-  const feedPosts = useMemo(() => (
-    allPosts.filter(post => post.author?.id === profile.id || Number(post.author?.larpRating ?? 0) <= profile.larpRating)
-  ), [allPosts, profile.id, profile.larpRating])
+  const feedPosts = useMemo(() => allPosts, [allPosts])
 
   const value = {
     currentUser: profile,

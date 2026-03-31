@@ -81,13 +81,11 @@ async def get_feed(
     )
     viewer_rating = viewer_result.scalar_one_or_none() or 0.0
 
-    # Query posts with Social Blindness: only show posts where author rating <= viewer rating
+    # Fetch ALL posts — the frontend handles Social Blindness display
+    # (locked cards for authors with higher larp_rating than the viewer)
     posts_stmt = (
         select(Post, Profile)
         .join(Profile, Post.author_id == Profile.id)
-        .where(
-            (Profile.larp_rating <= viewer_rating) | (Post.author_id == user_id)
-        )
         .order_by(Post.created_at.desc())
         .offset(offset)
         .limit(limit)
@@ -318,7 +316,7 @@ async def get_feed(
         post_comments = comments_by_post.get(post["id"], [])
         post["glazes"] = glazes_by_post.get(post["id"], [])
         post["ai_glazes"] = ai_glazes.get(post["id"], [])
-        post["comments"] = post_comments[:3]
+        post["comments"] = post_comments
         post["comment_count"] = len(post_comments)
         post["relarp_count"] = relarp_counts.get(post["id"], 0)
         post["has_user_relarped"] = post["id"] in user_relarped

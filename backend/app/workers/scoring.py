@@ -1,5 +1,7 @@
 import logging
 
+from sqlalchemy import select, func
+
 from app.database import async_session
 from app.models import Post
 from app.services.gemini import evaluate_prestige
@@ -7,6 +9,8 @@ from app.services.memelord import generate_roast_meme
 from app.services.rating_engine import adjust_rating
 
 logger = logging.getLogger(__name__)
+
+FIRST_POST_BONUS = 10.0
 
 
 async def score_content(post_id: str, user_id: str, content: str):
@@ -33,10 +37,21 @@ async def score_content(post_id: str, user_id: str, content: str):
                 if meme_url:
                     post.roast_meme_url = meme_url
 
+            # Check if this is the user's first post — give a welcome bonus
+            post_count = await db.execute(
+                select(func.count()).select_from(Post).where(Post.author_id == user_id)
+            )
+            is_first_post = post_count.scalar() == 1
+
+            delta = result["rating_delta"]
+            if is_first_post:
+                delta = max(delta, 0) + FIRST_POST_BONUS
+                logger.info("First post bonus for user %s: +%.1f", user_id[:8], FIRST_POST_BONUS)
+
             # Update larp rating via centralized engine
             await adjust_rating(
                 db, user_id, "prestige_evaluated",
-                {"delta": result["rating_delta"]},
+                {"delta": delta},
             )
 
             await db.commit()

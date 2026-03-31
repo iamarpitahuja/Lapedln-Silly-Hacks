@@ -10,6 +10,7 @@ const DEFAULT_AUTH_CONTEXT = {
   loading: false,
   signUp: async () => ({ user: null }),
   signIn: async () => ({ user: null }),
+  signInWithGoogle: async () => ({ user: null }),
   signOut: async () => undefined,
 }
 
@@ -87,6 +88,21 @@ export function AuthProvider({ children }) {
     return data
   }
 
+  const signInWithGoogle = async (credential) => {
+    const res = await fetch('/api/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential }),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.detail || 'Google sign-in failed')
+    }
+    const data = await res.json()
+    _setAuth(data.access_token, data.user)
+    return data
+  }
+
   const signOut = async () => {
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(USER_KEY)
@@ -101,6 +117,7 @@ export function AuthProvider({ children }) {
       loading,
       signUp,
       signIn,
+      signInWithGoogle,
       signOut,
     }}>
       {children}

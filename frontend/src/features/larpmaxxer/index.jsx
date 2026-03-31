@@ -51,9 +51,7 @@ export function LarpMaxxer({ onExitTraining }) {
     confirmLabel: 'Confirm',
     action: null,
   })
-  const logoSrc = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
-    ? '/logoLightMode.png'
-    : '/logoDarkMode.png'
+  const logoSrc = '/logoDarkMode.png'
 
   function openConfirm({ title, message, confirmLabel = 'Confirm', action }) {
     setConfirmState({
