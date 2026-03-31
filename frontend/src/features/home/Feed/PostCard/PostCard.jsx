@@ -41,7 +41,7 @@ function getAvatarColor(name) {
 export default function PostCard({ post, isOwnPost = false }) {
   const { author, type, timestamp, content, reactions } = post
   const relarpSource = post.isRelarp ? post.relarpOf : null
-  const { currentUser } = useMockData()
+  const { currentUser, deletePost: contextDeletePost } = useMockData()
 
   const [popup, setPopup] = useState(null) // { author, x, y }
   const [isDeleting, setIsDeleting] = useState(false)
@@ -55,12 +55,8 @@ export default function PostCard({ post, isOwnPost = false }) {
   const handleDelete = async () => {
     if (isDeleting) return
     setIsDeleting(true)
-    try {
-      await apiDeletePost(post.id)
-      window.dispatchEvent(new Event('feed:refresh'))
-    } catch {
-      setIsDeleting(false)
-    }
+    const result = await contextDeletePost(post.id)
+    if (!result.ok) setIsDeleting(false)
   }
 
   const [isGlazing, setIsGlazing] = useState(false)

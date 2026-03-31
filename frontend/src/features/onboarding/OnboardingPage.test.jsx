@@ -44,23 +44,18 @@ function renderPage(onComplete = vi.fn()) {
 describe('OnboardingPage', () => {
   beforeEach(() => vi.clearAllMocks())
 
-  it('renders StepJob first', async () => {
+  it('renders StepName first', () => {
     renderPage()
-    await waitFor(() => {
-      expect(screen.getByText(/choose your corporate identity/i)).toBeInTheDocument()
-    })
+    expect(screen.getByText(/what should the algorithm call you/i)).toBeInTheDocument()
   })
 
-  it('advances to StepAvatar after selecting a job', async () => {
+  it('advances to StepJob after entering a name', async () => {
     const user = userEvent.setup()
     renderPage()
-    await waitFor(() => {
-      expect(screen.getByText('Chaos Pilot')).toBeInTheDocument()
-    })
-    await user.click(screen.getByText('Chaos Pilot'))
+    await user.type(screen.getByRole('textbox'), 'Ada')
     await user.click(screen.getByRole('button', { name: /next/i }))
     await waitFor(() => {
-      expect(screen.getByText(/upload your professional headshot/i)).toBeInTheDocument()
+      expect(screen.getByText(/choose your corporate identity/i)).toBeInTheDocument()
     })
   })
 })

@@ -5,7 +5,10 @@ from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data" / "larp.db"
+from app.config import settings
+
+_default_db = Path(__file__).resolve().parent.parent / "data" / "larp.db"
+DB_PATH = Path(settings.db_path) if settings.db_path else _default_db
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 DATABASE_URL = f"sqlite+aiosqlite:///{DB_PATH}"

@@ -7,6 +7,8 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
 
 from app.database import get_db
 from app.models import User, Profile
@@ -33,6 +35,10 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+
+
+class GoogleAuthRequest(BaseModel):
+    credential: str
 
 
 class AuthResponse(BaseModel):
@@ -108,7 +114,7 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == body.email))
     user = result.scalar_one_or_none()
 
-    if user is None or not pwd_context.verify(body.password, user.hashed_password):
+    if user is None or not user.hashed_password or not pwd_context.verify(body.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     # Fetch display_name from profile
@@ -153,3 +159,74 @@ async def me(
         "email": user.email,
         "display_name": profile.display_name if profile else "Anonymous Larper",
     }
+
+
+@router.post("/google", response_model=AuthResponse)
+async def google_auth(body: GoogleAuthRequest, db: AsyncSession = Depends(get_db)):
+    """Authenticate with a Google ID token. Creates or merges accounts."""
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            body.credential,
+            google_requests.Request(),
+            settings.google_client_id,
+        )
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid Google token")
+
+    google_id = idinfo["sub"]
+    email = idinfo.get("email")
+    name = idinfo.get("name", "Anonymous Larper")
+    picture = idinfo.get("picture")
+
+    if not email:
+        raise HTTPException(status_code=400, detail="Google account has no email")
+
+    # Check if user exists by google_id
+    result = await db.execute(select(User).where(User.google_id == google_id))
+    user = result.scalar_one_or_none()
+
+    if user is None:
+        # Check if user exists by email (merge case)
+        result = await db.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+
+        if user is not None:
+            # Link Google to existing account
+            user.google_id = google_id
+            if picture and not user.avatar_url:
+                user.avatar_url = picture
+        else:
+            # Create new user + profile
+            user_id = str(uuid4())
+            user = User(
+                id=user_id,
+                email=email,
+                google_id=google_id,
+                display_name=name,
+                avatar_url=picture,
+            )
+            db.add(user)
+
+            profile = Profile(
+                id=user_id,
+                display_name=name,
+                avatar_url=picture,
+            )
+            db.add(profile)
+
+    await db.commit()
+
+    # Fetch profile for display_name
+    prof_result = await db.execute(select(Profile).where(Profile.id == user.id))
+    profile = prof_result.scalar_one_or_none()
+    display_name = profile.display_name if profile else name
+
+    token = _create_access_token(str(user.id), user.email)
+    return AuthResponse(
+        access_token=token,
+        user={
+            "id": str(user.id),
+            "email": user.email,
+            "display_name": display_name,
+        },
+    )

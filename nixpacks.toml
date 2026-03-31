@@ -1,0 +1,16 @@
+# Nixpacks config for Railway — builds both frontend and backend in one service
+
+[phases.setup]
+nixPkgs = ["nodejs_20", "python312", "npm"]
+
+[phases.install]
+cmds = [
+    "cd frontend && npm ci",
+    "cd backend && pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = ["cd frontend && npm run build"]
+
+[start]
+cmd = "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"

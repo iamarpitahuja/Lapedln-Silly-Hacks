@@ -7,9 +7,7 @@ import styles from './StepWelcome.module.css'
 
 export default function StepWelcome({ larpRating = 0, onEnter }) {
   const [showCta, setShowCta] = useState(false)
-  const logoSrc = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
-    ? '/logoLightMode.png'
-    : '/logoDarkMode.png'
+  const logoSrc = '/logoDarkMode.png'
 
   function handleCounterComplete() {
     confetti({

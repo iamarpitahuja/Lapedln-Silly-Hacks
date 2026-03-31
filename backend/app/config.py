@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from pydantic_settings import BaseSettings
 
@@ -9,6 +10,9 @@ class Settings(BaseSettings):
 
     # JWT auth
     jwt_secret: str = "change-me-in-production"
+
+    # Google OAuth
+    google_client_id: str = ""
 
     # AI services
     gemini_api_key: str = ""
@@ -25,13 +29,24 @@ class Settings(BaseSettings):
     # File uploads
     upload_dir: str = str(_ROOT / "backend" / "uploads")
 
+    # Database path (override for Railway volume mounts)
+    db_path: str = ""
+
+    # Port (Railway sets this)
+    port: int = 8000
+
     @property
     def skip_auth(self) -> bool:
         return self.dev_mode
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+        origins = [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+        # Auto-allow Railway production domain
+        railway_url = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
+        if railway_url:
+            origins.append(f"https://{railway_url}")
+        return origins
 
     model_config = {"env_file": str(_ROOT / ".env"), "env_file_encoding": "utf-8", "extra": "ignore"}
 

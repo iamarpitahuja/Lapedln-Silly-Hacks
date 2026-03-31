@@ -34,7 +34,8 @@ class User(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    hashed_password: Mapped[str] = mapped_column(String, nullable=False)
+    hashed_password: Mapped[str | None] = mapped_column(String, nullable=True)
+    google_id: Mapped[str | None] = mapped_column(String, unique=True, nullable=True)
     display_name: Mapped[str] = mapped_column(String, default="Anonymous Larper")
     avatar_url: Mapped[str | None] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow)

@@ -39,12 +39,16 @@ async def add_relarp_reaction(
     db.add(reaction)
 
     # Author reward (skip if self)
+    actor_change = None
     if relarp.user_id != user_id:
-        await adjust_rating(db, relarp.user_id, f"relarp_{reaction_type}d")
+        actor_change = await adjust_rating(db, relarp.user_id, f"relarp_{reaction_type}d")
 
     await db.commit()
     await db.refresh(reaction)
-    return reaction.to_dict()
+    result = reaction.to_dict()
+    if actor_change:
+        result["rating_change"] = actor_change
+    return result
 
 
 async def remove_relarp_reaction(

@@ -65,10 +65,26 @@ uploads_dir = Path(__file__).parent.parent / "uploads"
 uploads_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
-
 @app.get("/health")
 async def health():
     return {"status": "larping", "dev_mode": settings.dev_mode}
+
+
+# Serve frontend static build in production (single-service deployment)
+_frontend_dist = Path(__file__).parent.parent.parent / "frontend" / "dist"
+if _frontend_dist.is_dir():
+    from fastapi.responses import FileResponse
+
+    # Serve static assets (js, css, images)
+    app.mount("/assets", StaticFiles(directory=str(_frontend_dist / "assets")), name="frontend-assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        """Catch-all: serve index.html for client-side routing."""
+        file_path = _frontend_dist / full_path
+        if file_path.is_file():
+            return FileResponse(str(file_path))
+        return FileResponse(str(_frontend_dist / "index.html"))
 
 
 @app.websocket("/api/ws/messages")

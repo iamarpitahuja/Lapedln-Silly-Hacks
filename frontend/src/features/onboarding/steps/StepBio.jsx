@@ -11,7 +11,7 @@ export default function StepBio({ onNext, onSkip }) {
   }
 
   return (
-    <StepShell heading="Describe your personal brand in buzzwords." stepNumber={3} totalSteps={5} skippable onSkip={onSkip}>
+    <StepShell heading="Describe your personal brand in buzzwords." stepNumber={4} totalSteps={6} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <textarea
           className={styles.textarea}
