@@ -55,33 +55,44 @@ export function computePerformanceScore(session: SimulationSession): number {
 // ─── LarpRating Delta ─────────────────────────────────────────────────────────
 
 export function computeLarpRatingDelta(
-  performanceScore: number,
-  scenarioMaxGain: number,
-  cringeCount: number,
-  wasExposureEvent: boolean
+  session: SimulationSession,
+  scenario: ScenarioMeta
 ): number {
-  const exposurePenalty = wasExposureEvent ? 0.8 : 0
-  const raw =
-    (performanceScore / 100) * scenarioMaxGain
-    - cringeCount * 0.3
-    - exposurePenalty
-  return Math.round(raw * 10) / 10
+  const maxGain = scenario.maxLarpGain
+  const turns = Math.max(1, session.cumulative.totalTurns)
+  const wasExposure = session.status === 'exposure_ended'
+
+  const rawMetricSum =
+    session.cumulative.sessionAura * 0.35 +
+    session.cumulative.larpContinuity * 0.25 +
+    Math.max(0, session.cumulative.respect) * 0.20 +
+    session.cumulative.socialFooting * 0.10
+  const executionRatio = Math.min(1, Math.max(0, rawMetricSum / (turns * 10)))
+  const baseExecution = executionRatio * maxGain * 0.6
+
+  const perfectRatio = session.cumulative.perfectAlignments / turns
+  const adjacentRatio = session.cumulative.adjacentAlignments / turns
+  const offRatio = session.cumulative.offPersonaCount / turns
+  const alignmentScore = Math.max(
+    0,
+    perfectRatio * 1.0 + adjacentRatio * 0.5 - offRatio * 0.6
+  )
+  const alignmentGain = alignmentScore * maxGain * 0.4
+
+  const cringePenalty = session.cumulative.cringeCount * (maxGain / 25)
+  const exposurePenalty = wasExposure ? maxGain * 0.12 : 0
+
+  const raw = baseExecution + alignmentGain - cringePenalty - exposurePenalty
+  return Math.max(-5, Math.round(raw * 10) / 10)
 }
 
 // ─── Projected LarpRating Delta (per-turn estimate) ───────────────────────────
 
 export function computeProjectedDelta(
   session: SimulationSession,
-  scenarioMaxGain: number
+  scenario: ScenarioMeta
 ): number {
-  const score = computePerformanceScore(session)
-  const delta = computeLarpRatingDelta(
-    score,
-    scenarioMaxGain,
-    session.cumulative.cringeCount,
-    false
-  )
-  return delta
+  return computeLarpRatingDelta(session, scenario)
 }
 
 // ─── Verdict Strings ──────────────────────────────────────────────────────────
@@ -174,13 +185,7 @@ export function computeSummaryMetrics(
   characterName: string
 ): SessionSummary {
   const performanceScore = computePerformanceScore(session)
-  const wasExposure = session.status === 'exposure_ended'
-  const larpRatingDelta = computeLarpRatingDelta(
-    performanceScore,
-    scenario.maxLarpGain,
-    session.cumulative.cringeCount,
-    wasExposure
-  )
+  const larpRatingDelta = computeLarpRatingDelta(session, scenario)
 
   const userTurns = session.history.filter(h => h.speaker === 'user' && h.metricDeltas)
   const totalTurns = userTurns.length || 1

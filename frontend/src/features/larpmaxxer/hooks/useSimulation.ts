@@ -355,11 +355,22 @@ export function useSimulation(
     const nextTurnIndex = session.turnCount
     const nextNode = scenarioContent.dialogueNodes[nextTurnIndex] ?? null
 
-    // Compute projected delta for flash
-    const tempSession = { ...session, cumulative: newCumulative, meters: newMeters }
+    // Check end conditions
+    let newStatus: SimulationStatus = 'active'
+    if (newMeters.suspicion >= 90) newStatus = 'exposure_ended'
+    else if (newMeters.impressed >= 95) newStatus = 'breakthrough_ended'
+    else if (session.turnCount + 1 >= session.maxTurns) newStatus = 'completed'
+
+    // Compute projected delta for flash using the post-turn state.
+    const tempSession = {
+      ...session,
+      cumulative: newCumulative,
+      meters: newMeters,
+      status: newStatus,
+    }
     const scenario = SCENARIO_MAP.get(session.scenarioId)
     const projectedDelta = scenario
-      ? computeProjectedDelta(tempSession, scenario.maxLarpGain)
+      ? computeProjectedDelta(tempSession, scenario)
       : 0
 
     const userEntry: ConversationEntry = {
@@ -383,12 +394,6 @@ export function useSimulation(
       projectedLarpDelta: projectedDelta,
       cringe,
     }
-
-    // Check end conditions
-    let newStatus: SimulationStatus = 'active'
-    if (newMeters.suspicion >= 90) newStatus = 'exposure_ended'
-    else if (newMeters.impressed >= 95) newStatus = 'breakthrough_ended'
-    else if (session.turnCount + 1 >= session.maxTurns) newStatus = 'completed'
 
     dispatch({
       type: 'RESPONSE_SELECTED',

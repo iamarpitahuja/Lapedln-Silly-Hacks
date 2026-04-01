@@ -33,6 +33,7 @@ class ProgressPatch(BaseModel):
     personaId: str | None = None
     larpRating: float | None = None
     completedScenarios: list[CompletedScenario] | None = None
+    larpRatingDelta: float | None = None
 
 
 class LarpmaxxerTTSRequest(BaseModel):
@@ -137,13 +138,16 @@ async def patch_larpmaxxer_progress(
     # Sync scenario completions to Profile.larp_rating
     rating_change = None
     if body.completedScenarios:
-        for scenario in body.completedScenarios:
-            # Scale delta by score: 1.5 base + up to 1.5 bonus (score is 0-100)
-            delta = 1.5 + (scenario.score / 100.0) * 1.5
-            rating_change = await adjust_rating(
-                db, user_id, "larpmaxxer_scenario_complete",
-                {"delta": round(delta, 1)},
-            )
+        if body.larpRatingDelta is not None:
+            trusted_delta = max(-10.0, min(25.0, float(body.larpRatingDelta)))
+        else:
+            last = body.completedScenarios[-1]
+            trusted_delta = round(1.5 + (last.score / 100.0) * 1.5, 1)
+
+        rating_change = await adjust_rating(
+            db, user_id, "larpmaxxer_scenario_complete",
+            {"delta": round(trusted_delta, 1)},
+        )
         await db.commit()
 
     result = {"userId": user_id, **progress}

@@ -5,7 +5,7 @@
     "setting": "1:1 informational interview at a coffee shop",
     "difficulty": "easy",
     "maxTurns": 7,
-    "maxLarpGain": 1.5,
+    "maxLarpGain": 10,
     "objectives": [
       "Calibrate desperation vs. confidence",
       "Extract value without appearing needy",
@@ -33,7 +33,7 @@
     "setting": "Generic industry mixer, open bar",
     "difficulty": "easy_medium",
     "maxTurns": 7,
-    "maxLarpGain": 1.5,
+    "maxLarpGain": 12,
     "objectives": [
       "Stay believable across multiple conversation threads",
       "Exchange value, not just pleasantries",
@@ -61,7 +61,7 @@
     "setting": "New office, open floor plan, everyone watching",
     "difficulty": "medium",
     "maxTurns": 8,
-    "maxLarpGain": 2.5,
+    "maxLarpGain": 13,
     "objectives": [
       "Project competence without knowing anything",
       "Establish social baseline in first 8 hours",
@@ -88,7 +88,7 @@
     "setting": "Structured interview, competency framework visible on desk",
     "difficulty": "medium",
     "maxTurns": 8,
-    "maxLarpGain": 2.5,
+    "maxLarpGain": 13,
     "objectives": [
       "Survive behavioral questions without real stories",
       "Project self-awareness while bullshitting gracefully",
@@ -116,7 +116,7 @@
     "setting": "Post-work drinks, financial district",
     "difficulty": "medium",
     "maxTurns": 7,
-    "maxLarpGain": 2.5,
+    "maxLarpGain": 13,
     "objectives": [
       "Match the jargon or be dismissed",
       "Establish you understand capital markets at a surface level",
@@ -144,7 +144,7 @@
     "setting": "Campus seminar afterparty",
     "difficulty": "medium",
     "maxTurns": 7,
-    "maxLarpGain": 2.5,
+    "maxLarpGain": 13,
     "objectives": [
       "Engage with theory without looking completely lost",
       "Survive the deconstruction of your worldview",
@@ -172,7 +172,7 @@
     "setting": "Co-working space, he brought his own laptop and a sleeping bag",
     "difficulty": "medium",
     "maxTurns": 7,
-    "maxLarpGain": 2.5,
+    "maxLarpGain": 13,
     "objectives": [
       "Engage authentically without being condescending",
       "Hold up technically for at least 3 exchanges",
@@ -200,7 +200,7 @@
     "setting": "Charity gala, open bar, no name tags",
     "difficulty": "medium",
     "maxTurns": 8,
-    "maxLarpGain": 2.5,
+    "maxLarpGain": 13,
     "objectives": [
       "Do not fawn",
       "Do not reveal your exact salary",
@@ -228,7 +228,7 @@
     "setting": "Art opening, references flying everywhere",
     "difficulty": "medium",
     "maxTurns": 7,
-    "maxLarpGain": 2.5,
+    "maxLarpGain": 13,
     "objectives": [
       "Learn their references fast",
       "Maintain composure under cultural pressure",
@@ -256,7 +256,7 @@
     "setting": "Startup ecosystem cocktail hour, name tags with company names",
     "difficulty": "hard",
     "maxTurns": 8,
-    "maxLarpGain": 3.5,
+    "maxLarpGain": 16,
     "objectives": [
       "Maintain founder energy without getting exposed",
       "Survive the differentiation question",
@@ -285,7 +285,7 @@
     "setting": "Elite firm onboarding, everyone already knows each other",
     "difficulty": "hard",
     "maxTurns": 8,
-    "maxLarpGain": 3.5,
+    "maxLarpGain": 16,
     "objectives": [
       "Fit in without revealing you don't belong",
       "Navigate the returning intern hierarchy",
@@ -313,7 +313,7 @@
     "setting": "8-person dinner, mixed prestige levels, the wine is expensive",
     "difficulty": "hard",
     "maxTurns": 9,
-    "maxLarpGain": 3.5,
+    "maxLarpGain": 16,
     "objectives": [
       "Hold social footing in a stratified room",
       "Don't get categorized as \"the plus one\"",
@@ -341,7 +341,7 @@
     "setting": "VC firm portfolio day, 8 minutes before his next meeting",
     "difficulty": "very_hard",
     "maxTurns": 9,
-    "maxLarpGain": 4.5,
+    "maxLarpGain": 20,
     "objectives": [
       "Survive the technical questions",
       "Generate genuine interest, not pity",
@@ -371,7 +371,7 @@
     "setting": "Accidental encounter at a mixer, she's trying to leave",
     "difficulty": "very_hard",
     "maxTurns": 9,
-    "maxLarpGain": 4.5,
+    "maxLarpGain": 20,
     "objectives": [
       "Don't collapse",
       "Don't ask for a job or a check",

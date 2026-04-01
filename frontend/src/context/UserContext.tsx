@@ -27,7 +27,7 @@ type UserContextType = UserState & {
   hydrated: boolean
   setPersona: (id: PersonaId) => void
   updateLarpRating: (delta: number) => void
-  recordScenarioCompletion: (scenarioId: string, score: number) => void
+  recordScenarioCompletion: (scenarioId: string, score: number, larpRatingDelta: number) => void
   lastSessionResult: LastSessionResult | null
   setLastSessionResult: (result: LastSessionResult | null) => void
 }
@@ -142,7 +142,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     syncProgress({ larpRating: nextRating })
   }, [syncProgress])
 
-  const recordScenarioCompletion = useCallback((scenarioId: string, score: number) => {
+  const recordScenarioCompletion = useCallback((
+    scenarioId: string,
+    score: number,
+    larpRatingDelta: number
+  ) => {
     const existing = stateRef.current.completedScenarios.find(c => c.scenarioId === scenarioId)
     const nextCompletedScenarios = existing
       ? stateRef.current.completedScenarios.map(c =>
@@ -155,7 +159,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setState(prev => {
       return { ...prev, completedScenarios: nextCompletedScenarios }
     })
-    syncProgress({ completedScenarios: nextCompletedScenarios })
+    syncProgress({ completedScenarios: nextCompletedScenarios, larpRatingDelta })
   }, [syncProgress])
 
   return (

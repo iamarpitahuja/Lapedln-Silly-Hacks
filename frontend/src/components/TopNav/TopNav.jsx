@@ -72,25 +72,6 @@ export default function TopNav() {
   const { currentUser } = useMockData()
   const { signOut } = useAuth()
   const [unreadCount, setUnreadCount] = useState(0)
-  const [theme, setTheme] = useState('dark')
-
-  useEffect(() => {
-    const storedTheme = window.localStorage.getItem('theme')
-    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
-    const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
-      ? storedTheme
-      : (prefersLight ? 'light' : 'dark')
-    document.documentElement.setAttribute('data-theme', initialTheme)
-    setTheme(initialTheme)
-  }, [])
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light'
-    document.documentElement.setAttribute('data-theme', nextTheme)
-    window.localStorage.setItem('theme', nextTheme)
-    setTheme(nextTheme)
-  }
-
   useEffect(() => {
     fetchConversations()
       .then(data => {
@@ -106,7 +87,7 @@ export default function TopNav() {
         {/* Left: Logo + Search */}
         <div className={styles.left}>
           <NavLink to="/" className={styles.logo}>
-            <img src={theme === 'light' ? '/logoLightMode.png' : '/logoDarkMode.png'} alt="LarpedIn" className={styles.logoImg} />
+            <img src="/logoDarkMode.png" alt="LarpedIn" className={styles.logoImg} />
             <span className={styles.logoText}>LarpedIn</span>
           </NavLink>
           <div className={styles.searchWrap}>
@@ -181,23 +162,6 @@ export default function TopNav() {
               )}
             </NavLink>
           ))}
-          <button
-            className={styles.themeToggle}
-            onClick={toggleTheme}
-            title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-          >
-            {theme === 'light' ? (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 12.79A9 9 0 1111.21 3c0 .28 0 .56.03.84A7 7 0 0020.16 12c.28.03.56.03.84.03z" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-              </svg>
-            )}
-          </button>
           <button className={styles.signOut} onClick={signOut} title="Sign out">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
