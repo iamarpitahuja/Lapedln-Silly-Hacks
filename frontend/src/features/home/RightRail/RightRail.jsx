@@ -59,7 +59,6 @@ export default function RightRail() {
             <li key={i} className={styles.buzzItem}>{bw}</li>
           ))}
         </ul>
-        <button className={styles.seeMore}>see more</button>
       </div>
 
       {/* Daily Games */}

@@ -25,7 +25,7 @@ SEED_USERS = [
         "job": "Chief Disruption Evangelist",
         "bio": "Serial entrepreneur. 3x founder. Turned my morning routine into a SaaS. I don't network — I architect human connection pipelines. My LinkedIn headline once crashed a recruiter's browser. Thought leader by day, thought leader by night.",
         "avatar_url": None,
-        "larp_rating": 24.5,
+        "larp_rating": 4.2,
         "persona": "startup_billionaire",
         "skills": ["Synergy Optimization", "Disruptive Innovation", "Growth Hacking", "Blockchain Strategy", "AI-Driven Leadership", "Paradigm Shifting"],
         "experience": [
@@ -42,7 +42,7 @@ SEED_USERS = [
         "job": "Head of Strategic Buzzword Deployment",
         "bio": "Data-driven. Results-oriented. Passionate about leveraging cross-functional synergies to move the needle. My OKRs have OKRs. Once optimized a standup so hard it became a sitdown. Currently scaling my personal brand at 10x velocity.",
         "avatar_url": None,
-        "larp_rating": 19.8,
+        "larp_rating": 3.5,
         "persona": "consulting_clone",
         "skills": ["KPI Architecture", "OKR Optimization", "Stakeholder Whispering", "Full-Stack Management", "Agile Transformation", "Data-Driven Decision Making"],
         "experience": [
@@ -58,7 +58,7 @@ SEED_USERS = [
         "job": "10x Thought Leadership Engineer",
         "bio": "I don't write code. I craft digital experiences that disrupt the fabric of reality. Full-stack visionary. My side projects have side projects. Currently building an AI that generates LinkedIn posts about building AI. It's turtles all the way down.",
         "avatar_url": None,
-        "larp_rating": 17.2,
+        "larp_rating": 2.8,
         "persona": "ai_founder",
         "skills": ["AI/ML Evangelism", "Cloud Architecture", "DevOps Philosophy", "Web3 Integration", "Startup Speed", "Vibe Coding"],
         "experience": [
@@ -75,7 +75,7 @@ SEED_USERS = [
         "job": "Director of Corporate Mindfulness & Hustle",
         "bio": "Namaste and also please look at my metrics. I fuse ancient wisdom with modern hustle culture. My morning routine: meditate, journal, cold plunge, check Slack, manifest Series A funding. Holistic but make it corporate.",
         "avatar_url": None,
-        "larp_rating": 15.5,
+        "larp_rating": 2.1,
         "persona": "crypto_philosopher",
         "skills": ["Mindful Disruption", "Holistic KPIs", "Strategic Meditation", "Venture Manifesting", "Cross-Functional Healing"],
         "experience": [
