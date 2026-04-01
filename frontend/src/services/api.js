@@ -1,5 +1,13 @@
 const API_BASE = '/api'
 
+// Set by bootstrap response — when false, skip the network TTS request entirely
+// so speechSynthesis.speak() runs within the user gesture (browsers block it after async gaps).
+let _backendTtsAvailable = false
+
+export function setBackendTtsAvailable(available) {
+  _backendTtsAvailable = available
+}
+
 async function authFetchRaw(url, options = {}) {
   const token = localStorage.getItem('larpedin.access_token')
 
@@ -412,6 +420,12 @@ function _browserTtsFallback(text, signal) {
 }
 
 export async function fetchLarpmaxxerTts({ text, characterId, signal }) {
+  // Skip the network roundtrip when backend TTS is known-unavailable.
+  // This keeps speechSynthesis.speak() within the user gesture window
+  // (browsers block it after async gaps on deployed sites).
+  if (!_backendTtsAvailable) {
+    return _browserTtsFallback(text, signal)
+  }
   try {
     const res = await authFetchRaw(`${API_BASE}/larpmaxxer/tts`, {
       method: 'POST',
@@ -425,12 +439,15 @@ export async function fetchLarpmaxxerTts({ text, characterId, signal }) {
     return await res.blob()
   } catch (err) {
     if (err?.name === 'AbortError') throw err
-    // ElevenLabs unavailable — fall back to browser voice
+    // ElevenLabs failed at runtime — fall back to browser voice
     return _browserTtsFallback(text, signal)
   }
 }
 
 export async function fetchRoleplayTts({ text, voiceId, signal }) {
+  if (!_backendTtsAvailable) {
+    return _browserTtsFallback(text, signal)
+  }
   try {
     const res = await authFetchRaw(`${API_BASE}/roleplay/tts`, {
       method: 'POST',

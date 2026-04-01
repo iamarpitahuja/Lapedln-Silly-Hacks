@@ -49,6 +49,7 @@ async def get_larpmaxxer_bootstrap(
         "personas": get_personas(),
         "characters": get_characters(),
         "scenarios": get_scenarios(),
+        "ttsAvailable": bool(settings.elevenlabs_api_key),
     }
 
 

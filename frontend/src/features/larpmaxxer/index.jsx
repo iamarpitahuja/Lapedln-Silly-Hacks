@@ -7,7 +7,7 @@ import { getUnlockedScenarios } from './engine/unlockLogic'
 import { CHARACTERS } from '../../content/characters'
 import { SCENARIOS } from '../../content/scenarios'
 import { PERSONAS } from '../../content/personas'
-import { fetchLarpmaxxerBootstrap } from '../../services/api'
+import { fetchLarpmaxxerBootstrap, setBackendTtsAvailable } from '../../services/api'
 
 import { ScenarioPanel } from './components/ScenarioPanel'
 import { PreBrief } from './components/PreBrief'
@@ -128,6 +128,7 @@ export function LarpMaxxer({ onExitTraining }) {
       try {
         const bootstrap = await fetchLarpmaxxerBootstrap()
         if (cancelled) return
+        setBackendTtsAvailable(!!bootstrap?.ttsAvailable)
         const bundledVoiceByCharacter = new Map(CHARACTERS.map((entry) => [entry.id, entry.voiceId]))
         if (Array.isArray(bootstrap?.scenarios) && bootstrap.scenarios.length > 0) {
           setScenariosOverride(bootstrap.scenarios)
