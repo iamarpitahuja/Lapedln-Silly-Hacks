@@ -313,26 +313,78 @@ export async function patchLarpmaxxerProgress(payload) {
   })
 }
 
-// Browser SpeechSynthesis fallback — produces a silent-ish blob while the
-// browser voice actually plays aloud.  Callers treat the returned blob like
-// normal audio; the real sound comes from SpeechSynthesis.
+// Ensure browser voices are loaded (they load async in most browsers).
+let _voicesReady = false
+function _ensureVoices() {
+  return new Promise((resolve) => {
+    if (_voicesReady || window.speechSynthesis.getVoices().length > 0) {
+      _voicesReady = true
+      return resolve()
+    }
+    window.speechSynthesis.addEventListener('voiceschanged', () => {
+      _voicesReady = true
+      resolve()
+    }, { once: true })
+    // Safety timeout — some browsers never fire voiceschanged
+    setTimeout(() => resolve(), 500)
+  })
+}
+
+// Build a valid WAV blob containing `durationSec` of silence.
+// This gives callers a real playable Audio object for lifecycle management
+// while the actual sound comes from SpeechSynthesis.
+function _silentWavBlob(durationSec) {
+  const sampleRate = 8000
+  const numSamples = Math.max(sampleRate * durationSec, sampleRate * 0.1)
+  const dataSize = numSamples * 2 // 16-bit mono
+  const buffer = new ArrayBuffer(44 + dataSize)
+  const view = new DataView(buffer)
+
+  // WAV header
+  const writeStr = (offset, str) => { for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i)) }
+  writeStr(0, 'RIFF')
+  view.setUint32(4, 36 + dataSize, true)
+  writeStr(8, 'WAVE')
+  writeStr(12, 'fmt ')
+  view.setUint32(16, 16, true)        // chunk size
+  view.setUint16(20, 1, true)         // PCM
+  view.setUint16(22, 1, true)         // mono
+  view.setUint32(24, sampleRate, true)
+  view.setUint32(28, sampleRate * 2, true) // byte rate
+  view.setUint16(32, 2, true)         // block align
+  view.setUint16(34, 16, true)        // bits per sample
+  writeStr(36, 'data')
+  view.setUint32(40, dataSize, true)
+  // samples are all zero = silence
+
+  return new Blob([buffer], { type: 'audio/wav' })
+}
+
+// Browser SpeechSynthesis fallback. Speaks aloud via the browser engine,
+// returns a valid silent WAV blob whose duration matches the speech so
+// callers' Audio lifecycle (onended, play/pause) works naturally.
 function _browserTtsFallback(text, signal) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (!window.speechSynthesis) {
       return reject(new Error('Browser TTS not supported'))
     }
-
     if (signal?.aborted) return reject(new DOMException('Aborted', 'AbortError'))
+
+    await _ensureVoices()
+
+    // Cancel any lingering speech
+    window.speechSynthesis.cancel()
 
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.rate = 1.0
     utterance.pitch = 1.0
 
-    // Try to pick a natural-sounding English voice
     const voices = window.speechSynthesis.getVoices()
-    const preferred = voices.find(v => /english/i.test(v.name) && v.lang.startsWith('en'))
+    const preferred = voices.find(v => v.lang.startsWith('en') && v.localService)
       || voices.find(v => v.lang.startsWith('en'))
     if (preferred) utterance.voice = preferred
+
+    const startTime = Date.now()
 
     const onAbort = () => {
       window.speechSynthesis.cancel()
@@ -342,16 +394,8 @@ function _browserTtsFallback(text, signal) {
 
     utterance.onend = () => {
       signal?.removeEventListener('abort', onAbort)
-      // Return a tiny valid silent mp3 so callers that create Audio objects
-      // don't error — the real audio already played via SpeechSynthesis.
-      const silentMp3 = new Uint8Array([
-        0xFF, 0xFB, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x49, 0x6E, 0x66, 0x6F,
-      ])
-      resolve(new Blob([silentMp3], { type: 'audio/mpeg' }))
+      const spokenSec = (Date.now() - startTime) / 1000
+      resolve(_silentWavBlob(spokenSec))
     }
 
     utterance.onerror = (e) => {
