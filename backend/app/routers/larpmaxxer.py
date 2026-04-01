@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -99,9 +99,18 @@ async def synthesize_larpmaxxer_tts(
     if not voice_id:
         raise HTTPException(status_code=404, detail=f"No voice configured for character '{character_id}'")
 
-    return StreamingResponse(
-        stream_tts(text=text, voice_id=voice_id),
+    # Collect all audio bytes before responding — StreamingResponse with
+    # chunked transfer encoding gets corrupted by Railway's reverse proxy,
+    # causing NS_ERROR_DOM_MEDIA_METADATA_ERR in browsers.
+    chunks = []
+    async for chunk in stream_tts(text=text, voice_id=voice_id):
+        chunks.append(chunk)
+    audio_bytes = b"".join(chunks)
+
+    return Response(
+        content=audio_bytes,
         media_type="audio/mpeg",
+        headers={"Content-Length": str(len(audio_bytes))},
     )
 
 

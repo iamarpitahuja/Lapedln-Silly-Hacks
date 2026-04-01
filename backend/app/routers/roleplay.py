@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -101,7 +101,13 @@ async def synthesize_roleplay_tts(
     if not voice_id:
         raise HTTPException(status_code=400, detail="voice_id is required")
 
-    return StreamingResponse(
-        stream_tts(text=text, voice_id=voice_id),
+    chunks = []
+    async for chunk in stream_tts(text=text, voice_id=voice_id):
+        chunks.append(chunk)
+    audio_bytes = b"".join(chunks)
+
+    return Response(
+        content=audio_bytes,
         media_type="audio/mpeg",
+        headers={"Content-Length": str(len(audio_bytes))},
     )
