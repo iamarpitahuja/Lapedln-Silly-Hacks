@@ -7,7 +7,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: '1:1 informational interview at a coffee shop',
     difficulty: 'easy',
     maxTurns: 7,
-    maxLarpGain: 1.5,
+    maxLarpGain: 10,
     objectives: [
       'Walk the line between desperate and chill',
       'Extract the advice, the intro, and the follow-up without begging',
@@ -28,7 +28,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Generic industry mixer, open bar, everyone checking their phone',
     difficulty: 'easy_medium',
     maxTurns: 7,
-    maxLarpGain: 1.5,
+    maxLarpGain: 12,
     objectives: [
       'Hold the same story across three different conversations',
       'Exchange actual value, not just vibes',
@@ -49,7 +49,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'New office, open floor plan, everyone watching',
     difficulty: 'medium',
     maxTurns: 8,
-    maxLarpGain: 2.5,
+    maxLarpGain: 13,
     objectives: [
       'Project competence while knowing absolutely nothing',
       'Lock in your social position before the end of day one',
@@ -70,7 +70,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Structured interview, competency framework visible on desk',
     difficulty: 'medium',
     maxTurns: 8,
-    maxLarpGain: 2.5,
+    maxLarpGain: 13,
     objectives: [
       'Answer behavioral questions using stories that technically happened',
       'Seem self-aware while actively bullshitting',
@@ -91,7 +91,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Post-work drinks, financial district, he still has his Bloomberg terminal open on his phone',
     difficulty: 'medium',
     maxTurns: 7,
-    maxLarpGain: 2.5,
+    maxLarpGain: 13,
     objectives: [
       'Match the jargon density or get written off immediately',
       'Fake enough capital markets literacy to stay in the conversation',
@@ -112,7 +112,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Campus seminar afterparty, someone brought Frantz Fanon readings',
     difficulty: 'medium',
     maxTurns: 7,
-    maxLarpGain: 2.5,
+    maxLarpGain: 13,
     objectives: [
       'Engage with critical theory without completely embarrassing yourself',
       'Let Felix deconstruct you without visibly dying inside',
@@ -133,7 +133,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Co-working space, he brought his own laptop, a sleeping bag, and his own coffee',
     difficulty: 'medium',
     maxTurns: 7,
-    maxLarpGain: 2.5,
+    maxLarpGain: 13,
     objectives: [
       'Engage authentically and don\'t accidentally be condescending',
       'Hold up technically for at least 3 exchanges without googling anything',
@@ -154,7 +154,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Charity gala, open bar, no name tags, everyone here is a donor not an attendee',
     difficulty: 'medium',
     maxTurns: 8,
-    maxLarpGain: 2.5,
+    maxLarpGain: 13,
     objectives: [
       'Keep the fawning internal — he clocks it instantly',
       'Do not reveal your exact salary or how much rent you pay',
@@ -175,7 +175,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Art opening, references flying everywhere, you recognize two of them',
     difficulty: 'medium',
     maxTurns: 7,
-    maxLarpGain: 2.5,
+    maxLarpGain: 13,
     objectives: [
       'Pick up her references fast enough to not visibly google them',
       'Keep your composure while being culturally out-ranked',
@@ -196,7 +196,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Startup ecosystem cocktail hour, everyone\'s name tag says something vague like "building in stealth"',
     difficulty: 'hard',
     maxTurns: 8,
-    maxLarpGain: 3.5,
+    maxLarpGain: 16,
     objectives: [
       'Maintain convincing founder energy without getting exposed as a fraud',
       'Survive the differentiation question without saying "AI-native"',
@@ -218,7 +218,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'Elite firm onboarding, everyone already knows each other, someone brought a Patagonia vest',
     difficulty: 'hard',
     maxTurns: 8,
-    maxLarpGain: 3.5,
+    maxLarpGain: 16,
     objectives: [
       'Pass as someone who belongs here without revealing you Googled the firm this morning',
       'Navigate the returning intern power structure diplomatically',
@@ -239,7 +239,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: '8-person dinner, mixed prestige levels, the wine costs more than your laptop',
     difficulty: 'hard',
     maxTurns: 9,
-    maxLarpGain: 3.5,
+    maxLarpGain: 16,
     objectives: [
       'Hold your social footing in a room where everyone has more credentials',
       'Stop being treated as "the plus one" within the first two exchanges',
@@ -260,7 +260,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'VC firm portfolio day, 8 minutes before his next meeting, his assistant just texted him',
     difficulty: 'very_hard',
     maxTurns: 9,
-    maxLarpGain: 4.5,
+    maxLarpGain: 20,
     objectives: [
       'Survive the technical deep-dive without panicking',
       'Create genuine interest — not just polite nodding',
@@ -283,7 +283,7 @@ export const SCENARIOS: ScenarioMeta[] = [
     setting: 'She was heading for the exit. You made eye contact. Now you have 90 seconds.',
     difficulty: 'very_hard',
     maxTurns: 9,
-    maxLarpGain: 4.5,
+    maxLarpGain: 20,
     objectives: [
       'Don\'t collapse. Breathe.',
       'Do not ask for a job, a check, or a follow on Twitter',

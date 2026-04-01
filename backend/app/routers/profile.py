@@ -12,6 +12,7 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.models import Profile
 from app.config import settings
+from app.services.rating_engine import calculate_initial_rating
 
 router = APIRouter(tags=["profile"])
 
@@ -99,6 +100,11 @@ async def update_me(
     # Apply only the provided fields
     for key, value in updates.items():
         setattr(profile, key, value)
+
+    # Calculate initial larp_rating when onboarding completes
+    if "onboarding_completed_at" in updates and profile.larp_rating == 0.0:
+        profile.larp_rating = calculate_initial_rating(profile)
+
     await db.commit()
     await db.refresh(profile)
     return profile.to_dict()

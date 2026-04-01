@@ -58,9 +58,7 @@ export function LarpMaxxer({ onExitTraining }) {
     confirmLabel: 'Confirm',
     action: null,
   })
-  const logoSrc = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
-    ? '/logoLightMode.png'
-    : '/logoDarkMode.png'
+  const logoSrc = '/logoDarkMode.png'
 
   function handleDirectionsDone() {
     localStorage.setItem('larpedin.dojoDirectionsSeen', '1')
@@ -89,7 +87,7 @@ export function LarpMaxxer({ onExitTraining }) {
 
   function handleSessionEnd(delta, scenarioId, score) {
     updateLarpRating(delta)
-    recordScenarioCompletion(scenarioId, score)
+    recordScenarioCompletion(scenarioId, score, delta)
     const scenarioName = scenarios.find(s => s.id === scenarioId)?.name ?? scenarioId
     setLastSessionResult({ scenarioName, delta, score })
   }
@@ -427,4 +425,3 @@ export function LarpMaxxer({ onExitTraining }) {
     </Motion.div>
   )
 }
-
