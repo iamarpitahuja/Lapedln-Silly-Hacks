@@ -1,6 +1,7 @@
 """Centralized larp rating engine. All point values in one place."""
 
 import logging
+import re
 
 from sqlalchemy import text, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,6 +9,92 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Profile
 
 logger = logging.getLogger(__name__)
+
+# ── Buzzwords for initial rating scoring ────────────────────────────────────
+
+BUZZWORDS = {
+    "synergy", "leverage", "disrupt", "disruption", "disruptive", "innovate",
+    "innovation", "paradigm", "ecosystem", "scalable", "scale", "blockchain",
+    "ai", "machine learning", "deep learning", "agile", "lean", "pivot",
+    "growth hacking", "thought leader", "thought leadership", "visionary",
+    "rockstar", "ninja", "guru", "evangelist", "hustler", "grind", "grinding",
+    "10x", "unicorn", "moonshot", "mission-driven", "stakeholder", "deliverable",
+    "kpi", "okr", "roi", "saas", "b2b", "b2c", "pipeline", "funnel",
+    "optimization", "optimize", "bandwidth", "circle back", "move the needle",
+    "best-in-class", "world-class", "cutting-edge", "bleeding-edge",
+    "full-stack", "cross-functional", "data-driven", "results-oriented",
+    "proactive", "strategic", "holistic", "robust", "dynamic", "passionate",
+    "serial entrepreneur", "self-starter", "go-getter", "value-add",
+    "cloud", "devops", "crypto", "web3", "metaverse", "nft", "defi",
+    "venture", "startup", "founder", "co-founder", "ceo", "cto", "cfo",
+    "vp", "director", "head of", "lead", "senior", "principal", "staff",
+}
+
+
+def calculate_initial_rating(profile: Profile) -> float:
+    """
+    Calculate an initial larp_rating based on profile completeness and buzzword density.
+    Called once when onboarding completes.
+
+    Scoring breakdown:
+      - Bio buzzword density: 0-10 pts
+      - Skills count:         0-5 pts
+      - Experience entries:   0-5 pts
+      - Job title larpiness:  0-5 pts
+      - Avatar uploaded:      2 pts
+      - Completeness bonus:   0-3 pts
+    Total range: ~0-30
+    """
+    score = 0.0
+
+    # ── Bio buzzwords (0-10) ──
+    bio = (profile.bio or "").lower()
+    if bio:
+        words = set(re.findall(r"[a-z0-9\-]+", bio))
+        hits = len(words & BUZZWORDS)
+        # Also check multi-word buzzwords
+        for bw in BUZZWORDS:
+            if " " in bw and bw in bio:
+                hits += 1
+        score += min(hits * 1.5, 10.0)
+
+    # ── Skills (0-5) ──
+    skills = profile.skills or []
+    if skills:
+        skill_count = len(skills)
+        score += min(skill_count * 0.8, 5.0)
+        # Bonus for buzzwordy skill names
+        for s in skills:
+            name = (s if isinstance(s, str) else s.get("name", "")).lower()
+            if any(bw in name for bw in BUZZWORDS):
+                score += 0.3
+
+    # ── Experience (0-5) ──
+    experience = profile.experience or []
+    if experience:
+        score += min(len(experience) * 1.5, 5.0)
+
+    # ── Job title larpiness (0-5) ──
+    job = (profile.job or "").lower()
+    if job:
+        job_hits = sum(1 for bw in BUZZWORDS if bw in job)
+        score += min(job_hits * 1.5, 5.0)
+        # Extra points for C-suite / leadership titles
+        if any(t in job for t in ["chief", "ceo", "cto", "cfo", "vp", "head of", "director"]):
+            score += 2.0
+
+    # ── Avatar (2) ──
+    if profile.avatar_url:
+        score += 2.0
+
+    # ── Completeness bonus (0-3) ──
+    filled = sum(1 for v in [profile.bio, profile.skills, profile.experience, profile.avatar_url, profile.job] if v)
+    if filled >= 5:
+        score += 3.0
+    elif filled >= 3:
+        score += 1.5
+
+    return round(min(score, 30.0), 1)
 
 # ── Point Values ─────────────────────────────────────────────────────────────
 

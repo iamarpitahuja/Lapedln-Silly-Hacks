@@ -8,7 +8,8 @@ from fastapi.staticfiles import StaticFiles
 from jose import jwt, JWTError
 
 from app.config import settings
-from app.database import init_db
+from app.database import init_db, async_session
+from app.seed import seed_if_empty
 from app.websocket import manager
 from app.routers import (
     auth,
@@ -33,6 +34,8 @@ async def lifespan(app: FastAPI):
     logger.info("Initializing SQLite database...")
     await init_db()
     logger.info("Database ready.")
+    async with async_session() as db:
+        await seed_if_empty(db)
     yield
 
 
