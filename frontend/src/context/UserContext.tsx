@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import type { PersonaId } from '../features/larpmaxxer/types'
-import { fetchLarpmaxxerProgress, patchLarpmaxxerProgress } from '../services/api'
+import { fetchLarpmaxxerProgress, patchLarpmaxxerProgress, fetchProfile } from '../services/api'
 
 type CompletedScenario = {
   scenarioId: string
@@ -17,12 +17,14 @@ type LastSessionResult = {
 type UserState = {
   userId: string
   displayName: string
+  job: string
   personaId: PersonaId | null
   larpRating: number
   completedScenarios: CompletedScenario[]
 }
 
 type UserContextType = UserState & {
+  hydrated: boolean
   setPersona: (id: PersonaId) => void
   updateLarpRating: (delta: number) => void
   recordScenarioCompletion: (scenarioId: string, score: number) => void
@@ -59,7 +61,8 @@ function saveToStorage(state: UserState): void {
 const defaultState: UserState = {
   userId: generateUserId(),
   displayName: 'Anonymous Larper',
-  personaId: 'finance_bro',
+  job: '',
+  personaId: null,
   larpRating: INITIAL_LARP_RATING,
   completedScenarios: [],
 }
@@ -70,9 +73,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<UserState>(() => {
     const stored = loadFromStorage()
     const base = stored ?? { ...defaultState, userId: generateUserId() }
-    return { ...base, personaId: base.personaId ?? 'finance_bro' }
+    return { ...base }
   })
   const stateRef = useRef(state)
+  const [hydrated, setHydrated] = useState(false)
   // Session-only — not persisted to localStorage
   const [lastSessionResult, setLastSessionResult] = useState<LastSessionResult | null>(null)
 
@@ -86,20 +90,26 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
     async function hydrateFromApi() {
       try {
-        const remote = await fetchLarpmaxxerProgress()
-        if (!remote || cancelled) return
+        const [progress, profile] = await Promise.all([
+          fetchLarpmaxxerProgress().catch(() => null),
+          fetchProfile().catch(() => null),
+        ])
+        if (cancelled) return
 
         setState(prev => ({
           ...prev,
-          userId: typeof remote.userId === 'string' ? remote.userId : prev.userId,
-          personaId: remote.personaId ?? prev.personaId ?? 'finance_bro',
-          larpRating: typeof remote.larpRating === 'number' ? remote.larpRating : prev.larpRating,
-          completedScenarios: Array.isArray(remote.completedScenarios)
-            ? remote.completedScenarios
+          userId: typeof progress?.userId === 'string' ? progress.userId : prev.userId,
+          job: typeof profile?.job === 'string' ? profile.job : prev.job,
+          personaId: progress?.personaId ?? prev.personaId,
+          larpRating: typeof profile?.larp_rating === 'number' ? profile.larp_rating : prev.larpRating,
+          completedScenarios: Array.isArray(progress?.completedScenarios)
+            ? progress.completedScenarios
             : prev.completedScenarios,
         }))
       } catch {
-        // Keep localStorage state when backend progress is unavailable.
+        // Keep localStorage state when backend is unavailable.
+      } finally {
+        if (!cancelled) setHydrated(true)
       }
     }
 
@@ -149,7 +159,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, [syncProgress])
 
   return (
-    <UserContext.Provider value={{ ...state, setPersona, updateLarpRating, recordScenarioCompletion, lastSessionResult, setLastSessionResult }}>
+    <UserContext.Provider value={{ ...state, hydrated, setPersona, updateLarpRating, recordScenarioCompletion, lastSessionResult, setLastSessionResult }}>
       {children}
     </UserContext.Provider>
   )
