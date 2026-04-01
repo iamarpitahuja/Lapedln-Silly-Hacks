@@ -3,7 +3,7 @@ import { AnimatePresence, motion as Motion } from 'framer-motion'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { easeOutQuint } from '../../lib/motion'
 import styles from './FeatureTour.module.css'
-import larpmaxxerPreview from '../../../../image.jpeg'
+import larpmaxxerPreview from '../../assets/larpmaxxer-preview.jpeg'
 
 const SPOTLIGHT_PADDING = 10
 const PANEL_GAP = 16
