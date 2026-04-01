@@ -55,7 +55,7 @@ const TOUR_STEPS = [
     id: 'jobs',
     route: '/jobs',
     zone: 'J*bs',
-    selector: '[data-tour="jobs-board"]',
+    selector: '[data-tour="jobs-board-header"]',
     title: 'J*bs Board',
     description: 'AI-generated fake jobs with absurd salaries and requirements. Apply instantly — they all say yes. It\'s corporate fantasy football.',
   },

@@ -22,6 +22,23 @@ DEFAULT_PROGRESS: dict[str, Any] = {
 
 _MEMORY_PROGRESS: dict[str, dict[str, Any]] = {}
 
+LARPMAXXER_VOICE_IDS: dict[str, str] = {
+    "jordan": "CwhRBWXzGAHq8TQ4Fs17",
+    "priya": "cgSgspJ2msm6clMCkdW9",
+    "derek": "iP95p4xoKVk53GoZ742B",
+    "sandra": "SAz9YHcvj6GT2YYXdXww",
+    "bryce": "N2lVS1w4EtoT3dr4eOWO",
+    "felix": "pqHfZKP75CvOlQylNhV4",
+    "ravi": "pNInz6obpgDQGcFmaJgB",
+    "oliver": "bIHbv24MWmeRgasZH58o",
+    "zara": "FGY2WhTYpPnrIDTdsKH5",
+    "marcus": "JBFqnCBsd6RMkjVDRZzb",
+    "chad": "TX3LPaxmHKxFdv7VOQHJ",
+    "vanessa": "EXAVITQu4vr4xnSDxMaL",
+    "marcus_pitch": "IKne3meq5aSn9XLyUdCD",
+    "elena": "Xb7hH8MSUJpSbSDYk0k2",
+}
+
 
 def _read_json(path: Path):
     with path.open("r", encoding="utf-8") as handle:
@@ -35,7 +52,20 @@ def get_personas():
 
 @lru_cache(maxsize=1)
 def get_characters():
-    return _read_json(DATA_ROOT / "characters.json")
+    characters = _read_json(DATA_ROOT / "characters.json")
+    if not isinstance(characters, list):
+        return characters
+
+    enriched: list[dict[str, Any]] = []
+    for raw in characters:
+        if not isinstance(raw, dict):
+            continue
+        character = dict(raw)
+        character_id = character.get("id")
+        if character_id in LARPMAXXER_VOICE_IDS:
+            character["voiceId"] = LARPMAXXER_VOICE_IDS[character_id]
+        enriched.append(character)
+    return enriched
 
 
 @lru_cache(maxsize=1)
@@ -49,6 +79,10 @@ def get_scenario_content(scenario_id: str):
     if not content_path.exists():
         return None
     return _read_json(content_path)
+
+
+def get_character_voice_id(character_id: str) -> str | None:
+    return LARPMAXXER_VOICE_IDS.get(character_id)
 
 
 def _normalize_completed_scenarios(value: Any) -> list[dict[str, Any]]:

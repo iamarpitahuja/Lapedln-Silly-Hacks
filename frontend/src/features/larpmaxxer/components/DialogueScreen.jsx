@@ -3,7 +3,7 @@ import { AnimatePresence, motion as Motion } from 'framer-motion'
 import { DialogueBubble } from './DialogueBubble'
 import { ResponseOptions } from './ResponseOptions'
 import { EvaluationFlash } from './EvaluationFlash'
-import { fetchRoleplayTts } from '../../../services/api'
+import { fetchLarpmaxxerTts } from '../../../services/api'
 import styles from './DialogueScreen.module.css'
 
 export function DialogueScreen({
@@ -58,7 +58,7 @@ export function DialogueScreen({
   }, [])
 
   const handleSpeakerClick = useCallback(async (entryIndex, text) => {
-    if (!character?.voiceId || !text?.trim()) return
+    if (!character?.id || !text?.trim()) return
 
     const isSameEntry = ttsState.index === entryIndex
 
@@ -81,9 +81,9 @@ export function DialogueScreen({
     ttsRequestRef.current = controller
 
     try {
-      const audioBlob = await fetchRoleplayTts({
+      const audioBlob = await fetchLarpmaxxerTts({
         text,
-        voiceId: character.voiceId,
+        characterId: character.id,
         signal: controller.signal,
       })
 
@@ -125,7 +125,7 @@ export function DialogueScreen({
         ttsRequestRef.current = null
       }
     }
-  }, [character?.voiceId, clearAudioResources, queueErrorReset, stopActiveTts, ttsState.index, ttsState.state])
+  }, [character?.id, clearAudioResources, queueErrorReset, stopActiveTts, ttsState.index, ttsState.state])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })

@@ -7,17 +7,16 @@
   position: relative;
 }
 
-/* ── Arena ─────────────────────────────────────────── */
+/* ── Arena — 60% of height ─────────────────────────── */
 
 .arena {
-  flex: 1;
+  height: 60%;
+  flex-shrink: 0;
   position: relative;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  image-rendering: pixelated;
   overflow: visible;
-  min-height: 0;
 }
 
 .arenaOverlay {
@@ -32,7 +31,7 @@
 
 .turnBadge {
   position: absolute;
-  top: 10px;
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
@@ -51,22 +50,22 @@
 
 .enemyStats {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 10px;
+  left: 10px;
   z-index: 2;
-  width: 200px;
+  width: 190px;
   background: rgba(6, 4, 16, 0.88);
   border: 1.5px solid rgba(255,255,255,0.12);
   border-radius: 6px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .statName {
   font-family: 'Courier New', monospace;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: 0.5px;
@@ -74,26 +73,26 @@
 
 .statRole {
   font-family: 'Courier New', monospace;
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-muted);
   letter-spacing: 0.3px;
-  margin-top: -4px;
+  margin-top: -3px;
 }
 
 .meters {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 /* ── Character sprite — bottom LEFT ─────────────────── */
 
 .playerSprite {
   position: absolute;
-  left: 20px;
+  left: 16px;
   bottom: 0;
-  width: 260px;
-  height: 300px;
+  width: 240px;
+  height: 280px;
   z-index: 1;
   filter: drop-shadow(0 6px 16px rgba(0,0,0,0.6));
   overflow: visible;
@@ -103,33 +102,37 @@
 
 .enemySprite {
   position: absolute;
-  right: 40px;
-  bottom: 20px;
-  width: 230px;
-  height: 230px;
+  right: 30px;
+  bottom: 0;
+  width: 240px;
+  height: 280px;
   z-index: 1;
   filter: drop-shadow(0 8px 24px rgba(0,0,0,0.7));
 }
 
-
-
-/* ── Bottom section ─────────────────────────────────── */
+/* ── Bottom section — 40% of height ────────────────── */
 
 .bottomSection {
-  height: 196px;
-  flex-shrink: 0;
+  flex: 1;
+  min-height: 0;
   display: flex;
   border-top: 2px solid rgba(255,255,255,0.08);
   background: rgba(6, 4, 16, 0.97);
 }
 
+/* ── Dialogue side — left 45% ───────────────────────── */
+
 .dialogueSide {
-  flex: 1.1;
+  width: 40%;
+  flex-shrink: 0;
   overflow: hidden;
+  border-right: 1px solid rgba(255,255,255,0.07);
 }
 
+/* ── Move grid — right 60% ──────────────────────────── */
+
 .moveSide {
-  flex: 1;
-  border-left: 1px solid rgba(255,255,255,0.07);
+  width: 60%;
+  flex-shrink: 0;
   overflow: hidden;
 }

@@ -313,6 +313,20 @@ export async function patchLarpmaxxerProgress(payload) {
   })
 }
 
+export async function fetchLarpmaxxerTts({ text, characterId, signal }) {
+  const res = await authFetchRaw(`${API_BASE}/larpmaxxer/tts`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text,
+      characterId,
+    }),
+    signal,
+  })
+
+  return res.blob()
+}
+
 export async function fetchRoleplayTts({ text, voiceId, signal }) {
   const res = await fetch(`${API_BASE}/roleplay/tts`, {
     method: 'POST',

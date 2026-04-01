@@ -16,6 +16,7 @@ import { EventCard } from './components/EventCard'
 import { SummaryScreen } from './components/SummaryScreen'
 import { CharacterPanel } from './components/CharacterPanel'
 import { EntryCard } from './components/EntryCard'
+import { DojoDirections } from './components/DojoDirections'
 import { ConfirmModal } from './components/ConfirmModal'
 import styles from './LarpMaxxer.module.css'
 
@@ -24,14 +25,20 @@ export function LarpMaxxer({ onExitTraining }) {
   const {
     userId,
     personaId,
+    job,
     larpRating,
     completedScenarios,
+    hydrated,
     updateLarpRating,
     recordScenarioCompletion,
     setLastSessionResult,
   } = useUser()
 
   const [hasEntered, setHasEntered] = useState(false)
+  const hasSeenDirections =
+    typeof window !== 'undefined' &&
+    localStorage.getItem('larpedin.dojoDirectionsSeen') === '1'
+  const [showDirections, setShowDirections] = useState(!hasSeenDirections)
   const [selectedScenarioId, setSelectedScenarioId] = useState(null)
   const [scenariosOverride, setScenariosOverride] = useState([])
   const scenarios = useMemo(() => {
@@ -54,6 +61,11 @@ export function LarpMaxxer({ onExitTraining }) {
   const logoSrc = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
     ? '/logoLightMode.png'
     : '/logoDarkMode.png'
+
+  function handleDirectionsDone() {
+    localStorage.setItem('larpedin.dojoDirectionsSeen', '1')
+    setShowDirections(false)
+  }
 
   function openConfirm({ title, message, confirmLabel = 'Confirm', action }) {
     setConfirmState({
@@ -153,7 +165,7 @@ export function LarpMaxxer({ onExitTraining }) {
     ?? scenarios.find(s => s.id === selectedScenarioId)?.characterId
   const character = activeCharacterId ? characterMap.get(activeCharacterId) ?? null : null
 
-  const persona = personas.find(p => p.id === (personaId ?? 'finance_bro')) ?? null
+  const persona = personaId ? (personas.find(p => p.id === personaId) ?? null) : null
   const unlockedIds = getUnlockedScenarios(completedScenarios, larpRating)
   const activeScenarioId = session?.scenarioId ?? selectedScenarioId
   const activeScenario = scenarios.find(s => s.id === activeScenarioId) ?? null
@@ -176,10 +188,6 @@ export function LarpMaxxer({ onExitTraining }) {
   }
 
   function handleWarmUp() {
-    if (!personaId) {
-      promptPersonaSelection()
-      return
-    }
     const pick = tier1Unlocked[Math.floor(Math.random() * tier1Unlocked.length)]
     if (pick) {
       setHasEntered(true)
@@ -195,10 +203,6 @@ export function LarpMaxxer({ onExitTraining }) {
   } : null
 
   function handleSelectScenario(id) {
-    if (!personaId) {
-      promptPersonaSelection()
-      return
-    }
     if (session && session.status === 'active') {
       openConfirm({
         title: 'Switch Scenario?',
@@ -256,15 +260,17 @@ export function LarpMaxxer({ onExitTraining }) {
     : null
 
   if (!hasEntered) {
+    if (showDirections) {
+      return <DojoDirections onDone={handleDirectionsDone} />
+    }
     return (
       <div className={styles.root} style={{ alignItems: 'center', justifyContent: 'center' }}>
         <EntryCard
           larpRating={larpRating}
-          personaName={persona?.name ?? 'No Persona'}
+          personaName={job || persona?.name || ''}
           lastScenarioName={lastPlayedScenario?.name ?? null}
           onEnter={() => setHasEntered(true)}
           onEnterSimulation={handleEnterSimulation}
-          onWarmUp={handleWarmUp}
         />
       </div>
     )

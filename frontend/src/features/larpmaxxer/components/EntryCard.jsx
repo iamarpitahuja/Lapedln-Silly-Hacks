@@ -6,7 +6,6 @@ export function EntryCard({
   lastScenarioName,
   onEnter,
   onEnterSimulation,
-  onWarmUp,
 }) {
   return (
     <div className={styles.wrap}>
@@ -31,9 +30,6 @@ export function EntryCard({
               Resume Simulation{lastScenarioName ? `: ${lastScenarioName}` : ''}
             </button>
           )}
-          <button className={styles.btnGhost} onClick={onWarmUp}>
-            Quick Cook
-          </button>
         </div>
       </div>
     </div>
