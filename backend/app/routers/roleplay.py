@@ -101,10 +101,16 @@ async def synthesize_roleplay_tts(
     if not voice_id:
         raise HTTPException(status_code=400, detail="voice_id is required")
 
-    chunks = []
-    async for chunk in stream_tts(text=text, voice_id=voice_id):
-        chunks.append(chunk)
-    audio_bytes = b"".join(chunks)
+    try:
+        chunks = []
+        async for chunk in stream_tts(text=text, voice_id=voice_id):
+            chunks.append(chunk)
+        audio_bytes = b"".join(chunks)
+    except RuntimeError as exc:
+        msg = str(exc)
+        if "401" in msg or "unusual_activity" in msg:
+            raise HTTPException(status_code=503, detail="Voice service temporarily unavailable")
+        raise HTTPException(status_code=502, detail="Voice synthesis failed")
 
     return Response(
         content=audio_bytes,
