@@ -12,7 +12,7 @@ export default function StepName({ onNext, stepNumber = 1, totalSteps = 6 }) {
   }
 
   return (
-    <StepShell heading="What should the algorithm call you?" stepNumber={stepNumber} totalSteps={totalSteps} skippable={false}>
+    <StepShell heading="What should the algorithm call you? (choose wisely, this is ur brand now)" stepNumber={stepNumber} totalSteps={totalSteps} skippable={false}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <input
           className={styles.input}

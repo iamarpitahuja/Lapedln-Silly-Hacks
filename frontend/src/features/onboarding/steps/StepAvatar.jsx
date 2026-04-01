@@ -54,7 +54,7 @@ export default function StepAvatar({ onNext, onSkip, displayName = '', stepNumbe
   }
 
   return (
-    <StepShell heading="Upload your professional headshot." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
+    <StepShell heading="Upload your corporate thirst trap." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
       <div className={avatarStyles.avatarArea}>
         {preview ? (
           <img src={preview} alt="Avatar preview" className={avatarStyles.preview} />

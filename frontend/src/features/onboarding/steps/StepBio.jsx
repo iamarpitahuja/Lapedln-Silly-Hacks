@@ -11,11 +11,11 @@ export default function StepBio({ onNext, onSkip, stepNumber = 4, totalSteps = 6
   }
 
   return (
-    <StepShell heading="Describe your personal brand in buzzwords." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
+    <StepShell heading="Describe your personal brand in buzzwords. The vaguer the better." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <textarea
           className={styles.textarea}
-          placeholder="e.g. Serial disruptor. Building at the intersection of ambiguity and momentum."
+          placeholder="e.g. Serial disruptor. Building at the intersection of absolutely nothing. Ex-Google (intern, 3 weeks). Aura architect."
           value={bio}
           onChange={e => setBio(e.target.value)}
           rows={5}

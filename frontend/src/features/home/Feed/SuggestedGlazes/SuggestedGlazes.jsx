@@ -6,21 +6,21 @@ const TONE_GLAZES = {
     'Congratulations on this milestone.',
     'Well deserved recognition.',
     'Impressive work as always.',
-    'Continued excellence.',
+    'The industry needed this.',
   ],
   founder: [
     'Insane execution. Big things ahead.',
-    'This kind of velocity is rare.',
-    'Your trajectory needs to be studied.',
-    'The operator mindset is showing.',
+    'This kind of velocity is rare. Actually unhinged output.',
+    'Your trajectory needs to be studied by Stanford.',
+    'The operator mindset is showing. Scary tbh.',
   ],
   unnatural: [
-    'This is huge. So well deserved.',
-    'Absolutely generational aura.',
-    'The clarity, the vision, the execution.',
-    'I am in awe of your continued excellence.',
-    'Yet another masterclass.',
-    'Massive inspiration for the ecosystem.',
+    'I am SOBBING at this post. Generational talent fr.',
+    'Absolutely generational aura. No cap.',
+    'This post just made me quit my job. I am INSPIRED.',
+    'I showed this to my therapist and she started clapping.',
+    'Yet another masterclass. The GOAT does not miss.',
+    'I would literally run through a wall for this content.',
   ],
 }
 
@@ -103,7 +103,7 @@ export default function SuggestedGlazes({ onGlaze, isGlazed }) {
           onChange={e => setTone(Number(e.target.value))}
           className={styles.slider}
         />
-        <span className={styles.sliderLabel}>Unnaturally supportive</span>
+        <span className={styles.sliderLabel}>Unhinged glazing</span>
       </div>
     </div>
   )

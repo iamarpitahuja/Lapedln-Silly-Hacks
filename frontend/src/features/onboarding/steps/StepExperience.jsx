@@ -31,7 +31,7 @@ export default function StepExperience({ onNext, onSkip, stepNumber = 5, totalSt
   }
 
   return (
-    <StepShell heading="Document your corporate journey." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
+    <StepShell heading="Document your lore. Embellish freely, nobody checks." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <AnimatePresence>
           {entries.map((entry, i) => (
@@ -57,8 +57,8 @@ export default function StepExperience({ onNext, onSkip, stepNumber = 5, totalSt
 
         {draft !== null ? (
           <div className={expStyles.draftForm}>
-            <input className={styles.input} placeholder="Company" value={draft.company} onChange={e => setDraft(d => ({ ...d, company: e.target.value }))} />
-            <input className={styles.input} placeholder="Title / Role" value={draft.title} onChange={e => setDraft(d => ({ ...d, title: e.target.value }))} />
+            <input className={styles.input} placeholder="Company (real or stealth)" value={draft.company} onChange={e => setDraft(d => ({ ...d, company: e.target.value }))} />
+            <input className={styles.input} placeholder="Title (the more made up the better)" value={draft.title} onChange={e => setDraft(d => ({ ...d, title: e.target.value }))} />
             <div className={expStyles.dateRow}>
               <input className={styles.input} placeholder="Start (e.g. 2022)" value={draft.start} onChange={e => setDraft(d => ({ ...d, start: e.target.value }))} />
               <input className={styles.input} placeholder="End (blank = Present)" value={draft.end} onChange={e => setDraft(d => ({ ...d, end: e.target.value }))} />

@@ -102,7 +102,7 @@ export default function EducationSection({ onNotice }) {
                 }
               />
               <input
-                placeholder="Degree or Field of Study"
+                placeholder="Degree (or 'School of Hard Knocks' we don't judge)"
                 value={newDraft.degree}
                 onChange={event =>
                   setNewDraft(existing => ({ ...existing, degree: event.target.value }))
@@ -114,7 +114,7 @@ export default function EducationSection({ onNotice }) {
                 onChange={event => setNewDraft(existing => ({ ...existing, dates: event.target.value }))}
               />
               <textarea
-                placeholder="Activities and Societies"
+                placeholder="Clubs, cults, or extracurriculars"
                 value={newDraft.activities}
                 onChange={event =>
                   setNewDraft(existing => ({ ...existing, activities: event.target.value }))

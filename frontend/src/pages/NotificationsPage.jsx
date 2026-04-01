@@ -47,13 +47,13 @@ export default function NotificationsPage() {
     <div className={styles.page}>
       <div className={styles.card} data-tour="notifications-card">
         <h2 className={styles.heading}>Notifications</h2>
-        <p className={styles.subheading}>Connection requests, comments, and messages.</p>
+        <p className={styles.subheading}>People who want something from you, ranked by audacity.</p>
 
         {loading ? <p className={styles.state}>Loading…</p> : null}
         {!loading && error ? <p className={styles.stateError}>{error}</p> : null}
 
         {!loading && !error && notifications.length === 0 ? (
-          <p className={styles.empty}>Nothing new. Go post something.</p>
+          <p className={styles.empty}>Nothing new. The algorithm has forgotten about you. Post harder.</p>
         ) : null}
 
         {!loading && !error && notifications.length > 0 ? (

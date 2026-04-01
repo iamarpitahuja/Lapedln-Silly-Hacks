@@ -32,7 +32,7 @@ export default function StepWelcome({ larpRating = 0, onEnter }) {
         />
 
         <p className={styles.kicker}>Profile Activated</p>
-        <h2 className={styles.title}>You are officially employable on paper.</h2>
+        <h2 className={styles.title}>You are officially employable on paper. Congrats on the delusion.</h2>
 
         <motion.p
           className={styles.label}
@@ -56,7 +56,7 @@ export default function StepWelcome({ larpRating = 0, onEnter }) {
               animate={{ opacity: 1, y: 0 }}
               transition={springBouncy}
             >
-              Enter the Platform →
+              Enter the Simulation →
             </motion.button>
           )}
         </AnimatePresence>

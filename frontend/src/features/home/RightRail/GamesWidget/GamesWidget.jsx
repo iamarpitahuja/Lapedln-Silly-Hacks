@@ -5,9 +5,9 @@ import { localDateStr } from '../../../games/data/dailySeed';
 import s from './GamesWidget.module.css';
 
 const GAMES = [
-  { key: 'bingo', name: 'Buzzword Bingo', tagline: 'Mark the jargon' },
-  { key: 'grind', name: 'The Grind', tagline: 'Guess the buzzword' },
-  { key: 'connections', name: 'Thought Leadership', tagline: 'Group the nonsense' },
+  { key: 'bingo', name: 'Buzzword Bingo', tagline: 'Spot the corporate yap' },
+  { key: 'grind', name: 'The Grind', tagline: 'Wordle but make it LinkedIn' },
+  { key: 'connections', name: 'Thought Leadership', tagline: 'Group the brainrot' },
 ];
 
 function getTodayKey() {

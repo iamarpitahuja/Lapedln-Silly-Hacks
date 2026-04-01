@@ -67,7 +67,7 @@ export default function AboutSection({ onNotice }) {
           >
             {currentUser.about
               ? <p className={styles.bio}>{currentUser.about}</p>
-              : <p className={styles.emptyState}>no lore written yet. drop ur origin story. we're waiting.</p>
+              : <p className={styles.emptyState}>no lore written yet. drop ur origin story. every founder has one (most are fiction).</p>
             }
           </Motion.div>
         ) : (

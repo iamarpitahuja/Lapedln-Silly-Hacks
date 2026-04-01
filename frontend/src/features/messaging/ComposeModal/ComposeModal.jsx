@@ -92,7 +92,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
         transition={springSnap}
       >
         <div className={styles.header}>
-          <h3 className={styles.title}>New message</h3>
+          <h3 className={styles.title}>New message (it's networking not flirting)</h3>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
             &times;
           </button>
@@ -119,7 +119,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
           <input
             ref={searchRef}
             className={styles.searchInput}
-            placeholder="Search people..."
+            placeholder="Search for someone to professionally bother..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -144,7 +144,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
                   </div>
                   <div className={styles.userInfo}>
                     <span className={styles.userName}>{user.display_name}</span>
-                    <span className={styles.userJob}>{user.job || 'Aspiring Thought Leader'}</span>
+                    <span className={styles.userJob}>{user.job || 'Between pivots'}</span>
                   </div>
                   {isSelected(user.id) && <span className={styles.check}>&#10003;</span>}
                 </button>
@@ -168,7 +168,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
                   </div>
                   <div className={styles.userInfo}>
                     <span className={styles.userName}>{user.display_name}</span>
-                    <span className={styles.userJob}>{user.job || 'Aspiring Thought Leader'}</span>
+                    <span className={styles.userJob}>{user.job || 'Between pivots'}</span>
                   </div>
                   {isSelected(user.id) && <span className={styles.check}>&#10003;</span>}
                 </button>
@@ -177,7 +177,7 @@ export default function ComposeModal({ onClose, onStartDm, onCreateGroup }) {
           )}
 
           {!loading && filteredConnections.length === 0 && filteredOthers.length === 0 && (
-            <p className={styles.state}>No users found.</p>
+            <p className={styles.state}>No users found. Everyone is dodging you rn.</p>
           )}
         </div>
 

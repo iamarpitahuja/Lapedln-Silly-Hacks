@@ -40,8 +40,8 @@ export default function StepJob({ onNext, stepNumber = 2, totalSteps = 6 }) {
   }
 
   return (
-    <StepShell heading="Choose your corporate identity." stepNumber={stepNumber} totalSteps={totalSteps} skippable={false}>
-      {loading && <p className={jobStyles.loading}>Generating your destiny...</p>}
+    <StepShell heading="Choose your delusion. (you can always pivot later, everyone does)" stepNumber={stepNumber} totalSteps={totalSteps} skippable={false}>
+      {loading && <p className={jobStyles.loading}>Manifesting your destiny... (not financial advice)</p>}
       {error && (
         <div className={jobStyles.errorBox}>
           <p>{error}</p>
