@@ -91,7 +91,7 @@ export default function Messaging() {
   return (
     <div className={styles.page}>
       {loading ? (
-        <p className={styles.loading}>Loading conversations…</p>
+        <p className={styles.loading}>Loading ur DMs... this better not be another cold outreach</p>
       ) : (
         <div className={styles.layout}>
           <ConversationList

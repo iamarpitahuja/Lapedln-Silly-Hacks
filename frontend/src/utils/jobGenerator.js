@@ -43,6 +43,9 @@ const SALARIES = [
   '$350k + stock that vests after Series Z',
   'Market rate (market currently undefined)',
   '$500k + equity dreams + good vibes',
+  'Exposure + LinkedIn shoutout (this IS the comp)',
+  'Paid in learnings and network effects',
+  '$0 but the CEO follows you back on Twitter',
 ]
 
 const REQUIREMENTS = [
@@ -64,6 +67,9 @@ const REQUIREMENTS = [
   'Able to condense 40-slide decks into 3 bullet points under 10 minutes',
   'Bias for action, bias for alignment, bias for ambiguity — simultaneously',
   'Experience thriving in a post-pivot environment (fourth pivot this year)',
+  'Must be chronically online (it\'s a job requirement not a personality flaw)',
+  'Willing to describe layoffs as "right-sizing our talent ecosystem"',
+  'Can survive a 45-minute standup that should have been a Slack message',
 ]
 
 const PERKS = [
@@ -79,6 +85,9 @@ const PERKS = [
   '"No-meeting Fridays" (exceptions apply to all meetings)',
   'Equity refreshes every 4 years (cliff starts on day 5)',
   'Company-wide Slack emoji for your first shipped feature',
+  'Mental health days (must submit a 3-page justification)',
+  '"We\'re a family" (toxic one, but still)',
+  'Free merch that says DISRUPT on it',
 ]
 
 const TAGS = [

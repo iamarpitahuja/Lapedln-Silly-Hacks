@@ -62,7 +62,7 @@ export default function SkillsSection({ onNotice }) {
             <form className={styles.skillForm} onSubmit={handleAddSkill}>
               <input
                 type="text"
-                placeholder="Skill name (e.g. Fireball, Excel)"
+                placeholder="e.g. Fireball, Strategic Cc'ing, Looking Busy on Zoom"
                 value={skillDraft}
                 onChange={event => setSkillDraft(event.target.value)}
                 autoFocus
@@ -88,7 +88,7 @@ export default function SkillsSection({ onNotice }) {
       </AnimatePresence>
       <div className={styles.skills}>
         {currentUser.skills.length === 0 && (
-          <p className={styles.emptyState}>no skills listed. list something that sounds vaguely real.</p>
+          <p className={styles.emptyState}>no skills listed. literally just make something up, this is LinkedIn not a court of law.</p>
         )}
         {currentUser.skills.map(skill => (
           <article key={skill.id} className={styles.skillRow}>

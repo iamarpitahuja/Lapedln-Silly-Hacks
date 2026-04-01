@@ -13,7 +13,7 @@ export default function Feed() {
     <div className={styles.feed}>
       <StartPost />
       {feedPosts.length === 0 ? (
-        <p className={styles.loadingText}>Recalculating prestige hierarchy…</p>
+        <p className={styles.loadingText}>Recalculating the prestige hierarchy... ur either eating or getting ate rn</p>
       ) : (
         <Motion.div className={styles.posts}>
           <AnimatePresence initial={false}>

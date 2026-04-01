@@ -11,6 +11,11 @@ const TAGLINES = [
   'Your network is your net worth (literally, we score it).',
   'Be the thought leader you pretend to be.',
   'Synergize your personal brand into the stratosphere.',
+  'Rizz your way to Series A.',
+  'No cap, your LinkedIn is mid. We can fix that.',
+  'POV: you just made unemployment look like a founder arc.',
+  'The professional networking platform that glazes back.',
+  'Turning red flags into green flags since 2025.',
 ]
 
 export default function AuthPage() {
@@ -99,7 +104,7 @@ export default function AuthPage() {
         <p className={styles.tagline}>{tagline}</p>
 
         <h1 className={styles.heading}>
-          {isSignUp ? 'Begin your ascension' : 'Welcome back, thought leader'}
+          {isSignUp ? 'Begin your ascension' : 'Welcome back, you absolute visionary'}
         </h1>
 
         {error && <div className={styles.error}>{error}</div>}
@@ -113,7 +118,7 @@ export default function AuthPage() {
                 className={styles.input}
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Your thought leadership identity"
+                placeholder="Your main character name"
                 required
                 autoComplete="name"
               />
@@ -140,7 +145,7 @@ export default function AuthPage() {
               className={styles.input}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={isSignUp ? 'Min 6 characters of pure ambition' : 'Your secret sauce'}
+              placeholder={isSignUp ? 'Min 6 characters (make it your safe word from standup)' : 'Your secret sauce'}
               required
               minLength={6}
               autoComplete={isSignUp ? 'new-password' : 'current-password'}
@@ -197,7 +202,7 @@ export default function AuthPage() {
       </div>
 
       <p className={styles.footer}>
-        By joining, you agree to have your professional delusions scored by AI.
+        By joining, you consent to having your entire personality scored by AI. No takebacks.
       </p>
     </div>
   )

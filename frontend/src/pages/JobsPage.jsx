@@ -121,13 +121,13 @@ function HiringPipeline({ listing, onAccept, onClose }) {
               transition={{ duration: 0.3, ease: easeOutQuint }}
             >
               <p className={styles.hiredMsg}>
-                The ecosystem awaits your full bandwidth.
+                The ecosystem is NOT ready for you but here we are.
               </p>
               <button className={styles.startLarpBtn} onClick={onAccept}>
                 Start LARPing
               </button>
               <button className={styles.passBtn} onClick={onClose}>
-                Pass on this opportunity
+                I'm not that delulu (pass)
               </button>
             </Motion.div>
           )}
@@ -185,7 +185,7 @@ export default function JobsPage() {
           <div>
             <h2 className={styles.heading}>J*bs</h2>
             <p className={styles.subheading}>
-              Today's most prestigious opportunities, curated by the algorithm.
+              Today's most unhinged opportunities. The algorithm cooked these up and we did not proofread.
             </p>
           </div>
           <div className={styles.currentCompact}>
@@ -299,7 +299,7 @@ export default function JobsPage() {
           <input
             type="text"
             className={styles.input}
-            placeholder="Enter your new fake profession..."
+            placeholder="Type ur new personality here..."
             value={job}
             onChange={e => setJob(e.target.value)}
           />
@@ -324,13 +324,13 @@ export default function JobsPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
-              Job update failed. Your delusion did not persist.
+              Job update failed. The universe said no. Try manifesting harder.
             </Motion.p>
           )}
         </AnimatePresence>
 
         <div className={styles.suggestions}>
-          <p className={styles.suggestionsLabel}>Need inspiration? Pick a prebuilt larp:</p>
+          <p className={styles.suggestionsLabel}>Can't even commit to a fake job? Pick one:</p>
           <div className={styles.pills}>
             {jobOptions.map(t => (
               <button key={t} className={styles.pill} onClick={() => setJob(t)}>

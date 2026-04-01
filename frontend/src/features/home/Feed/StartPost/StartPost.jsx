@@ -11,6 +11,10 @@ const PLACEHOLDERS = [
   'Share a lesson from your made-up founder arc.',
   'Announce a role you technically never interviewed for.',
   'What bullshit can you offer the ecosystem today?',
+  'Drop a hot take so mid it circles back to profound.',
+  'Describe your morning routine like it cured your trauma.',
+  'Post something so unhinged HR screenshots it for training.',
+  'Humble-brag about a rejection email. Growth mindset.',
 ]
 
 const ACTIONS = [
@@ -63,7 +67,9 @@ const POST_TYPES = [
   'Aura Farming',
   'Corporate Trauma Dump',
   'Stealth Build Update',
-  'Personal Update',
+  'Rejection Arc',
+  'Delulu Manifesto',
+  'LinkedIn Main Character Moment',
 ]
 
 const MAX_POST_LENGTH = 500

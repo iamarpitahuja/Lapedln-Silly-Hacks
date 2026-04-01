@@ -35,7 +35,7 @@ export default function StepSkills({ onNext, onSkip, stepNumber = 6, totalSteps 
   }
 
   return (
-    <StepShell heading="Tag your superpowers." stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
+    <StepShell heading="Tag your superpowers. (LinkedIn endorsements but honest)" stepNumber={stepNumber} totalSteps={totalSteps} skippable onSkip={onSkip}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.tagList}>
           <AnimatePresence>
@@ -64,7 +64,7 @@ export default function StepSkills({ onNext, onSkip, stepNumber = 6, totalSteps 
         </div>
         <input
           className={styles.input}
-          placeholder="Add a skill and press Enter"
+          placeholder="e.g. 'Looking Busy on Zoom', 'Strategic Cc'ing'"
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}

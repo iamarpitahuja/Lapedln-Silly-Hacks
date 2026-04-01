@@ -63,9 +63,9 @@ export default function Me() {
           >
             <div className={styles.larpmaxxCardInner}>
               <div className={styles.larpmaxxCardText}>
-                <span className={styles.larpmaxxCardEyebrow}>Level up your corporate persona</span>
+                <span className={styles.larpmaxxCardEyebrow}>Your corporate persona is giving NPC energy</span>
                 <span className={styles.larpmaxxCardTitle}>Practice your Larp</span>
-                <span className={styles.larpmaxxCardSubtitle}>Get LarpMaxxing →</span>
+                <span className={styles.larpmaxxCardSubtitle}>Get LarpMaxxing → (it's giving main character development)</span>
               </div>
               <span className={styles.larpmaxxCardEmoji}>🎭</span>
             </div>

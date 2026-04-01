@@ -66,14 +66,14 @@ export default function LarpStatus({ onNotice }) {
           <div className={styles.displayArea}>
             {job
               ? <p className={styles.persona}>{job}</p>
-              : <p className={styles.emptyState}>No active persona set. Define the role you are currently performing.</p>
+              : <p className={styles.emptyState}>No active persona set. You're just... yourself? That's brave tbh.</p>
             }
             <div className={styles.pills}>
               {opportunities.length > 0
                 ? opportunities.map(type => (
                     <span key={type} className={styles.pill}>{type}</span>
                   ))
-                : <p className={styles.emptyState}>No opportunity types listed. Add what roles you are open to.</p>
+                : <p className={styles.emptyState}>No target larps listed. The universe can't manifest what you won't declare.</p>
               }
             </div>
             <div className={styles.actions}>

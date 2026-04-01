@@ -95,12 +95,12 @@ export default function ExperienceSection({ onNotice }) {
           >
             <form className={styles.editor} onSubmit={handleAddSubmit}>
               <input
-                placeholder="Title (e.g. Chief Warlock)"
+                placeholder="Title (e.g. Chief Warlock, Interim Vibe Czar)"
                 value={newDraft.title}
                 onChange={event => setNewDraft(existing => ({ ...existing, title: event.target.value }))}
               />
               <input
-                placeholder="Guild / Company"
+                placeholder="Company (stealth startups count double)"
                 value={newDraft.company}
                 onChange={event => setNewDraft(existing => ({ ...existing, company: event.target.value }))}
               />
@@ -110,7 +110,7 @@ export default function ExperienceSection({ onNotice }) {
                 onChange={event => setNewDraft(existing => ({ ...existing, dates: event.target.value }))}
               />
               <textarea
-                placeholder="what did you even do there..."
+                placeholder="what did you even do there... (be honest for once)"
                 value={newDraft.description}
                 onChange={event =>
                   setNewDraft(existing => ({ ...existing, description: event.target.value }))

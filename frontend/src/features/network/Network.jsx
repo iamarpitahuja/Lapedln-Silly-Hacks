@@ -86,7 +86,7 @@ export default function Network() {
           ))}
         </div>
 
-        {loading && <p className={styles.state}>Loading your network…</p>}
+        {loading && <p className={styles.state}>Loading your network... calculating who actually fw you</p>}
         {error && <p className={styles.stateError}>{error}</p>}
 
         {!loading && !error && (
@@ -106,7 +106,7 @@ export default function Network() {
                   variants={{ show: { transition: { staggerChildren: 0.05 } } }}
                 >
                   {suggestions.length === 0 ? (
-                    <p className={styles.empty}>No suggestions right now. You know everyone!</p>
+                    <p className={styles.empty}>No suggestions rn. You either know everyone or everyone is avoiding you.</p>
                   ) : (
                     suggestions.map(user => (
                       <Motion.div key={user.id} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>
@@ -120,7 +120,7 @@ export default function Network() {
               {activeTab === 'Aura Farmers' && (
                 <div>
                   {outgoing.length === 0 ? (
-                    <p className={styles.empty}>No one is farming your aura. Your network is reciprocated… for now.</p>
+                    <p className={styles.empty}>Nobody is farming your aura rn. Suspicious. Maybe ur the farmer.</p>
                   ) : (
                     <Motion.div
                       className={styles.grid}
@@ -146,7 +146,7 @@ export default function Network() {
               {activeTab === 'Pending' && (
                 <div>
                   {pending.length === 0 ? (
-                    <p className={styles.empty}>No pending requests.</p>
+                    <p className={styles.empty}>No pending requests. The ghosting is mutual.</p>
                   ) : (
                     <Motion.div
                       className={styles.grid}
@@ -177,7 +177,7 @@ export default function Network() {
                   variants={{ show: { transition: { staggerChildren: 0.05 } } }}
                 >
                   {connections.length === 0 ? (
-                    <p className={styles.empty}>No connections yet. Start connecting!</p>
+                    <p className={styles.empty}>Zero connections. Ur giving lone wolf founder energy and not in a good way.</p>
                   ) : (
                     connections.map(conn => (
                       <Motion.div key={conn.id} variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}>

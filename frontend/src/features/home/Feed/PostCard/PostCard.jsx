@@ -606,7 +606,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                     onKeyDown={handleRelarpKeyDown}
                     maxLength={MAX_RELARP_LENGTH}
                     rows={3}
-                    placeholder="Add optional context before you Re-Larp..."
+                    placeholder="Add ur hot take before re-larping this into the timeline..."
                   />
                   <div className={styles.relarpMeta}>
                     <p className={styles.relarpHint}>Ctrl/Cmd + Enter to publish</p>
@@ -764,7 +764,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                       </AnimatePresence>
                     </ul>
                   ) : (
-                    <p className={styles.emptyComments}>No comments yet. Be the first to glaze this post.</p>
+                    <p className={styles.emptyComments}>Zero comments. This post is screaming into the void. Be the first glazer.</p>
                   )}
 
                   <form className={styles.commentComposer} onSubmit={handleCommentSubmit}>
@@ -786,7 +786,7 @@ export default function PostCard({ post, isOwnPost = false }) {
                         onKeyDown={handleCommentKeyDown}
                         maxLength={MAX_COMMENT_LENGTH}
                         rows={2}
-                        placeholder="Add your high-conviction comment..."
+                        placeholder="Drop a take (the more unhinged the better)..."
                       />
                       <div className={styles.commentComposerMeta}>
                         <p className={styles.commentHint}>Ctrl/Cmd + Enter to post</p>

@@ -56,9 +56,9 @@ export default function LeftRail() {
         <div className={styles.divider} />
         <div className={styles.stats}>
           <p className={styles.statLine}>
-            <span className={styles.statLabel}>Viewed by </span>
+            <span className={styles.statLabel}>Stalked by </span>
             <span className={styles.statValue}>{stats.recruiterViews} recruiters</span>
-            <span className={styles.statLabel}> in the last 7 hours</span>
+            <span className={styles.statLabel}> in the last 7 hours (sus)</span>
           </p>
           <p className={styles.statLine}>
             <span className={styles.statLabel}>Impression velocity: </span>
@@ -123,7 +123,7 @@ export default function LeftRail() {
             </svg>
             <span className={styles.larpmaxxerTitle}>LarpMaxxer</span>
           </div>
-          <p className={styles.larpmaxxerSub}>Train your corporate persona</p>
+          <p className={styles.larpmaxxerSub}>Train your corporate persona (it needs work bestie)</p>
           <Link to="/larpmaxxer" className={styles.larpmaxxerBtn}>
             Enter Training
           </Link>
