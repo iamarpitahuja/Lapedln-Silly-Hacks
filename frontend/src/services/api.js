@@ -313,35 +313,93 @@ export async function patchLarpmaxxerProgress(payload) {
   })
 }
 
-export async function fetchLarpmaxxerTts({ text, characterId, signal }) {
-  const res = await authFetchRaw(`${API_BASE}/larpmaxxer/tts`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      text,
-      characterId,
-    }),
-    signal,
-  })
+// Browser SpeechSynthesis fallback — produces a silent-ish blob while the
+// browser voice actually plays aloud.  Callers treat the returned blob like
+// normal audio; the real sound comes from SpeechSynthesis.
+function _browserTtsFallback(text, signal) {
+  return new Promise((resolve, reject) => {
+    if (!window.speechSynthesis) {
+      return reject(new Error('Browser TTS not supported'))
+    }
 
-  return res.blob()
+    if (signal?.aborted) return reject(new DOMException('Aborted', 'AbortError'))
+
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.rate = 1.0
+    utterance.pitch = 1.0
+
+    // Try to pick a natural-sounding English voice
+    const voices = window.speechSynthesis.getVoices()
+    const preferred = voices.find(v => /english/i.test(v.name) && v.lang.startsWith('en'))
+      || voices.find(v => v.lang.startsWith('en'))
+    if (preferred) utterance.voice = preferred
+
+    const onAbort = () => {
+      window.speechSynthesis.cancel()
+      reject(new DOMException('Aborted', 'AbortError'))
+    }
+    signal?.addEventListener('abort', onAbort, { once: true })
+
+    utterance.onend = () => {
+      signal?.removeEventListener('abort', onAbort)
+      // Return a tiny valid silent mp3 so callers that create Audio objects
+      // don't error — the real audio already played via SpeechSynthesis.
+      const silentMp3 = new Uint8Array([
+        0xFF, 0xFB, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x49, 0x6E, 0x66, 0x6F,
+      ])
+      resolve(new Blob([silentMp3], { type: 'audio/mpeg' }))
+    }
+
+    utterance.onerror = (e) => {
+      signal?.removeEventListener('abort', onAbort)
+      if (e.error === 'canceled') {
+        reject(new DOMException('Aborted', 'AbortError'))
+      } else {
+        reject(new Error(`Browser TTS failed: ${e.error}`))
+      }
+    }
+
+    window.speechSynthesis.speak(utterance)
+  })
+}
+
+export async function fetchLarpmaxxerTts({ text, characterId, signal }) {
+  try {
+    const res = await authFetchRaw(`${API_BASE}/larpmaxxer/tts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text,
+        characterId,
+      }),
+      signal,
+    })
+    return await res.blob()
+  } catch (err) {
+    if (err?.name === 'AbortError') throw err
+    // ElevenLabs unavailable — fall back to browser voice
+    return _browserTtsFallback(text, signal)
+  }
 }
 
 export async function fetchRoleplayTts({ text, voiceId, signal }) {
-  const res = await fetch(`${API_BASE}/roleplay/tts`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      text,
-      voice_id: voiceId,
-    }),
-    signal,
-  })
-
-  if (!res.ok) {
-    const textBody = await res.text().catch(() => '')
-    throw new Error(textBody || `Request failed: ${res.status}`)
+  try {
+    const res = await authFetchRaw(`${API_BASE}/roleplay/tts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text,
+        voice_id: voiceId,
+      }),
+      signal,
+    })
+    return await res.blob()
+  } catch (err) {
+    if (err?.name === 'AbortError') throw err
+    return _browserTtsFallback(text, signal)
   }
-
-  return res.blob()
 }
