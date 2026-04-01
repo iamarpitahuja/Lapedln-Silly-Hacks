@@ -52,8 +52,8 @@
 }
 
 .nextBtn {
-  align-self: flex-end;
-  padding: 0.72rem 1.75rem;
+  align-self: center;
+  padding: 1rem 2.5rem;
   background: var(--neon);
   color: var(--text-on-accent);
   border: none;
@@ -62,8 +62,12 @@
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  font-size: 0.82rem;
+  font-size: 1rem;
   cursor: pointer;
+  margin-top: 0.5rem;
+  min-width: 200px;
+  position: relative;
+  z-index: 10;
   transition: background-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
 }
 

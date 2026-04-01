@@ -41,6 +41,7 @@ export default function BuzzwordParticles({ count = 7 }) {
             color: 'var(--neon)',
             whiteSpace: 'nowrap',
             userSelect: 'none',
+            pointerEvents: 'none',
           }}
         >
           {p.word}
