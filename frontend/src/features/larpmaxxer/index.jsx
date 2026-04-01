@@ -257,7 +257,11 @@ export function LarpMaxxer({ onExitTraining }) {
 
   if (!hasEntered) {
     return (
-      <div className={styles.root} style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <div
+        className={styles.root}
+        data-tour="larpmaxxer-game"
+        style={{ alignItems: 'center', justifyContent: 'center' }}
+      >
         <EntryCard
           larpRating={larpRating}
           personaName={persona?.name ?? 'No Persona'}
@@ -273,6 +277,7 @@ export function LarpMaxxer({ onExitTraining }) {
   return (
     <Motion.div
       className={styles.root}
+      data-tour="larpmaxxer-game"
       animate={cringeShake ? { x: [0, -6, 6, -4, 4, 0] } : { x: 0 }}
       transition={{ duration: 0.4 }}
     >

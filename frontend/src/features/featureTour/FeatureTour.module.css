@@ -131,6 +131,14 @@
   line-height: 1.5;
 }
 
+.previewImage {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border-md);
+}
+
 .missingTarget {
   color: var(--accent-amber);
   font-size: 12px;

@@ -8,6 +8,104 @@
   overflow: hidden;
 }
 
+.voiceBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, rgba(68, 16, 140, 0.45), rgba(11, 8, 32, 0.95));
+}
+
+.voiceBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(165, 123, 255, 0.75);
+  background: linear-gradient(180deg, rgba(162, 107, 255, 0.35), rgba(88, 36, 166, 0.75));
+  color: #f9f4ff;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 0 0 1px rgba(212, 178, 255, 0.25), 0 0 18px rgba(131, 68, 255, 0.45);
+  transition: transform 100ms ease, box-shadow 100ms ease, filter 100ms ease, opacity 100ms ease;
+}
+
+.voiceBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: 0 0 0 1px rgba(212, 178, 255, 0.35), 0 0 24px rgba(131, 68, 255, 0.6);
+}
+
+.voiceBtn:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.voiceBtnPlaying {
+  border-color: rgba(90, 255, 199, 0.8);
+  background: linear-gradient(180deg, rgba(30, 160, 122, 0.45), rgba(17, 91, 72, 0.8));
+  box-shadow: 0 0 0 1px rgba(124, 255, 216, 0.25), 0 0 20px rgba(34, 221, 157, 0.45);
+}
+
+.voiceBtnError {
+  border-color: rgba(255, 103, 150, 0.85);
+  background: linear-gradient(180deg, rgba(209, 52, 104, 0.5), rgba(112, 18, 54, 0.85));
+  box-shadow: 0 0 0 1px rgba(255, 139, 178, 0.25), 0 0 20px rgba(255, 72, 133, 0.5);
+}
+
+.voiceIconWrap {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.voiceIconWrap svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.voiceSpinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  animation: spin 0.75s linear infinite;
+}
+
+.voiceBtnText {
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.voiceStatus {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(227, 210, 255, 0.8);
+}
+
+.voiceStatusPlaying {
+  color: rgba(137, 255, 212, 0.95);
+}
+
+.voiceStatusError {
+  color: rgba(255, 139, 178, 0.95);
+}
+
 .scrollArea {
   flex: 1;
   overflow-y: auto;
@@ -106,4 +204,8 @@
 @keyframes dotPulse {
   0%, 100% { opacity: 0.2; transform: scale(0.8); }
   50%       { opacity: 1;   transform: scale(1.1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

@@ -3,6 +3,7 @@ import { AnimatePresence, motion as Motion } from 'framer-motion'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { easeOutQuint } from '../../lib/motion'
 import styles from './FeatureTour.module.css'
+import larpmaxxerPreview from '../../../../image.jpeg'
 
 const SPOTLIGHT_PADDING = 10
 const PANEL_GAP = 16
@@ -42,6 +43,16 @@ const TOUR_STEPS = [
     selector: '[data-tour="daily-games"]',
     title: 'Daily Games',
     description: 'Play mini-games each day to keep your progress and profile stats moving.',
+  },
+  {
+    id: 'game-32bit',
+    route: '/larpmaxxer',
+    zone: 'Larp Dojo',
+    selector: '[data-tour="larpmaxxer-game"]',
+    title: '32-Bit Game Mode',
+    description: 'This is LarpMaxxer, the 32-bit style practice game. Run sessions here whenever you want to train.',
+    imageSrc: larpmaxxerPreview,
+    imageAlt: 'LarpMaxxer 32-bit game preview',
   },
   {
     id: 'network',
@@ -404,6 +415,9 @@ export default function FeatureTour({ isOpen, onFinish }) {
             </div>
             <h2 className={styles.title}>{step.title}</h2>
             <p className={styles.description}>{step.description}</p>
+            {step.imageSrc ? (
+              <img className={styles.previewImage} src={step.imageSrc} alt={step.imageAlt ?? step.title} />
+            ) : null}
             {!spotlightStyle ? (
               <p className={styles.missingTarget}>Waiting for this feature to render...</p>
             ) : null}

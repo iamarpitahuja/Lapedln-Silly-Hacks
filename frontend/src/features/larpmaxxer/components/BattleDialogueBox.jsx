@@ -3,7 +3,39 @@ import styles from './BattleDialogueBox.module.css'
 
 const TYPEWRITER_SPEED = 20 // ms per character
 
-export function BattleDialogueBox({ text, speakerName, isTyping, log = [] }) {
+function PlayIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M8 5.5v13l10-6.5-10-6.5z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function StopIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="7" y="7" width="10" height="10" rx="1.5" fill="currentColor" />
+    </svg>
+  )
+}
+
+function WarningIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 4.5L3.75 19h16.5L12 4.5zm0 4.2c.6 0 1 .4 1 1v4.1c0 .6-.4 1-1 1s-1-.4-1-1V9.7c0-.6.4-1 1-1zm0 8.2a1.2 1.2 0 110-2.4 1.2 1.2 0 010 2.4z" fill="currentColor" />
+    </svg>
+  )
+}
+
+export function BattleDialogueBox({
+  text,
+  speakerName,
+  isTyping,
+  log = [],
+  ttsState = 'idle',
+  onVoiceToggle = null,
+  voiceDisabled = false,
+}) {
   // Typewriter state for the latest character line
   const [displayed, setDisplayed] = useState('')
   const [done, setDone] = useState(false)
@@ -50,9 +82,40 @@ export function BattleDialogueBox({ text, speakerName, isTyping, log = [] }) {
   // which we show with typewriter below)
   const pastEntries = log.slice(0, -1)
   const latestEntry = log[log.length - 1] ?? null
+  const isLoading = ttsState === 'loading'
+  const isPlaying = ttsState === 'playing'
+  const isError = ttsState === 'error'
+  const canToggle = Boolean(onVoiceToggle) && (!voiceDisabled || isPlaying || isLoading)
+  const voiceLabel = isLoading ? 'Loading voice' : isPlaying ? 'Stop voice' : 'Play voice'
+  const statusLabel = isLoading
+    ? 'Loading'
+    : isPlaying
+      ? 'Playing'
+      : isError
+        ? 'Error'
+        : 'Ready'
 
   return (
     <div className={styles.box}>
+      <div className={styles.voiceBar}>
+        <button
+          type="button"
+          className={`${styles.voiceBtn} ${isPlaying ? styles.voiceBtnPlaying : ''} ${isError ? styles.voiceBtnError : ''}`}
+          onClick={onVoiceToggle}
+          disabled={!canToggle}
+          aria-label={voiceLabel}
+          title={voiceLabel}
+        >
+          <span className={styles.voiceIconWrap} aria-hidden="true">
+            {isLoading ? <span className={styles.voiceSpinner} /> : isError ? <WarningIcon /> : isPlaying ? <StopIcon /> : <PlayIcon />}
+          </span>
+          <span className={styles.voiceBtnText}>{voiceLabel}</span>
+        </button>
+        <span className={`${styles.voiceStatus} ${isPlaying ? styles.voiceStatusPlaying : ''} ${isError ? styles.voiceStatusError : ''}`}>
+          {statusLabel}
+        </span>
+      </div>
+
       <div className={styles.scrollArea} ref={scrollRef}>
         {/* Past conversation history */}
         {pastEntries.map((entry, i) => (

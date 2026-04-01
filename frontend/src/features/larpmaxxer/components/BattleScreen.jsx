@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { BattleSprite } from './BattleSprite'
 import { BattleHPBar } from './BattleHPBar'
 import { MoveGrid } from './MoveGrid'
 import { BattleDialogueBox } from './BattleDialogueBox'
 import { BattleEvalFlash } from './BattleEvalFlash'
+import { fetchLarpmaxxerTts } from '../../../services/api'
 import styles from './BattleScreen.module.css'
 
 export function BattleScreen({
@@ -16,10 +17,15 @@ export function BattleScreen({
   onDismissFlash,
 }) {
   const [enemyAnim, setEnemyAnim] = useState('')
+  const [ttsState, setTtsState] = useState('idle')
   // Full conversation log — never clears
   const [log, setLog] = useState([])
   const prevFlash = useRef(null)
   const prevHistoryLen = useRef(0)
+  const audioRef = useRef(null)
+  const audioUrlRef = useRef(null)
+  const ttsRequestRef = useRef(null)
+  const errorResetTimerRef = useRef(null)
 
   // Append new history entries to the log
   useEffect(() => {
@@ -33,6 +39,8 @@ export function BattleScreen({
   // Derive who last spoke for sprite animation
   const lastEntry = session.history[session.history.length - 1] ?? null
   const lastSpeaker = lastEntry?.speaker ?? 'character'
+  const latestCharacterEntry = [...session.history].reverse().find(e => e.speaker === 'character')
+  const latestCharacterLine = latestCharacterEntry?.text ?? ''
   const characterTalking = isTyping || lastSpeaker === 'character'
 
   // Meter deltas from last user entry
@@ -60,6 +68,108 @@ export function BattleScreen({
   const currentCharacterLine = lastEntry?.speaker === 'character'
     ? lastEntry.text
     : (currentNode?.characterLine ?? '')
+
+  const clearAudioResources = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.onended = null
+      audioRef.current.onerror = null
+      audioRef.current = null
+    }
+    if (audioUrlRef.current) {
+      URL.revokeObjectURL(audioUrlRef.current)
+      audioUrlRef.current = null
+    }
+  }, [])
+
+  const stopActiveTts = useCallback(() => {
+    if (ttsRequestRef.current) {
+      ttsRequestRef.current.abort()
+      ttsRequestRef.current = null
+    }
+    if (errorResetTimerRef.current) {
+      clearTimeout(errorResetTimerRef.current)
+      errorResetTimerRef.current = null
+    }
+    clearAudioResources()
+  }, [clearAudioResources])
+
+  const queueErrorReset = useCallback(() => {
+    if (errorResetTimerRef.current) {
+      clearTimeout(errorResetTimerRef.current)
+    }
+    errorResetTimerRef.current = setTimeout(() => {
+      setTtsState(prev => (prev === 'error' ? 'idle' : prev))
+      errorResetTimerRef.current = null
+    }, 1000)
+  }, [])
+
+  const handleVoiceToggle = useCallback(async () => {
+    const textToSpeak = latestCharacterLine.trim()
+    if (!character?.id || !textToSpeak) return
+
+    if (ttsState === 'playing' || ttsState === 'loading') {
+      stopActiveTts()
+      setTtsState('idle')
+      return
+    }
+
+    stopActiveTts()
+    setTtsState('loading')
+
+    const controller = new AbortController()
+    ttsRequestRef.current = controller
+
+    try {
+      const audioBlob = await fetchLarpmaxxerTts({
+        text: textToSpeak,
+        characterId: character.id,
+        signal: controller.signal,
+      })
+
+      if (controller.signal.aborted) {
+        setTtsState('idle')
+        return
+      }
+
+      const audioUrl = URL.createObjectURL(audioBlob)
+      const audio = new Audio(audioUrl)
+      audioRef.current = audio
+      audioUrlRef.current = audioUrl
+
+      audio.onended = () => {
+        if (audioRef.current !== audio) return
+        clearAudioResources()
+        setTtsState('idle')
+      }
+
+      audio.onerror = () => {
+        if (audioRef.current !== audio) return
+        clearAudioResources()
+        setTtsState('error')
+        queueErrorReset()
+      }
+
+      setTtsState('playing')
+      await audio.play()
+    } catch (error) {
+      if (controller.signal.aborted || error?.name === 'AbortError') {
+        setTtsState('idle')
+        return
+      }
+      clearAudioResources()
+      setTtsState('error')
+      queueErrorReset()
+    } finally {
+      if (ttsRequestRef.current === controller) {
+        ttsRequestRef.current = null
+      }
+    }
+  }, [character?.id, clearAudioResources, latestCharacterLine, queueErrorReset, stopActiveTts, ttsState])
+
+  useEffect(() => () => {
+    stopActiveTts()
+  }, [stopActiveTts])
 
   return (
     <div className={styles.root}>
@@ -106,6 +216,9 @@ export function BattleScreen({
             speakerName={character.name}
             isTyping={isTyping}
             log={log}
+            ttsState={ttsState}
+            onVoiceToggle={handleVoiceToggle}
+            voiceDisabled={!latestCharacterLine.trim()}
           />
         </div>
 
