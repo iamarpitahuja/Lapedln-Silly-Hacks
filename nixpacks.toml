@@ -1,7 +1,7 @@
 # Nixpacks config for Railway — builds both frontend and backend in one service
 
 [phases.setup]
-nixPkgs = ["nodejs_20", "python312", "npm"]
+nixPkgs = ["nodejs_20", "python312"]
 
 [phases.install]
 cmds = [
