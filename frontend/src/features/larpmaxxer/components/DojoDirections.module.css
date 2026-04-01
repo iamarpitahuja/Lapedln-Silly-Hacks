@@ -105,7 +105,9 @@
 .listItemIcon {
   flex-shrink: 0;
   margin-top: 0.1rem;
-  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--neon-soft);
 }
 
 .actions {

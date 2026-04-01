@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import ProfileHero from './ProfileHero/ProfileHero'
-import LarpStatus from './LarpStatus/LarpStatus'
 import AboutSection from './AboutSection/AboutSection.jsx'
 import ExperienceSection from './ExperienceSection/ExperienceSection.jsx'
 import EducationSection from './EducationSection/EducationSection.jsx'
@@ -51,9 +50,6 @@ export default function Me() {
       <div className={styles.content}>
         <Motion.div {...sectionMotion} transition={{ duration: 0.3, ease: easeOutQuint, delay: 0 }}>
           <ProfileHero onNotice={showInteractionNotice} />
-        </Motion.div>
-        <Motion.div {...sectionMotion} transition={{ duration: 0.3, ease: easeOutQuint, delay: 0.06 }}>
-          <LarpStatus onNotice={showInteractionNotice} />
         </Motion.div>
         <Motion.div {...sectionMotion} transition={{ duration: 0.3, ease: easeOutQuint, delay: 0.12 }}>
           <button
