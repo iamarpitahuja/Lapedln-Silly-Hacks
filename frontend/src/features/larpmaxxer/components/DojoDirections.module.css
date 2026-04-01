@@ -1,0 +1,177 @@
+.root {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-deep);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 72% 58% at 50% 0%, var(--neon-faint) 0%, transparent 58%),
+    radial-gradient(ellipse 55% 40% at 82% 100%, color-mix(in srgb, var(--accent-cyan) 12%, transparent) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+.dots {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-card) 84%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--glow-sm);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-md);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.dotActive {
+  background: var(--neon);
+  transform: scale(1.2);
+  box-shadow: 0 0 0 5px var(--neon-faint);
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: color-mix(in srgb, var(--bg-card) 88%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--glow-md);
+}
+
+.heading {
+  font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+  margin-bottom: 1.25rem;
+  line-height: 1.15;
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.listItemIcon {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  font-size: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.btnPrimary {
+  padding: 0.7rem 1.75rem;
+  background: var(--neon);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.btnPrimary:hover {
+  background: var(--neon-dark);
+}
+
+.btnPrimary:active {
+  transform: scale(var(--active-scale));
+}
+
+.btnBack {
+  padding: 0.7rem 1.25rem;
+  background: transparent;
+  color: var(--neon);
+  border: 1.5px solid var(--border-md);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.btnBack:hover {
+  border-color: var(--neon);
+  background: var(--neon-faint);
+}
+
+@media (max-width: 640px) {
+  .card {
+    border-radius: 14px;
+  }
+
+  .heading {
+    font-size: clamp(1.3rem, 7vw, 1.6rem);
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .btnPrimary,
+  .btnBack {
+    width: 100%;
+    text-align: center;
+  }
+}
