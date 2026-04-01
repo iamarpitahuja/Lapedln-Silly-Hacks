@@ -9,7 +9,7 @@ export function EntryCard({
 }) {
   return (
     <div className={styles.wrap}>
-      <div className={styles.card}>
+      <div className={styles.card} data-tour="larpmaxxer-entry-card">
         <p className={styles.eyebrow}>Larp Dojo</p>
         <h1 className={styles.title}>LarpMaxxing</h1>
         <p className={styles.subtitle}>train for the convos ur delusional future self needs.</p>
