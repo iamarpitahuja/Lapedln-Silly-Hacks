@@ -78,10 +78,7 @@ export function BattleDialogueBox({
     }
   }, [log, displayed, isTyping])
 
-  // Build the list of past log entries (everything except the last character line,
-  // which we show with typewriter below)
-  const pastEntries = log.slice(0, -1)
-  const latestEntry = log[log.length - 1] ?? null
+  // Voice button state
   const isLoading = ttsState === 'loading'
   const isPlaying = ttsState === 'playing'
   const isError = ttsState === 'error'
@@ -94,6 +91,12 @@ export function BattleDialogueBox({
       : isError
         ? 'Error'
         : 'Ready'
+
+  // All committed log entries shown as-is.
+  // The NPC's live line (text prop) is shown as an extra entry when it's not yet in the log.
+  const latestLogEntry = log[log.length - 1] ?? null
+  // Show a live NPC line when text differs from the last committed log entry.
+  const showLiveLine = !isTyping && text && text !== latestLogEntry?.text
 
   return (
     <div className={styles.box}>
@@ -117,8 +120,8 @@ export function BattleDialogueBox({
       </div>
 
       <div className={styles.scrollArea} ref={scrollRef}>
-        {/* Past conversation history */}
-        {pastEntries.map((entry, i) => (
+        {/* Full committed conversation history */}
+        {log.map((entry, i) => (
           <div
             key={i}
             className={`${styles.entry} ${entry.speaker === 'user' ? styles.userEntry : styles.charEntry}`}
@@ -130,8 +133,8 @@ export function BattleDialogueBox({
           </div>
         ))}
 
-        {/* Current line — typewriter for character, plain for user */}
-        {isTyping ? (
+        {/* Thinking dots while NPC is generating */}
+        {isTyping && (
           <div className={`${styles.entry} ${styles.charEntry}`}>
             <span className={styles.entryLabel}>{speakerName}:</span>
             <span className={styles.dots}>
@@ -140,21 +143,18 @@ export function BattleDialogueBox({
               <span className={styles.dot} style={{ animationDelay: '0.5s' }}>●</span>
             </span>
           </div>
-        ) : latestEntry ? (
-          <div
-            className={`${styles.entry} ${latestEntry.speaker === 'user' ? styles.userEntry : styles.charEntry}`}
-          >
-            <span className={styles.entryLabel}>
-              {latestEntry.speaker === 'user' ? 'YOU' : speakerName}:
-            </span>
+        )}
+
+        {/* Live NPC line — typewriter until committed to log */}
+        {showLiveLine && (
+          <div className={`${styles.entry} ${styles.charEntry}`}>
+            <span className={styles.entryLabel}>{speakerName}:</span>
             <span className={styles.entryText}>
-              {latestEntry.speaker === 'character' ? displayed : latestEntry.text}
-              {latestEntry.speaker === 'character' && done && (
-                <span className={styles.cursor}>▼</span>
-              )}
+              {displayed}
+              {done && <span className={styles.cursor}>▼</span>}
             </span>
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   )

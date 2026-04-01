@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
 from app.dependencies import get_current_user
+from app.models import Profile
 from app.services.elevenlabs import stream_tts
 from app.services.larpmaxxer_store import (
     get_characters,
@@ -66,6 +68,12 @@ async def get_larpmaxxer_progress(
     db: AsyncSession = Depends(get_db),
 ):
     progress = await get_progress(user_id, db)
+    # Pull larpRating and personaId from Profile (source of truth)
+    profile = (await db.execute(select(Profile).where(Profile.id == user_id))).scalar_one_or_none()
+    if profile:
+        progress["larpRating"] = profile.larp_rating
+        if profile.persona:
+            progress["personaId"] = profile.persona
     return {"userId": user_id, **progress}
 
 
@@ -118,6 +126,13 @@ async def patch_larpmaxxer_progress(
         ]
 
     progress = await update_progress(user_id, updates, db)
+
+    # Sync personaId to Profile.persona
+    if body.personaId is not None:
+        profile = (await db.execute(select(Profile).where(Profile.id == user_id))).scalar_one_or_none()
+        if profile:
+            profile.persona = body.personaId
+            await db.commit()
 
     # Sync scenario completions to Profile.larp_rating
     rating_change = None
